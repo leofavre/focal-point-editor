@@ -1,6 +1,8 @@
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AspectRatioRuler } from "./components/AspectRatio/AspectRatioRuler/AspectRatioRuler";
+import { AspectRatioSlider } from "./components/AspectRatio/AspectRatioSlider/AspectRatioSlider";
+import { getAspectRatioList } from "./components/AspectRatio/AspectRatioSlider/constants";
 import { ImageContainer } from "./components/ImageContainer/ImageContainer";
 import { ImageUploader } from "./components/ImageUploader/ImageUploader";
 
@@ -13,8 +15,8 @@ import { ImageUploader } from "./components/ImageUploader/ImageUploader";
  * - Allow user to upload another image
  * - Allow user to see and copy the generated code snippet
  * - Refine UI/UX
+ *   - Slider ruler
  *   - Drag image to upload
- *   - Wider slider
  *   - Mark commonly used aspect ratios on slider
  *   - Mark original aspect ratio on slider
  *   - Implement arrow/tab keyboard interactions
@@ -31,8 +33,13 @@ export default function App() {
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<number>();
+  const [naturalAspectRatio, setNaturalAspectRatio] = useState<number>();
 
-  // Clean up object URLs when component unmounts or image changes
+  const aspectRatioList = useMemo(
+    () => getAspectRatioList(naturalAspectRatio),
+    [naturalAspectRatio],
+  );
+
   useEffect(() => {
     return () => {
       if (imageUrl) {
@@ -56,7 +63,10 @@ export default function App() {
   const handleImageLoad = useCallback(
     (event: SyntheticEvent<HTMLImageElement>) => {
       const img = event.currentTarget;
-      setAspectRatio(img.naturalWidth / img.naturalHeight);
+      const naturalAspectRatio = img.naturalWidth / img.naturalHeight;
+
+      setNaturalAspectRatio(naturalAspectRatio);
+      setAspectRatio(naturalAspectRatio);
     },
     [],
   );
@@ -89,11 +99,17 @@ export default function App() {
         onImageError={handleImageError}
       />
       {aspectRatio && (
-        <AspectRatioSlider
-          className="fixed bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 max-w-4xl px-4"
-          aspectRatio={aspectRatio}
-          onAspectRatioChange={setAspectRatio}
-        />
+        <div className="fixed bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4">
+          <AspectRatioSlider
+            aspectRatio={aspectRatio}
+            aspectRatioList={aspectRatioList}
+            onAspectRatioChange={setAspectRatio}
+          />
+          <AspectRatioRuler
+            aspectRatioList={aspectRatioList}
+            className="mx-[7px]"
+          />
+        </div>
       )}
     </>
   );
