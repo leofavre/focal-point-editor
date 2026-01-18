@@ -116,8 +116,7 @@ export function ImageContainer({
       ? "crosshair"
       : CURSOR_MAP[imageObserved.changedDimension];
 
-  /** @todo Understand, fix and rename */
-  const moo = cssObjectPositionToCoordinates(objectPosition);
+  const focalPoint = cssObjectPositionToCoordinates(objectPosition);
 
   return (
     <div
@@ -146,13 +145,12 @@ export function ImageContainer({
           aria-hidden="true"
           className="absolute top-0 left-0 w-full h-full pointer-events-none touch-none select-none"
           xmlns="http://www.w3.org/2000/svg"
-          viewBox={`0 0 1000 ${1000 / (naturalAspectRatio ?? 1)}`}
-          preserveAspectRatio="xMidYMid slice"
+          viewBox={`0 0 1000 ${1000 / (aspectRatio ?? 1)}`}
         >
           <line
-            x1={`${moo.x}%`}
+            x1={`${focalPoint.x}%`}
             y1="0"
-            x2={`${moo.x}%`}
+            x2={`${focalPoint.x}%`}
             y2="100%"
             stroke="black"
             stroke-width="1"
@@ -161,9 +159,9 @@ export function ImageContainer({
           />
           <line
             x1="0"
-            y1={`${moo.y}%`}
+            y1={`${focalPoint.y}%`}
             x2="100%"
-            y2={`${moo.y}%`}
+            y2={`${focalPoint.y}%`}
             stroke="black"
             stroke-width="1"
             stroke-dasharray="4 4"
