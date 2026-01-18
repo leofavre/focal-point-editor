@@ -88,11 +88,13 @@ export default function App() {
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
       />
-      <AspectRatioSlider
-        className="fixed bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 max-w-4xl px-4"
-        aspectRatio={aspectRatio}
-        onAspectRatioChange={setAspectRatio}
-      />
+      {aspectRatio && (
+        <AspectRatioSlider
+          className="fixed bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 max-w-4xl px-4"
+          aspectRatio={aspectRatio}
+          onAspectRatioChange={setAspectRatio}
+        />
+      )}
     </>
   );
 }

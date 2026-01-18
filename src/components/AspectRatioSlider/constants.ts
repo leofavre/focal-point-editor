@@ -1,23 +1,45 @@
 import { toPreciseAspectRatio } from "./helpers";
-import type { AspectRatio, AspectRatioName } from "./types";
+import type { AspectRatio } from "./types";
 
-export const ASPECT_RATIO_MAP: Record<AspectRatioName, number> = {
-  ultrawide: 21 / 9,
-  wide: 16 / 9,
-  photoLandscape: 3 / 2,
-  classicLandscape: 4 / 3,
-  print: 5 / 4,
-  square: 1 / 1,
-  social: 4 / 5,
-  classicPortrait: 3 / 4,
-  photoPortrait: 2 / 3,
-  vertical: 9 / 16,
+const ASPECT_RATIO_MAP: Record<string, number> = {
+  "9:16": 9 / 16,
+  "4:5": 4 / 5,
+  "5:7": 5 / 7,
+  "3:4": 3 / 4,
+  "3:5": 3 / 5,
+  "2:3": 2 / 3,
+  "1:1": 1 / 1,
+  "3:2": 3 / 2,
+  "5:3": 5 / 3,
+  "4:3": 4 / 3,
+  "7:5": 7 / 5,
+  "5:4": 5 / 4,
+  "16:9": 16 / 9,
 };
 
-export const ASPECT_RATIO: AspectRatio[] = Object.entries(ASPECT_RATIO_MAP)
-  .map(([key, value]) => ({
-    name: key as AspectRatioName,
+const ASPECT_RATIO: AspectRatio[] = Object.entries(ASPECT_RATIO_MAP)
+  .map(([name, value]) => ({
+    name,
     value,
     preciseValue: toPreciseAspectRatio(value),
   }))
   .sort((a, b) => a.preciseValue - b.preciseValue);
+
+export function getAspectRatioList(userAspectRatioValue?: number) {
+  if (!userAspectRatioValue) return ASPECT_RATIO;
+
+  const userAspectRatio = {
+    name: "original",
+    value: userAspectRatioValue,
+    preciseValue: toPreciseAspectRatio(userAspectRatioValue),
+  };
+
+  return [...ASPECT_RATIO, userAspectRatio]
+    .sort((a, b) => a.preciseValue - b.preciseValue)
+    .filter(
+      (n) =>
+        n.preciseValue === userAspectRatio.preciseValue ||
+        n.preciseValue < userAspectRatio.preciseValue - 250 ||
+        n.preciseValue > userAspectRatio.preciseValue + 250,
+    );
+}

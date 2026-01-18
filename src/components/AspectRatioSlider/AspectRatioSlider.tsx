@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { ChangeEvent } from "react";
-import { useCallback, useEffectEvent } from "react";
-import { ASPECT_RATIO } from "./constants";
+import { useCallback, useEffectEvent, useMemo } from "react";
+import { getAspectRatioList } from "./constants";
 import { toAspectRatio, toPreciseAspectRatio } from "./helpers";
 import type { AspectRatioSliderProps } from "./types";
 
@@ -12,17 +12,14 @@ export function AspectRatioSlider({
   className,
   ...rest
 }: AspectRatioSliderProps) {
-  const preciseAspectRatio = toPreciseAspectRatio(aspectRatio ?? 0);
-
-  const minPrecise = Math.min(
-    preciseAspectRatio,
-    ASPECT_RATIO.at(0)?.preciseValue ?? 0,
+  const aspectRatioList = useMemo(
+    () => getAspectRatioList(aspectRatio),
+    [aspectRatio],
   );
 
-  const maxPrecise = Math.max(
-    preciseAspectRatio,
-    ASPECT_RATIO.at(-1)?.preciseValue ?? 0,
-  );
+  const preciseAspectRatio = toPreciseAspectRatio(aspectRatio);
+  const preciseMinAspectRatio = aspectRatioList.at(0)?.preciseValue;
+  const preciseMaxAspectRatio = aspectRatioList.at(-1)?.preciseValue;
 
   const stableOnAspectRatioChange = useEffectEvent((aspectRatio: number) => {
     onAspectRatioChange?.(aspectRatio);
@@ -43,8 +40,8 @@ export function AspectRatioSlider({
         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
         type="range"
         step={1}
-        min={minPrecise}
-        max={maxPrecise}
+        min={preciseMinAspectRatio}
+        max={preciseMaxAspectRatio}
         value={preciseAspectRatio}
         onChange={handleChange}
       />
