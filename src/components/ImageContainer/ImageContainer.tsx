@@ -48,7 +48,7 @@ export function ImageContainer({
         const naturalAspectRatio = naturalWidth / naturalHeight;
 
         const movementAxis =
-          Math.abs(naturalAspectRatio - currentAspectRatio) < 0.05
+          Math.abs(naturalAspectRatio - currentAspectRatio) < 0.005
             ? undefined
             : naturalAspectRatio > currentAspectRatio
               ? "horizontal"
