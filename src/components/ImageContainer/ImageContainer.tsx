@@ -6,7 +6,10 @@ import { coordinatesToCssObjectPosition } from "./helpers/coordinatesToCssObject
 import { cssObjectPositionToCoordinates } from "./helpers/cssObjectPositionToCoordinates";
 import { detectProportionalImageHeight } from "./helpers/detectRelativeImageSize";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerPositionFromEvent";
+import { scaleDimensionsToContainRect } from "./helpers/scaleDimensionToContainRect";
 import type { Coordinates, ImageContainerProps, ImageObserved } from "./types";
+
+const DELTA_DIMENSION_THRESHOLD = 1;
 
 export function ImageContainer({
   ref,
@@ -29,36 +32,28 @@ export function ImageContainer({
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        const { naturalWidth = 0, naturalHeight = 0 } = ref.current ?? {};
+        const source = {
+          width: ref.current?.naturalWidth ?? 1,
+          height: ref.current?.naturalHeight ?? 1,
+        };
 
-        if (width === 0 && height === 0 && naturalWidth === 0 && naturalHeight === 0) continue;
+        const rect = entry.contentRect;
 
-        const currentAspectRatio = width / height;
-        const naturalAspectRatio = naturalWidth / naturalHeight;
+        const { width, height } = scaleDimensionsToContainRect({ source, rect });
+        const deltaWidth = width - rect.width;
+        const deltaHeight = height - rect.height;
 
-        const movementAxis =
-          Math.abs(naturalAspectRatio - currentAspectRatio) < 0.005
-            ? undefined
-            : naturalAspectRatio > currentAspectRatio
-              ? "horizontal"
-              : "vertical";
-
-        let nextHeight = height;
-        let nextWidth = width;
-
-        if (movementAxis === "horizontal") {
-          nextWidth = (height * naturalWidth) / naturalHeight;
-        }
-
-        if (movementAxis === "vertical") {
-          nextHeight = (width * naturalHeight) / naturalWidth;
-        }
+        const changedDimension =
+          deltaWidth > DELTA_DIMENSION_THRESHOLD
+            ? "width"
+            : deltaHeight > DELTA_DIMENSION_THRESHOLD
+              ? "height"
+              : undefined;
 
         setImageObserved({
-          deltaWidth: nextWidth - width,
-          deltaHeight: nextHeight - height,
-          movementAxis,
+          deltaWidth,
+          deltaHeight,
+          changedDimension,
         });
       }
     });
@@ -78,9 +73,7 @@ export function ImageContainer({
       target.setPointerCapture(event.pointerId);
 
       objectPositionStartRef.current = objectPosition;
-      pointerPositionStartRef.current = getPointerCoordinatesFromEvent({
-        event,
-      });
+      pointerPositionStartRef.current = getPointerCoordinatesFromEvent({ event });
     },
     [objectPosition],
   );
@@ -95,8 +88,8 @@ export function ImageContainer({
       const deltaY = pointerPosition.y - (pointerPositionStartRef.current?.y ?? 0);
       const deltaXPercent = (deltaX / imageObserved.deltaWidth) * 100;
       const deltaYPercent = (deltaY / imageObserved.deltaHeight) * 100;
-      const maybeDeltaXPercent = imageObserved.movementAxis === "horizontal" ? deltaXPercent : 0;
-      const maybeDeltaYPercent = imageObserved.movementAxis === "vertical" ? deltaYPercent : 0;
+      const maybeDeltaXPercent = imageObserved.changedDimension === "width" ? deltaXPercent : 0;
+      const maybeDeltaYPercent = imageObserved.changedDimension === "height" ? deltaYPercent : 0;
 
       const prevObjectPosition = cssObjectPositionToCoordinates(objectPositionStartRef.current);
 
@@ -118,7 +111,9 @@ export function ImageContainer({
   }, []);
 
   const cursor =
-    imageObserved?.movementAxis == null ? "crosshair" : CURSOR_MAP[imageObserved.movementAxis];
+    imageObserved?.changedDimension == null
+      ? "crosshair"
+      : CURSOR_MAP[imageObserved.changedDimension];
 
   return (
     <div

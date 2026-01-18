@@ -6,10 +6,15 @@ export type Coordinates = {
   y: number;
 };
 
+export type Dimensions = {
+  width: number;
+  height: number;
+};
+
 export type ImageObserved = {
   deltaWidth: number;
   deltaHeight: number;
-  movementAxis: "horizontal" | "vertical" | undefined;
+  changedDimension: "width" | "height" | undefined;
 };
 
 export type ImageContainerProps = StyleProps & {
