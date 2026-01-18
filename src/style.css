@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --ratio-ultrawide: 21 / 9;
+  --ratio-wide: 16 / 9;
+  --ratio-photo-landscape: 3 / 2;
+  --ratio-classic-landscape: 4 / 3;
+  --ratio-square: 1 / 1;
+  --ratio-print: 5 / 4;
+  --ratio-social: 4 / 5;
+  --ratio-classic-portrait: 3 / 4;
+  --ratio-photo-portrait: 2 / 3;
+  --ratio-vertical: 9 / 16;
+}
