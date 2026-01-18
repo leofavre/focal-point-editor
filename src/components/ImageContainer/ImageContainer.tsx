@@ -14,6 +14,7 @@ const DELTA_DIMENSION_THRESHOLD = 1;
 export function ImageContainer({
   ref,
   aspectRatio,
+  naturalAspectRatio,
   imageUrl,
   onImageLoad,
   onImageError,
@@ -115,6 +116,9 @@ export function ImageContainer({
       ? "crosshair"
       : CURSOR_MAP[imageObserved.changedDimension];
 
+  /** @todo Understand, fix and rename */
+  const moo = cssObjectPositionToCoordinates(objectPosition);
+
   return (
     <div
       className={clsx("touch-none select-none", className)}
@@ -136,8 +140,36 @@ export function ImageContainer({
           style={{ objectPosition }}
           onLoad={onImageLoad}
           onError={onImageError}
-          alt="Uploaded"
+          aria-label="Image uploaded by the user"
         />
+        <svg
+          aria-hidden="true"
+          className="absolute top-0 left-0 w-full h-full pointer-events-none touch-none select-none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox={`0 0 1000 ${1000 / (naturalAspectRatio ?? 1)}`}
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <line
+            x1={`${moo.x}%`}
+            y1="0"
+            x2={`${moo.x}%`}
+            y2="100%"
+            stroke="black"
+            stroke-width="1"
+            stroke-dasharray="4 4"
+            vector-effect="non-scaling-stroke"
+          />
+          <line
+            x1="0"
+            y1={`${moo.y}%`}
+            x2="100%"
+            y2={`${moo.y}%`}
+            stroke="black"
+            stroke-width="1"
+            stroke-dasharray="4 4"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
       </div>
     </div>
   );

@@ -82,9 +82,10 @@ export default function App() {
   ) : (
     <>
       <ImageContainer
-        className="fixed top-[calc(50%-2.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2"
         ref={imageRef}
+        className="fixed top-[calc(50%-2.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2"
         aspectRatio={aspectRatio}
+        naturalAspectRatio={naturalAspectRatio}
         imageUrl={imageUrl}
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}

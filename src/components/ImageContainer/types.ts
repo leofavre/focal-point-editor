@@ -20,6 +20,7 @@ export type ImageObserved = {
 export type ImageContainerProps = StyleProps & {
   ref: RefObject<HTMLImageElement | null>;
   aspectRatio?: number;
+  naturalAspectRatio?: number;
   imageUrl: string;
   onImageLoad: (event: SyntheticEvent<HTMLImageElement>) => void;
   onImageError: (event: SyntheticEvent<HTMLImageElement>) => void;
