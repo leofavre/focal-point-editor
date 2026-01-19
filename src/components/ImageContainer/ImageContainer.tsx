@@ -146,7 +146,7 @@ export function ImageContainer({
       onPointerUp={handlePointerUp}
       {...rest}
     >
-      <div className="w-full h-full relative overflow-hidden border border-gray-300 pointer-events-none touch-none select-none">
+      <div className="isolate w-full h-full relative overflow-hidden pointer-events-none touch-none select-none z-1">
         <img
           ref={ref}
           src={imageUrl}
@@ -159,7 +159,7 @@ export function ImageContainer({
         {/* focal point */}
         <svg
           aria-hidden="true"
-          className="absolute top-0 left-0 w-full h-full pointer-events-none touch-none select-none"
+          className="absolute top-0 left-0 w-full h-full pointer-events-none touch-none select-none z-2"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={`0 0 1000 ${1000 / (aspectRatio ?? 1)}`}
         >
@@ -188,14 +188,16 @@ export function ImageContainer({
       {/* ghost */}
       <div
         className={clsx(
-          "absolute bg-amber-500 opacity-50",
+          "absolute bg-cover bg-center bg-no-repeat opacity-50 top-0 left-0 z-0",
           imageObserved?.changedDimension === "width" ? "h-full" : "w-full",
         )}
         style={{
           aspectRatio: naturalAspectRatio ?? "auto",
-          top: `0%`,
-          left: `0%`,
-          transform: `translate(calc(${objectPositionX}% * (${imageObserved?.deltaWidthPercent ?? 0} / -100)), calc(${objectPositionY}% * (${imageObserved?.deltaHeightPercent ?? 0} / -100)))`,
+          backgroundImage: `url(${imageUrl})`,
+          transform: `translate(
+            ${(objectPositionX ?? 0) * ((imageObserved?.deltaWidthPercent ?? 0) / -100)}%,
+            ${(objectPositionY ?? 0) * ((imageObserved?.deltaHeightPercent ?? 0) / -100)}%
+          )`,
           cursor,
         }}
       ></div>
