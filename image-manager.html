@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Manager</title>
+    <link rel="stylesheet" href="image-manager.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>📷 Image Manager</h1>
+
+      <div class="stats" id="stats">Loading...</div>
+
+      <div class="upload-section" id="uploadSection">
+        <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+        <button class="upload-btn" id="uploadBtn">Choose Images</button>
+        <p style="margin-top: 15px; color: #666;">or drag and drop images here</p>
+      </div>
+
+      <div id="imagesContainer"></div>
+    </div>
+    <script type="module" src="/src/image-manager.ts"></script>
+  </body>
+</html>
