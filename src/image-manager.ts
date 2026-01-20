@@ -8,14 +8,6 @@ interface Image {
   timestamp: number;
 }
 
-// Extend Window interface for global functions
-declare global {
-  interface Window {
-    openImage: (id: string) => void;
-    deleteImage: (id: string) => Promise<void>;
-  }
-}
-
 // IndexedDB setup
 const DB_NAME = "ImageManagerDB";
 const DB_VERSION = 1;
@@ -137,8 +129,8 @@ async function renderImages(): Promise<void> {
                        <div class="image-info">
                            <div class="image-name" title="${img.name}">${img.name}</div>
                            <div class="image-actions">
-                               <button class="btn btn-open" onclick="openImage('${img.id}')">Open</button>
-                               <button class="btn btn-delete" onclick="deleteImage('${img.id}')">Delete</button>
+                               <button class="btn btn-open" data-id="${img.id}">Open</button>
+                               <button class="btn btn-delete" data-id="${img.id}">Delete</button>
                            </div>
                        </div>
                    </div>
@@ -195,11 +187,11 @@ async function handleFiles(files: FileList | null): Promise<void> {
 }
 
 // Open image in new tab
-window.openImage = (id: string): void => {
+function openImage(id: string) {
   getAllImages().then((images) => {
     const image = images.find((img) => img.id === id);
     if (image) {
-      const newWindow = window.open();
+      const newWindow = open();
       if (!newWindow) return;
 
       newWindow.document.write(`
@@ -230,10 +222,10 @@ window.openImage = (id: string): void => {
                `);
     }
   });
-};
+}
 
 // Delete image
-window.deleteImage = async (id: string): Promise<void> => {
+async function deleteImage(id: string): Promise<void> {
   if (confirm("Are you sure you want to delete this image?")) {
     try {
       await deleteImageFromDB(id);
@@ -243,7 +235,7 @@ window.deleteImage = async (id: string): Promise<void> => {
       alert("Error deleting image");
     }
   }
-};
+}
 
 // Event listeners
 const uploadBtn = document.getElementById("uploadBtn");
@@ -289,6 +281,25 @@ if (uploadSection) {
   try {
     await initDB();
     await renderImages();
+
+    const container = document.getElementById("imagesContainer");
+    if (!container) return;
+
+    container.addEventListener("click", (event: Event) => {
+      const target = event.target as HTMLElement;
+
+      if (target.classList.contains("btn-open")) {
+        const id = target.dataset.id;
+        if (!id) return;
+        openImage(id);
+      }
+
+      if (target.classList.contains("btn-delete")) {
+        const id = target.dataset.id;
+        if (!id) return;
+        deleteImage(id);
+      }
+    });
     console.log("Image Manager initialized successfully");
   } catch (error) {
     console.error("Error initializing app:", error);
