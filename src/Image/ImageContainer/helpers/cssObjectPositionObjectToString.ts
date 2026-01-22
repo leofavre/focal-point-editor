@@ -1,4 +1,4 @@
-import { clamp, roundWithTwoDecimals } from "../../../../helpers";
+import { clamp, roundWithTwoDecimals } from "../../../helpers";
 import type { Coordinates } from "../types";
 
 export function cssObjectPositionObjectToString({ x, y }: Coordinates): string {

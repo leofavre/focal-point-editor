@@ -1,83 +1,5 @@
-// Type definitions
-interface Image {
-  id: string;
-  name: string;
-  data: string;
-  size: number;
-  type: string;
-  timestamp: number;
-}
-
-// IndexedDB setup
-const DB_NAME = "ImageManagerDB";
-const DB_VERSION = 1;
-const STORE_NAME = "images";
-
-let db: IDBDatabase | null = null;
-
-// Initialize IndexedDB
-function initDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      db = request.result;
-      resolve(db);
-    };
-  });
-}
-
-// Save image to IndexedDB
-function saveImageToDB(imageData: Image): Promise<IDBValidKey> {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      reject(new Error("Database not initialized"));
-      return;
-    }
-
-    const transaction = db.transaction([STORE_NAME], "readwrite");
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.add(imageData);
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// Get all images from IndexedDB
-function getAllImages(): Promise<Image[]> {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      reject(new Error("Database not initialized"));
-      return;
-    }
-
-    const transaction = db.transaction([STORE_NAME], "readonly");
-    const store = transaction.objectStore(STORE_NAME);
-    const request: IDBRequest<Image[]> = store.getAll();
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// Delete image from IndexedDB
-function deleteImageFromDB(id: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      reject(new Error("Database not initialized"));
-      return;
-    }
-
-    const transaction = db.transaction([STORE_NAME], "readwrite");
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.delete(id);
-
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-}
+import type { UploadedImage } from "./Image/types";
+import { deleteImageFromDB, getAllImages, initDB, saveImageToDB } from "./services/database";
 
 // Convert file to base64
 function fileToBase64(file: File): Promise<string> {
@@ -139,7 +61,7 @@ async function renderImages(): Promise<void> {
 }
 
 // Update stats
-function updateStats(images: Image[]): void {
+function updateStats(images: UploadedImage[]): void {
   const statsEl = document.getElementById("stats");
   if (!statsEl) return;
 
@@ -162,7 +84,7 @@ async function handleFiles(files: FileList | null): Promise<void> {
   for (const file of fileArray) {
     try {
       const base64 = await fileToBase64(file);
-      const imageData: Image = {
+      const imageData: UploadedImage = {
         id: Date.now() + "_" + Math.random().toString(36).substr(2, 9),
         name: file.name,
         data: base64,
@@ -295,7 +217,7 @@ if (uploadSection) {
         deleteImage(id);
       }
     });
-    console.log("Image Manager initialized successfully");
+    console.log("UploadedImage Manager initialized successfully");
   } catch (error) {
     console.error("Error initializing app:", error);
     const statsEl = document.getElementById("stats");

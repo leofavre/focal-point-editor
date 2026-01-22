@@ -1,5 +1,5 @@
 import type { RefObject, SyntheticEvent } from "react";
-import type { StyleProps } from "../../../types";
+import type { StyleProps } from "../../types";
 
 export type Coordinates = {
   x: number;

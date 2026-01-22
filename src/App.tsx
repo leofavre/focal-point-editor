@@ -1,10 +1,10 @@
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AspectRatioRuler } from "./components/AspectRatio/AspectRatioRuler/AspectRatioRuler";
-import { AspectRatioSlider } from "./components/AspectRatio/AspectRatioSlider/AspectRatioSlider";
-import { useAspectRatioList } from "./components/AspectRatio/hooks";
-import { ImageContainer } from "./components/ImageContainer/ImageContainer";
-import { ImageUploader } from "./components/ImageUploader/ImageUploader";
+import { AspectRatioRuler } from "./AspectRatio/AspectRatioRuler/AspectRatioRuler";
+import { AspectRatioSlider } from "./AspectRatio/AspectRatioSlider/AspectRatioSlider";
+import { useAspectRatioList } from "./AspectRatio/hooks";
+import { ImageContainer } from "./Image/ImageContainer/ImageContainer";
+import { ImageUploader } from "./Image/ImageUploader/ImageUploader";
 
 /**
  * @todo

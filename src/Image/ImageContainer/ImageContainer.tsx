@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { clamp, toPercentage } from "../../../helpers";
+import { clamp, toPercentage } from "../../helpers";
 import { CURSOR_MAP, DEFAULT_OBJECT_POSITION } from "./constants";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
