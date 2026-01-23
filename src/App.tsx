@@ -4,8 +4,8 @@ import { AspectRatioRuler } from "./AspectRatio/AspectRatioRuler/AspectRatioRule
 import { AspectRatioSlider } from "./AspectRatio/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "./AspectRatio/hooks";
 import { CodeSnippet } from "./CodeSnippet/CodeSnippet";
-import { DEFAULT_OBJECT_POSITION } from "./Image/ImageContainer/constants";
-import { ImageContainer } from "./Image/ImageContainer/ImageContainer";
+import { DEFAULT_OBJECT_POSITION } from "./Image/FocusPointEditor/constants";
+import { FocusPointEditor } from "./Image/FocusPointEditor/FocusPointEditor";
 import { ImageUploader } from "./Image/ImageUploader/ImageUploader";
 
 /**
@@ -84,7 +84,7 @@ export default function App() {
     />
   ) : (
     <>
-      <ImageContainer
+      <FocusPointEditor
         ref={imageRef}
         className="fixed top-[calc(50%-2.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2"
         imageUrl={imageUrl}

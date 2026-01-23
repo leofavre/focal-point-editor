@@ -8,11 +8,11 @@ import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStri
 import { detectProportionalImageHeight } from "./helpers/detectRelativeImageSize";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerPositionFromEvent";
 import { scaleDimensionsToContainRect } from "./helpers/scaleDimensionToContainRect";
-import type { Coordinates, ImageContainerProps, ImageObserved } from "./types";
+import type { Coordinates, FocusPointEditorProps, ImageObserved } from "./types";
 
 const DELTA_DIMENSION_THRESHOLD_PX = 1;
 
-export function ImageContainer({
+export function FocusPointEditor({
   ref,
   imageUrl,
   aspectRatio,
@@ -23,7 +23,7 @@ export function ImageContainer({
   onImageError,
   className,
   ...rest
-}: ImageContainerProps) {
+}: FocusPointEditorProps) {
   const [imageObserved, setImageObserved] = useState<ImageObserved | null>(null);
 
   const isDraggingRef = useRef(false);

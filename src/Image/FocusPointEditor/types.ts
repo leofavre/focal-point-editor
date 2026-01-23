@@ -19,7 +19,7 @@ export type ImageObserved = {
   changedDimension: "width" | "height" | undefined;
 };
 
-export type ImageContainerProps = StyleProps & {
+export type FocusPointEditorProps = StyleProps & {
   ref: RefObject<HTMLImageElement | null>;
   imageUrl: string;
   aspectRatio?: number;
