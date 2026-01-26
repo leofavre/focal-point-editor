@@ -1,8 +1,8 @@
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AspectRatioControl } from "./components/AspectRatio/AspectRatioControl/AspectRatioControl";
-import { AspectRatioRuler } from "./components/AspectRatio/AspectRatioRuler/AspectRatioRuler";
-import { useAspectRatioList } from "./components/AspectRatio/hooks";
+import { AspectRatioControl } from "./components/AspectRatioSlider/AspectRatioControl/AspectRatioControl";
+import { AspectRatioRuler } from "./components/AspectRatioSlider/AspectRatioRuler/AspectRatioRuler";
+import { useAspectRatioList } from "./components/AspectRatioSlider/hooks";
 import { CodeSnippet } from "./components/CodeSnippet/CodeSnippet";
 import { DEFAULT_OBJECT_POSITION } from "./components/FocusPointEditor/constants";
 import { FocusPointEditor } from "./components/FocusPointEditor/FocusPointEditor";
