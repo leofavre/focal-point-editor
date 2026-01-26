@@ -1,6 +1,7 @@
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { clamp, toPercentage } from "../../helpers";
+import { PointerMarker } from "../PointerMarker/PointerMarker";
 import { CURSOR_MAP } from "./constants";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
@@ -155,37 +156,11 @@ export function FocusPointEditor({
             onError={onImageError}
             aria-label="Image uploaded by the user"
           />
-          {/* focal point */}
-          {false && (
-            <svg
-              aria-hidden="true"
-              className="point"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox={`0 0 1000 ${1000 / (aspectRatio ?? 1)}`}
-            >
-              <line
-                x1={`${objectPositionX}%`}
-                y1="0"
-                x2={`${objectPositionX}%`}
-                y2="100%"
-                stroke="black"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-                vectorEffect="non-scaling-stroke"
-              />
-              <line
-                x1="0"
-                y1={`${objectPositionY}%`}
-                x2="100%"
-                y2={`${objectPositionY}%`}
-                stroke="black"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-          )}
         </div>
+        {/* focal point */}
+        {true && (
+          <PointerMarker style={{ left: `${objectPositionX}%`, top: `${objectPositionY}%` }} />
+        )}
         {/* ghost */}
         {false && (
           <div

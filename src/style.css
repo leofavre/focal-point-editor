@@ -44,6 +44,18 @@ html {
   }
 }
 
+.point-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0;
+  height: 0;
+
+  img {
+    width: 2rem;
+  }
+}
+
 .focus-point-editor {
   container-type: size;
   isolation: isolate;
@@ -61,7 +73,6 @@ html {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     pointer-events: none;
     touch-action: none;
     user-select: none;
@@ -76,12 +87,10 @@ html {
     user-select: none;
   }
 
-  .point {
+  .point-marker {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
     pointer-events: none;
     touch-action: none;
     user-select: none;
