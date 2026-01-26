@@ -156,50 +156,54 @@ export function FocusPointEditor({
             aria-label="Image uploaded by the user"
           />
           {/* focal point */}
-          <svg
-            aria-hidden="true"
-            className="point"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox={`0 0 1000 ${1000 / (aspectRatio ?? 1)}`}
-          >
-            <line
-              x1={`${objectPositionX}%`}
-              y1="0"
-              x2={`${objectPositionX}%`}
-              y2="100%"
-              stroke="black"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-              vectorEffect="non-scaling-stroke"
-            />
-            <line
-              x1="0"
-              y1={`${objectPositionY}%`}
-              x2="100%"
-              y2={`${objectPositionY}%`}
-              stroke="black"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
+          {false && (
+            <svg
+              aria-hidden="true"
+              className="point"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox={`0 0 1000 ${1000 / (aspectRatio ?? 1)}`}
+            >
+              <line
+                x1={`${objectPositionX}%`}
+                y1="0"
+                x2={`${objectPositionX}%`}
+                y2="100%"
+                stroke="black"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+                vectorEffect="non-scaling-stroke"
+              />
+              <line
+                x1="0"
+                y1={`${objectPositionY}%`}
+                x2="100%"
+                y2={`${objectPositionY}%`}
+                stroke="black"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+          )}
         </div>
         {/* ghost */}
-        <div
-          className="ghost"
-          style={{
-            ...(imageDimensionDelta?.changedDimension === "width"
-              ? { height: "100%" }
-              : { width: "100%" }),
-            aspectRatio: naturalAspectRatio ?? "auto",
-            backgroundImage: `url(${imageUrl})`,
-            transform: `translate(
+        {false && (
+          <div
+            className="ghost"
+            style={{
+              ...(imageDimensionDelta?.changedDimension === "width"
+                ? { height: "100%" }
+                : { width: "100%" }),
+              aspectRatio: naturalAspectRatio ?? "auto",
+              backgroundImage: `url(${imageUrl})`,
+              transform: `translate(
               ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
               ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
             )`,
-            cursor,
-          }}
-        ></div>
+              cursor,
+            }}
+          ></div>
+        )}
       </div>
     </div>
   );
