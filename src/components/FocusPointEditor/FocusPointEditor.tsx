@@ -171,9 +171,9 @@ export function FocusPointEditor({
               aspectRatio: naturalAspectRatio ?? "auto",
               backgroundImage: `url(${imageUrl})`,
               transform: `translate(
-              ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
-              ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
-            )`,
+                ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
+                ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
+              )`,
               cursor,
             }}
           ></div>

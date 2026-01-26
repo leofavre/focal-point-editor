@@ -96,7 +96,6 @@ html {
 
   .image-wrapper {
     position: relative;
-
     pointer-events: none;
     touch-action: none;
     user-select: none;
