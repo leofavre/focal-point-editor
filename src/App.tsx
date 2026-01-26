@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
@@ -192,15 +191,15 @@ export default function App() {
             onImageLoad={handleImageLoad}
             onImageError={handleImageError}
           />
-          {/** @todo Move inline static CSS into App > CodeSnippet */}
           <CodeSnippet
             src={imageFileName}
             objectPosition={objectPosition}
-            css={css`
-              margin: auto;
-              max-width: 550px;
-              z-index: 2;
-            `}
+            /** @todo Move inline static CSS into App > CodeSnippet */
+            css={{
+              margin: "auto",
+              maxWidth: 550,
+              zIndex: 2,
+            }}
           />
           {aspectRatio && (
             <AspectRatioSlider

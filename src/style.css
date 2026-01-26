@@ -44,20 +44,6 @@ html {
   }
 }
 
-.focus-point-editor {
-  container-type: size;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .container {
-    position: relative;
-    touch-action: none;
-    user-select: none;
-  }
-}
-
 .aspect-ratio-ruler {
   position: relative;
   display: flex;
@@ -164,10 +150,6 @@ html {
     background-color: #bfdbfe;
     border-color: #2563eb;
     color: #1e40af;
-  }
-
-  .focus-point-editor {
-    z-index: 0;
   }
 
   .aspect-ratio-slider {

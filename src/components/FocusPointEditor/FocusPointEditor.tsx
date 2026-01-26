@@ -3,10 +3,10 @@ import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react"
 import { clamp, toPercentage } from "../../helpers";
 import { ClippedImage } from "./ClippedImage/ClippedImage";
 import { CURSOR_MAP } from "./constants";
+import { FocusPointEditorWrapper } from "./FocusPointEditorWrapper/FocusPointEditorWrapper";
 import { GhostImage } from "./GhostImage/GhostImage";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
-import { detectProportionalImageHeight } from "./helpers/detectRelativeImageSize";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerCoordinatesFromEvent";
 import { scaleDimensionsToContainRect } from "./helpers/scaleDimensionToContainRect";
 import { PointMarker } from "./PointMarker/PointMarker";
@@ -43,9 +43,7 @@ export function FocusPointEditor({
         };
 
         const rect = entry.contentRect;
-
         const { width, height } = scaleDimensionsToContainRect({ source, rect });
-
         const deltaWidthPx = width - rect.width;
         const deltaHeightPx = height - rect.height;
         const deltaWidthPercent = toPercentage(deltaWidthPx, width);
@@ -138,50 +136,46 @@ export function FocusPointEditor({
     cssObjectPositionStringToObject(objectPosition);
 
   return (
-    <div className="focus-point-editor">
-      <div
-        className="container"
+    <FocusPointEditorWrapper
+      /** @todo Move inline static CSS into App > FocusPointEditorWrapper */
+      css={{ zIndex: 0 }}
+      aspectRatio={aspectRatio}
+      cursor={cursor}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+    >
+      <ClippedImage
+        ref={ref}
+        imageUrl={imageUrl}
+        objectPosition={objectPosition}
+        onImageLoad={onImageLoad}
+        onImageError={onImageError}
+      />
+      <GhostImage
         css={{
-          aspectRatio: aspectRatio ?? "auto",
-          height: `${detectProportionalImageHeight({ aspectRatio }) ?? 0}cqmin`,
+          ...(imageDimensionDelta?.changedDimension === "width"
+            ? { height: "100%" }
+            : { width: "100%" }),
+          transform: `translate(
+            ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
+            ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
+          )`,
+          aspectRatio: naturalAspectRatio ?? "auto",
+          backgroundImage: `url(${imageUrl})`,
+          opacity: showGhostImage ? 0.25 : 0,
           cursor,
         }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        <ClippedImage
-          ref={ref}
-          imageUrl={imageUrl}
-          objectPosition={objectPosition}
-          onImageLoad={onImageLoad}
-          onImageError={onImageError}
-        />
-        <GhostImage
-          css={{
-            ...(imageDimensionDelta?.changedDimension === "width"
-              ? { height: "100%" }
-              : { width: "100%" }),
-            transform: `translate(
-              ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
-              ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
-            )`,
-            aspectRatio: naturalAspectRatio ?? "auto",
-            backgroundImage: `url(${imageUrl})`,
-            opacity: showGhostImage ? 0.25 : 0,
-            cursor,
-          }}
-          aria-hidden={!showGhostImage}
-        />
-        <PointMarker
-          css={{
-            opacity: showPointMarker ? 1 : 0,
-            left: `${objectPositionX}%`,
-            top: `${objectPositionY}%`,
-          }}
-          aria-hidden={!showPointMarker}
-        />
-      </div>
-    </div>
+        aria-hidden={!showGhostImage}
+      />
+      <PointMarker
+        css={{
+          opacity: showPointMarker ? 1 : 0,
+          left: `${objectPositionX}%`,
+          top: `${objectPositionY}%`,
+        }}
+        aria-hidden={!showPointMarker}
+      />
+    </FocusPointEditorWrapper>
   );
 }
