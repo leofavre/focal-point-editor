@@ -1,4 +1,9 @@
 .image-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   .label {
     display: block;
     margin-bottom: 0.5rem;
@@ -8,7 +13,6 @@
 
   .control {
     display: block;
-    width: 100%;
     font-size: 0.875rem;
     color: #6b7280;
 
@@ -89,14 +93,6 @@
     top: 0;
     left: 0;
     z-index: 0;
-
-    &.full-height {
-      height: 100%;
-    }
-
-    &.full-width {
-      width: 100%;
-    }
   }
 }
 
@@ -151,10 +147,6 @@
   font-size: 0.75rem;
   color: #6b7280;
 
-  /* move to parent */
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-
   .item {
     width: 1px;
     display: flex;
@@ -182,23 +174,23 @@
   }
 }
 
-.app {
-  .image-uploader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.aspect-ratio-slider {
+  width: 100%;
+  box-sizing: border-box;
 
+  .aspect-ratio-ruler {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
+.app {
   .focus-point-editor {
     position: fixed;
     inset: 0;
   }
 
-  .controls-container {
-    width: 100%;
-    box-sizing: border-box;
-
-    /* move to parent */
+  .aspect-ratio-slider {
     position: fixed;
     bottom: 5rem;
     left: 50%;

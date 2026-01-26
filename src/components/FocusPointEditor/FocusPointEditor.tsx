@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { clamp, toPercentage } from "../../helpers";
@@ -187,17 +186,17 @@ export function FocusPointEditor({
         </div>
         {/* ghost */}
         <div
-          className={clsx(
-            "ghost",
-            imageDimensionDelta?.changedDimension === "width" ? "full-height" : "full-width",
-          )}
+          className="ghost"
           style={{
+            ...(imageDimensionDelta?.changedDimension === "width"
+              ? { height: "100%" }
+              : { width: "100%" }),
             aspectRatio: naturalAspectRatio ?? "auto",
             backgroundImage: `url(${imageUrl})`,
             transform: `translate(
-            ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
-            ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
-          )`,
+              ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
+              ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
+            )`,
             cursor,
           }}
         ></div>

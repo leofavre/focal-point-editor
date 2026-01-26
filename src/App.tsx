@@ -1,7 +1,6 @@
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AspectRatioControl } from "./components/AspectRatioSlider/AspectRatioControl/AspectRatioControl";
-import { AspectRatioRuler } from "./components/AspectRatioSlider/AspectRatioRuler/AspectRatioRuler";
+import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "./components/AspectRatioSlider/hooks";
 import { CodeSnippet } from "./components/CodeSnippet/CodeSnippet";
 import { DEFAULT_OBJECT_POSITION } from "./components/FocusPointEditor/constants";
@@ -95,14 +94,11 @@ export default function App() {
             onImageError={handleImageError}
           />
           {aspectRatio && (
-            <div className="controls-container">
-              <AspectRatioControl
-                aspectRatio={aspectRatio}
-                aspectRatioList={aspectRatioList}
-                onAspectRatioChange={setAspectRatio}
-              />
-              <AspectRatioRuler aspectRatioList={aspectRatioList} />
-            </div>
+            <AspectRatioSlider
+              aspectRatio={aspectRatio}
+              aspectRatioList={aspectRatioList}
+              onAspectRatioChange={setAspectRatio}
+            />
           )}
           <CodeSnippet src={imageFileName} objectPosition={objectPosition} />
         </>
