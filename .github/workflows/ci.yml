@@ -10,10 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Extract versions from package.json
+        id: versions
+        run: |
+          NODE_VERSION=$(jq -r '.volta.node' package.json)
+          YARN_VERSION=$(jq -r '.volta.yarn' package.json)
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "yarn-version=$YARN_VERSION" >> $GITHUB_OUTPUT
       - uses: volta-cli/action@v4
         with:
-          node-version: '24.13.0'
-          yarn-version: '4.9.2'
+          node-version: ${{ steps.versions.outputs.node-version }}
+          yarn-version: ${{ steps.versions.outputs.yarn-version }}
       - name: Install dependencies
         run: yarn install --immutable
       - name: Run typecheck
@@ -24,10 +31,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Extract versions from package.json
+        id: versions
+        run: |
+          NODE_VERSION=$(jq -r '.volta.node' package.json)
+          YARN_VERSION=$(jq -r '.volta.yarn' package.json)
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "yarn-version=$YARN_VERSION" >> $GITHUB_OUTPUT
       - uses: volta-cli/action@v4
         with:
-          node-version: '24.13.0'
-          yarn-version: '4.9.2'
+          node-version: ${{ steps.versions.outputs.node-version }}
+          yarn-version: ${{ steps.versions.outputs.yarn-version }}
       - name: Install dependencies
         run: yarn install --immutable
       - name: Run tests
