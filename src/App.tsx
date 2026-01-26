@@ -192,7 +192,7 @@ export default function App() {
             onImageLoad={handleImageLoad}
             onImageError={handleImageError}
           />
-          {/** @todo Move inline CSS into a styled component */}
+          {/** @todo Move inline static CSS into App > CodeSnippet */}
           <CodeSnippet
             src={imageFileName}
             objectPosition={objectPosition}

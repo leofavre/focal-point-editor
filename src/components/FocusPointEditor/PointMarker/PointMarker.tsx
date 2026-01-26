@@ -1,11 +1,44 @@
+import styled from "@emotion/styled";
 import type { PointMarkerProps } from "./types";
 
-export function PointMarker({ style }: PointMarkerProps) {
+const PointerMarkerWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  transition: opacity 0.25s ease;
+  z-index: 2;
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  svg:nth-of-type(1) {
+    transform: translate(-49%, -49%);
+    opacity: 0.65;
+    color: #fff;
+  }
+
+  svg:nth-of-type(2) {
+    transform: translate(-50%, -50%);
+    color: #111827;
+  }
+`;
+
+export function PointMarker({ ...rest }: PointMarkerProps) {
   return (
-    <div className="point-marker" style={style}>
+    <PointerMarkerWrapper {...rest}>
       <PointMarkerIcon />
       <PointMarkerIcon />
-    </div>
+    </PointerMarkerWrapper>
   );
 }
 

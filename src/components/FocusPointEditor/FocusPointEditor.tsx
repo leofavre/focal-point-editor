@@ -1,13 +1,15 @@
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { clamp, toPercentage } from "../../helpers";
-import { PointMarker } from "../PointMarker/PointMarker";
+import { ClippedImage } from "./ClippedImage/ClippedImage";
 import { CURSOR_MAP } from "./constants";
+import { GhostImage } from "./GhostImage/GhostImage";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
 import { detectProportionalImageHeight } from "./helpers/detectRelativeImageSize";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerCoordinatesFromEvent";
 import { scaleDimensionsToContainRect } from "./helpers/scaleDimensionToContainRect";
+import { PointMarker } from "./PointMarker/PointMarker";
 import type { Coordinates, FocusPointEditorProps, ImageDimensionDelta } from "./types";
 
 const DELTA_DIMENSION_THRESHOLD_PX = 1;
@@ -139,7 +141,7 @@ export function FocusPointEditor({
     <div className="focus-point-editor">
       <div
         className="container"
-        style={{
+        css={{
           aspectRatio: aspectRatio ?? "auto",
           height: `${detectProportionalImageHeight({ aspectRatio }) ?? 0}cqmin`,
           cursor,
@@ -148,40 +150,36 @@ export function FocusPointEditor({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        <div className="image-wrapper">
-          <img
-            ref={ref}
-            src={imageUrl}
-            style={{ objectPosition }}
-            onLoad={onImageLoad}
-            onError={onImageError}
-            aria-label="Image uploaded by the user"
-          />
-        </div>
+        <ClippedImage
+          ref={ref}
+          imageUrl={imageUrl}
+          objectPosition={objectPosition}
+          onImageLoad={onImageLoad}
+          onImageError={onImageError}
+        />
+        <GhostImage
+          css={{
+            ...(imageDimensionDelta?.changedDimension === "width"
+              ? { height: "100%" }
+              : { width: "100%" }),
+            transform: `translate(
+              ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
+              ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
+            )`,
+            aspectRatio: naturalAspectRatio ?? "auto",
+            backgroundImage: `url(${imageUrl})`,
+            opacity: showGhostImage ? 0.25 : 0,
+            cursor,
+          }}
+          aria-hidden={!showGhostImage}
+        />
         <PointMarker
-          style={{
+          css={{
             opacity: showPointMarker ? 1 : 0,
             left: `${objectPositionX}%`,
             top: `${objectPositionY}%`,
           }}
           aria-hidden={!showPointMarker}
-        />
-        <div
-          className="ghost"
-          style={{
-            ...(imageDimensionDelta?.changedDimension === "width"
-              ? { height: "100%" }
-              : { width: "100%" }),
-            aspectRatio: naturalAspectRatio ?? "auto",
-            // backgroundImage: `url(${imageUrl})`,
-            opacity: showGhostImage ? 0.25 : 0,
-            transform: `translate(
-                ${(objectPositionX ?? 0) * ((imageDimensionDelta?.width.percent ?? 0) / -100)}%,
-                ${(objectPositionY ?? 0) * ((imageDimensionDelta?.height.percent ?? 0) / -100)}%
-              )`,
-            cursor,
-          }}
-          aria-hidden={!showGhostImage}
         />
       </div>
     </div>
