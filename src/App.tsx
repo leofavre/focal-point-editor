@@ -78,7 +78,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app">
+    <>
       {!imageUrl ? (
         <ImageUploader onFormSubmit={handleFormSubmit} onImageChange={handleFileChange} />
       ) : (
@@ -103,6 +103,6 @@ export default function App() {
           <CodeSnippet src={imageFileName} objectPosition={objectPosition} />
         </>
       )}
-    </div>
+    </>
   );
 }
