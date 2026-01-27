@@ -7,7 +7,7 @@ const AspectRatioRulerList = styled.ul`
   margin: 0;
   align-items: flex-start;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: #94a3b8;
 `;
 
 const AspectRatioRulerItem = styled.li`
@@ -30,8 +30,8 @@ const AspectRatioRulerLabel = styled.span`
     margin-bottom: 0.25rem;
     display: inline-block;
     width: 1px;
-    height: 0.75rem;
-    background-color: #6b7280;
+    height: 1.5rem;
+    background-color: #94a3b8;
     vertical-align: middle;
   }
 `;
