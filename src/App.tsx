@@ -19,7 +19,6 @@ import { PointMarkerToggleIcon } from "./icons/PointMarkerToggleIcon";
  * - Persist image and objectPosition locally (needs IndexedDB)
  * - Drag image to upload
  * - Implement arrow/tab keyboard interactions
- * - Bring back snapping to the slider
  * - Melhorize™ UI
  *
  * ### Advanced functionality

@@ -110,6 +110,8 @@ const Slider = styled.div`
   }
 `;
 
+const PRECISION = 100_000;
+
 export function AspectRatioControl({
   ref,
   aspectRatio,
@@ -138,7 +140,7 @@ export function AspectRatioControl({
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const currentPosition = parseFloat(event.target.value);
+      const currentPosition = parseFloat(event.target.value) / PRECISION;
       const aspectRatio = toAspectRatio(currentPosition, minValue, maxValue);
 
       stableOnAspectRatioChange(aspectRatio);
@@ -151,16 +153,16 @@ export function AspectRatioControl({
       <input
         ref={ref}
         type="range"
-        step={0.001}
-        min={minPosition}
-        max={maxPosition}
-        value={currentPosition}
+        step={1}
+        min={Math.round(minPosition * PRECISION)}
+        max={Math.round(maxPosition * PRECISION)}
+        value={Math.round(currentPosition * PRECISION)}
         onChange={handleChange}
         list="aspect-ratio"
       />
       <datalist id="aspect-ratio">
-        {aspectRatioList.map(({ value }) => (
-          <option key={value} value={value} />
+        {aspectRatioList.map(({ position }) => (
+          <option key={position} value={Math.round(position * PRECISION)} />
         ))}
       </datalist>
     </Slider>
