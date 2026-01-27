@@ -19,3 +19,11 @@ export function toPreciseAspectRatio(aspectRatio: number) {
 export function toAspectRatio(preciseAspectRatio: number) {
   return preciseAspectRatio / ASPECT_RATIO_PRECISION;
 }
+
+export function toLogPosition(ratio: number, min: number, max: number) {
+  return (Math.log(ratio) - Math.log(min)) / (Math.log(max) - Math.log(min));
+}
+
+export function toAspectRatioMoo(position: number, min: number, max: number) {
+  return Math.exp(position * (Math.log(max) - Math.log(min)) + Math.log(min));
+}

@@ -17,6 +17,7 @@ const ASPECT_RATIO_MAP: Record<string, number> = {
   "7:5": 7 / 5,
   "5:4": 5 / 4,
   "16:9": 16 / 9,
+  "4:1": 4 / 1,
 };
 
 export const ASPECT_RATIO_LIST: AspectRatio[] = Object.entries(ASPECT_RATIO_MAP)
