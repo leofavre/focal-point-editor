@@ -29,8 +29,8 @@ const Slider = styled.div`
       background: linear-gradient(
         to right,
         #94a3b8 0%,
-        #94a3b8 var(--original-position),
-        #3b82f6 var(--original-position),
+        #94a3b8 calc(8px + (100% - 16px) * var(--original-position)),
+        #3b82f6 calc(8px + (100% - 16px) * var(--original-position)),
         #3b82f6 100%
       );
       border-radius: 1px;
@@ -43,8 +43,8 @@ const Slider = styled.div`
       background: linear-gradient(
         to right,
         #94a3b8 0%,
-        #94a3b8 var(--original-position),
-        #3b82f6 var(--original-position),
+        #94a3b8 calc(8px + (100% - 16px) * var(--original-position)),
+        #3b82f6 calc(8px + (100% - 16px) * var(--original-position)),
         #3b82f6 100%
       );
       border-radius: 1px;
@@ -129,7 +129,7 @@ export function AspectRatioControl({
   }, [aspectRatioList]);
 
   return (
-    <Slider {...rest} css={{ "--original-position": `${originalPosition}%` }}>
+    <Slider {...rest} css={{ "--original-position": originalPosition / 100 }}>
       <input
         ref={ref}
         type="range"
