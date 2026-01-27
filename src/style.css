@@ -23,7 +23,7 @@ body {
   height: calc(100vh - 2rem);
 }
 
-.editor-toggles {
+.app-top-right {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
