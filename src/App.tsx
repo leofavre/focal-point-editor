@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
@@ -9,6 +10,19 @@ import { ImageUploader } from "./components/ImageUploader/ImageUploader";
 import { ToggleButton } from "./components/ToggleButton/ToggleButton";
 import { GhostImageToggleIcon } from "./icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "./icons/PointMarkerToggleIcon";
+
+const AppTopRight = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+`;
 
 /**
  * @todo
@@ -96,7 +110,7 @@ export default function App() {
         />
       ) : (
         <>
-          <div className="app-top-right">
+          <AppTopRight>
             <ToggleButton
               toggled={showPointMarker}
               onToggle={() => setShowPointMarker((prev) => !prev)}
@@ -111,7 +125,7 @@ export default function App() {
               titleOff="Show ghost image"
               icon={<GhostImageToggleIcon />}
             />
-          </div>
+          </AppTopRight>
           <FocusPointEditor
             ref={imageRef}
             imageUrl={imageUrl}
@@ -138,20 +152,18 @@ export default function App() {
               zIndex: 2,
             }}
           />
-          {aspectRatio && (
-            <AspectRatioSlider
-              aspectRatio={aspectRatio}
-              aspectRatioList={aspectRatioList}
-              onAspectRatioChange={setAspectRatio}
-              /** @todo Move inline static CSS into App > AspectRatioSlider */
-              css={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                maxWidth: 1200,
-                zIndex: 1,
-              }}
-            />
-          )}
+          <AspectRatioSlider
+            aspectRatio={aspectRatio}
+            aspectRatioList={aspectRatioList}
+            onAspectRatioChange={setAspectRatio}
+            /** @todo Move inline static CSS into App > AspectRatioSlider */
+            css={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              maxWidth: 1200,
+              zIndex: 1,
+            }}
+          />
         </>
       )}
     </>

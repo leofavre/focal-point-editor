@@ -45,7 +45,7 @@ export function AspectRatioControl({
         step={1}
         min={aspectRatioList.at(0)?.preciseValue}
         max={aspectRatioList.at(-1)?.preciseValue}
-        value={toPreciseAspectRatio(aspectRatio)}
+        value={toPreciseAspectRatio(aspectRatio ?? 1)}
         onChange={handleChange}
         list="aspect-ratio"
       />

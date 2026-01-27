@@ -13,7 +13,7 @@ body {
   overflow: hidden;
 }
 
-.app {
+.grid {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr min-content 90px;
@@ -21,17 +21,4 @@ body {
   margin: 1rem;
   width: calc(100vw - 2rem);
   height: calc(100vh - 2rem);
-}
-
-.app-top-right {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 10;
-  display: flex;
-  gap: 0.25rem;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: none;
 }
