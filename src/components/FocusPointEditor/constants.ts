@@ -1,6 +1,6 @@
 import type { ObjectPositionString } from "../../types";
 
-export const IMAGE_AREA_RATIO = 2 / 5;
+export const IMAGE_AREA_RATIO = 3 / 5;
 
 export const CURSOR_MAP = {
   width: "col-resize",

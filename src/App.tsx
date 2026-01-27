@@ -148,7 +148,7 @@ export default function App() {
               /** @todo Move inline static CSS into App > CodeSnippet */
               gridRow: "2",
               gridColumn: "2",
-              margin: "auto",
+              margin: "auto auto 0",
               maxWidth: 550,
               zIndex: 2,
               /** @todo Keep this style here */
