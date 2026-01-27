@@ -16,15 +16,11 @@ import { PointMarkerToggleIcon } from "./icons/PointMarkerToggleIcon";
  *
  * ### Basic functionality
  *
- * - Persist image locally (needs IndexedDB)
- * - Allow user to upload another image
- * - Allow user to see and copy the generated code snippet
- * - Refine UI/UX
- *   - Slider ruler
- *   - Drag image to upload
- *   - Mark commonly used aspect ratios on slider
- *   - Mark original aspect ratio on slider
- *   - Implement arrow/tab keyboard interactions
+ * - Persist image and objectPosition locally (needs IndexedDB)
+ * - Drag image to upload
+ * - Implement arrow/tab keyboard interactions
+ * - Bring back snapping to the slider
+ * - Melhorize™ UI
  *
  * ### Advanced functionality
  *
