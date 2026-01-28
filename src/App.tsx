@@ -1,6 +1,5 @@
 import type { ChangeEvent, FormEvent, SyntheticEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import useDebouncedEffect from "use-debounced-effect";
+import { useCallback, useRef, useState } from "react";
 import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "./components/AspectRatioSlider/hooks";
 import { CodeSnippet } from "./components/CodeSnippet/CodeSnippet";
@@ -11,24 +10,12 @@ import { ToggleButton } from "./components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "./icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "./icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "./icons/PointMarkerToggleIcon";
-import {
-  deleteAllImages,
-  getCurrentImage,
-  getUIState,
-  initDB,
-  saveImageToDB,
-  saveUIState,
-  updateImageInDB,
-  updateUIState,
-} from "./services/database";
-import type { StoredImage, StoredUI } from "./types";
 
 /**
  * @todo
  *
  * ### Basic functionality
  *
- * - The app should not crash if the database is not available.
  * - Different tabs should work independently.
  * - Document functions, hooks and components
  * - Drag image to upload
@@ -49,13 +36,9 @@ import type { StoredImage, StoredUI } from "./types";
  * - Maybe make a native custom element?
  */
 export default function App() {
-  const isInitializingRef = useRef(true);
-  const [isDBInitialized, setIsDBInitialized] = useState(false);
-
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageFileName, setImageFileName] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageId, setImageId] = useState<string | null>(null);
   const [objectPosition, setObjectPosition] = useState(DEFAULT_OBJECT_POSITION);
   const [naturalAspectRatio, setNaturalAspectRatio] = useState<number>();
 
@@ -65,95 +48,6 @@ export default function App() {
   const [showCodeSnippet, setShowCodeSnippet] = useState(false);
 
   const aspectRatioList = useAspectRatioList(naturalAspectRatio);
-
-  // Initialize database and load current image on mount
-  useEffect(() => {
-    let isMounted = true;
-
-    async function initializeApp() {
-      try {
-        await initDB();
-        if (!isMounted) return;
-
-        setIsDBInitialized(true);
-        const currentImage = await getCurrentImage();
-        if (!isMounted) return;
-
-        // Load UI state from database
-        const uiState = await getUIState();
-        if (!isMounted) return;
-
-        let calculatedNaturalAspectRatio: number | undefined;
-
-        if (currentImage) {
-          setImageId(currentImage.id);
-          setImageFileName(currentImage.name);
-          setImageUrl(currentImage.data);
-
-          // Ensure objectPosition is always set (handle old images without this field)
-          const objectPosition = currentImage.objectPosition ?? DEFAULT_OBJECT_POSITION;
-          setObjectPosition(objectPosition);
-
-          // Calculate naturalAspectRatio from the image
-          const img = new Image();
-          img.src = currentImage.data;
-          await new Promise<void>((resolve, reject) => {
-            img.onload = () => resolve();
-            img.onerror = reject;
-          });
-
-          calculatedNaturalAspectRatio = img.naturalWidth / img.naturalHeight;
-          setNaturalAspectRatio(calculatedNaturalAspectRatio);
-
-          // If objectPosition was missing, update the database with default
-          if (currentImage.objectPosition == null) {
-            await updateImageInDB(currentImage.id, {
-              objectPosition: DEFAULT_OBJECT_POSITION,
-            }).catch((error) => {
-              console.error("Error updating image with defaults:", error);
-            });
-          }
-        }
-
-        // Restore UI state from database or use defaults
-        if (uiState) {
-          setAspectRatio(uiState.aspectRatio);
-          setShowPointMarker(uiState.showPointMarker);
-          setShowGhostImage(uiState.showGhostImage);
-          setShowCodeSnippet(uiState.showCodeSnippet);
-        } else {
-          // No UI state exists, create default one
-          const defaultAspectRatio = calculatedNaturalAspectRatio ?? 1;
-
-          const defaultUIState: StoredUI = {
-            id: "current",
-            aspectRatio: defaultAspectRatio,
-            showPointMarker: true,
-            showGhostImage: true,
-            showCodeSnippet: false,
-          };
-
-          await saveUIState(defaultUIState).catch((error) => {
-            console.error("Error saving default UI state:", error);
-          });
-
-          setAspectRatio(defaultAspectRatio);
-        }
-
-        // Mark initialization as complete
-        isInitializingRef.current = false;
-      } catch (error) {
-        console.error("Error initializing database:", error);
-        isInitializingRef.current = false;
-      }
-    }
-
-    initializeApp();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   // Convert file to base64
   const fileToBase64 = useCallback((file: File): Promise<string> => {
@@ -171,11 +65,6 @@ export default function App() {
 
       if (!file?.type.startsWith("image/")) return;
 
-      if (!isDBInitialized) {
-        console.error("Database not initialized");
-        return;
-      }
-
       try {
         // Convert file to base64
         const base64 = await fileToBase64(file);
@@ -190,56 +79,17 @@ export default function App() {
 
         const naturalAspectRatio = img.naturalWidth / img.naturalHeight;
 
-        // Create StoredImage object
-        const imageData: StoredImage = {
-          id: `${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-          name: file.name,
-          data: base64,
-          size: file.size,
-          type: file.type,
-          timestamp: Date.now(),
-          objectPosition: DEFAULT_OBJECT_POSITION,
-        };
-
-        // Delete all existing images (keep only one image in database)
-        await deleteAllImages();
-
-        // Save new image to database
-        await saveImageToDB(imageData);
-
-        // Get current UI state to preserve showPointMarker, showGhostImage, showCodeSnippet
-        const currentUIState = await getUIState();
-
-        // Update UI state: reset aspectRatio to naturalAspectRatio, preserve other UI preferences
-        const updatedUIState: StoredUI = {
-          id: "current",
-          aspectRatio: naturalAspectRatio,
-          showPointMarker: currentUIState?.showPointMarker ?? true,
-          showGhostImage: currentUIState?.showGhostImage ?? true,
-          showCodeSnippet: currentUIState?.showCodeSnippet ?? false,
-        };
-
-        await saveUIState(updatedUIState);
-
         // Update React state
-        setImageId(imageData.id);
-        setImageFileName(imageData.name);
-        setImageUrl(imageData.data);
+        setImageFileName(file.name);
+        setImageUrl(base64);
         setNaturalAspectRatio(naturalAspectRatio);
-        setObjectPosition(imageData.objectPosition);
+        setObjectPosition(DEFAULT_OBJECT_POSITION);
         setAspectRatio(naturalAspectRatio);
-
-        // Preserve UI preferences instead of resetting
-        if (currentUIState) {
-          setShowPointMarker(currentUIState.showPointMarker);
-          setShowGhostImage(currentUIState.showGhostImage);
-          setShowCodeSnippet(currentUIState.showCodeSnippet);
-        }
       } catch (error) {
         console.error("Error uploading image:", error);
       }
     },
-    [fileToBase64, isDBInitialized],
+    [fileToBase64],
   );
 
   const handleImageLoad = useCallback(
@@ -248,7 +98,7 @@ export default function App() {
       const naturalAspectRatio = img.naturalWidth / img.naturalHeight;
 
       setNaturalAspectRatio(naturalAspectRatio);
-      // Only set aspectRatio if it's not already set (from database)
+      // Only set aspectRatio if it's not already set
       if (aspectRatio === undefined) {
         setAspectRatio(naturalAspectRatio);
       }
@@ -266,69 +116,6 @@ export default function App() {
   const handleFormSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   }, []);
-
-  // Debounced update for aspectRatio
-  useDebouncedEffect(
-    () => {
-      if (!isDBInitialized || aspectRatio == null) {
-        return;
-      }
-
-      updateUIState({ aspectRatio }).catch((error) => {
-        console.error("Error updating aspectRatio in database:", error);
-      });
-    },
-    1000,
-    [aspectRatio, isDBInitialized],
-  );
-
-  // Debounced update for objectPosition
-  useDebouncedEffect(
-    () => {
-      if (!isDBInitialized || !imageId) {
-        return;
-      }
-
-      updateImageInDB(imageId, { objectPosition }).catch((error) => {
-        console.error("Error updating objectPosition in database:", error);
-      });
-    },
-    1000,
-    [objectPosition, imageId, isDBInitialized],
-  );
-
-  // Persist showPointMarker changes
-  useEffect(() => {
-    if (!isDBInitialized || isInitializingRef.current) {
-      return;
-    }
-
-    updateUIState({ showPointMarker }).catch((error) => {
-      console.error("Error updating showPointMarker in database:", error);
-    });
-  }, [showPointMarker, isDBInitialized]);
-
-  // Persist showGhostImage changes
-  useEffect(() => {
-    if (!isDBInitialized || isInitializingRef.current) {
-      return;
-    }
-
-    updateUIState({ showGhostImage }).catch((error) => {
-      console.error("Error updating showGhostImage in database:", error);
-    });
-  }, [showGhostImage, isDBInitialized]);
-
-  // Persist showCodeSnippet changes
-  useEffect(() => {
-    if (!isDBInitialized || isInitializingRef.current) {
-      return;
-    }
-
-    updateUIState({ showCodeSnippet }).catch((error) => {
-      console.error("Error updating showCodeSnippet in database:", error);
-    });
-  }, [showCodeSnippet, isDBInitialized]);
 
   return (
     <>
