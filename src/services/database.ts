@@ -1,8 +1,9 @@
-import type { StoredImage } from "../types";
+import type { StoredImage, StoredUI } from "../types";
 
-const DB_NAME = "ImageManagerDB";
+const DB_NAME = "FocusManagerDB";
 const DB_VERSION = 1;
 const STORE_NAME = "images";
+const UI_STORE_NAME = "uiState";
 
 let db: IDBDatabase | null = null;
 
@@ -17,6 +18,9 @@ export function initDB(): Promise<IDBDatabase> {
       if (!database.objectStoreNames.contains(STORE_NAME)) {
         const objectStore = database.createObjectStore(STORE_NAME, { keyPath: "id" });
         objectStore.createIndex("timestamp", "timestamp", { unique: false });
+      }
+      if (!database.objectStoreNames.contains(UI_STORE_NAME)) {
+        database.createObjectStore(UI_STORE_NAME, { keyPath: "id" });
       }
     };
 
@@ -157,5 +161,91 @@ export function updateImageInDB(id: string, updates: Partial<StoredImage>): Prom
     };
 
     getRequest.onerror = () => reject(getRequest.error);
+  });
+}
+
+export function getUIState(): Promise<StoredUI | null> {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("Database not initialized"));
+      return;
+    }
+
+    const transaction = db.transaction([UI_STORE_NAME], "readonly");
+    const store = transaction.objectStore(UI_STORE_NAME);
+    const request = store.get("current");
+
+    request.onsuccess = () => {
+      resolve(request.result || null);
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export function saveUIState(uiState: StoredUI): Promise<IDBValidKey> {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("Database not initialized"));
+      return;
+    }
+
+    const transaction = db.transaction([UI_STORE_NAME], "readwrite");
+    const store = transaction.objectStore(UI_STORE_NAME);
+    const request = store.put(uiState);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export function updateUIState(updates: Partial<StoredUI>): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("Database not initialized"));
+      return;
+    }
+
+    const transaction = db.transaction([UI_STORE_NAME], "readwrite");
+    const store = transaction.objectStore(UI_STORE_NAME);
+    const getRequest = store.get("current");
+
+    getRequest.onsuccess = () => {
+      const existingUIState = getRequest.result;
+
+      // If UI state doesn't exist, create it with defaults
+      const uiStateToSave: StoredUI = existingUIState
+        ? { ...existingUIState, ...updates }
+        : {
+            id: "current",
+            aspectRatio: 1,
+            showPointMarker: true,
+            showGhostImage: true,
+            showCodeSnippet: false,
+            ...updates,
+          };
+
+      const putRequest = store.put(uiStateToSave);
+
+      putRequest.onsuccess = () => resolve();
+      putRequest.onerror = () => reject(putRequest.error);
+    };
+
+    getRequest.onerror = () => reject(getRequest.error);
+  });
+}
+
+export function clearUIState(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      reject(new Error("Database not initialized"));
+      return;
+    }
+
+    const transaction = db.transaction([UI_STORE_NAME], "readwrite");
+    const store = transaction.objectStore(UI_STORE_NAME);
+    const request = store.clear();
+
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
   });
 }

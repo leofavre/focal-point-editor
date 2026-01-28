@@ -9,6 +9,13 @@ export type StoredImage = {
   size: number;
   type: string;
   timestamp: number;
-  aspectRatio: number;
   objectPosition: ObjectPositionString;
+};
+
+export type StoredUI = {
+  id: "current";
+  aspectRatio: number;
+  showPointMarker: boolean;
+  showGhostImage: boolean;
+  showCodeSnippet: boolean;
 };
