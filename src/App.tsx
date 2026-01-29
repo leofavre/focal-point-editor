@@ -221,7 +221,6 @@ export default function App() {
             data-component="CodeSnippet"
             css={{
               opacity: showCodeSnippet ? 1 : 0,
-              transition: "opacity 0.15s ease",
               pointerEvents: showCodeSnippet ? "auto" : "none",
             }}
           />

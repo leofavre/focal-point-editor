@@ -10,6 +10,7 @@ export const Code = styled(CodeBlock.Code)`
   padding: 1.5rem;
   border-radius: 0.75rem;
   overflow: auto;
+  transition: opacity 0.15s ease;
 `;
 
 export const Line = styled.div`
