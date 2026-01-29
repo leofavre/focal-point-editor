@@ -1,4 +1,4 @@
-import type { ObjectPositionObject, ObjectPositionString } from "../../types";
+import type { ObjectPositionObject, ObjectPositionString } from "../../../types";
 import { clamp } from "./clamp";
 import { roundWithTwoDecimals } from "./roundWithTwoDecimals";
 

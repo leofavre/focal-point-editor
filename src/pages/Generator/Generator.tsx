@@ -1,18 +1,18 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
-import { DEFAULT_OBJECT_POSITION } from "../../components/FocusPointEditor/constants";
 import { FocusPointEditor } from "../../components/FocusPointEditor/FocusPointEditor";
 import { ImageUploader } from "../../components/ImageUploader/ImageUploader";
 import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
-import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
-import { usePersistedUIState } from "./hooks/usePersistedUIState";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
+import { DEFAULT_OBJECT_POSITION } from "./constants";
+import { GeneratorGrid, ToggleBar } from "./Generator.styled";
+import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
+import { usePersistedUIState } from "./hooks/usePersistedUIState";
 
 const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
