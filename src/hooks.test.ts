@@ -273,6 +273,7 @@ describe("usePersistedUIState", () => {
     // Change id
     rerender({ id: "id2", defaultValue: "default" });
 
+    // Should not have reloaded
     expect(result.current[0]).toBe("value1");
     expect(mockGetByID).toHaveBeenCalledWith("id1");
     expect(mockGetByID).toHaveBeenCalledWith("id1");
