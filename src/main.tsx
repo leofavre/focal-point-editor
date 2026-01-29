@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { initDB } from "react-indexed-db-hook";
-import App from "./App";
+import Generator from "./pages/Generator/Generator";
 
 const rootElement = document.getElementById("app");
 
@@ -31,7 +31,7 @@ initDB(DBConfig);
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-      <App />
+      <Generator />
     </React.StrictMode>,
   );
 }

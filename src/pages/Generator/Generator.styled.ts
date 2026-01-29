@@ -5,7 +5,7 @@ export const ToggleBar = styled.div`
   gap: 0.25rem;
 `;
 
-export const AppGrid = styled.div`
+export const GeneratorGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr minmax(20rem, 75rem) 1fr;
   grid-template-rows: min-content 1fr 5.625rem;
@@ -25,7 +25,7 @@ export const AppGrid = styled.div`
     grid-column: 2;
     margin-left: auto;
   }
-  
+
   [data-component="FocusPointEditor"] {
     grid-row: 2;
     grid-column: 2;

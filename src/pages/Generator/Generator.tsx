@@ -1,18 +1,18 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppGrid, ToggleBar } from "./App.styled";
-import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
-import { useAspectRatioList } from "./components/AspectRatioSlider/hooks/useAspectRatioList";
-import { CodeSnippet } from "./components/CodeSnippet/CodeSnippet";
-import { DEFAULT_OBJECT_POSITION } from "./components/FocusPointEditor/constants";
-import { FocusPointEditor } from "./components/FocusPointEditor/FocusPointEditor";
-import { ImageUploader } from "./components/ImageUploader/ImageUploader";
-import { ToggleButton } from "./components/ToggleButton/ToggleButton";
+import { GeneratorGrid, ToggleBar } from "./Generator.styled";
+import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
+import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
+import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
+import { DEFAULT_OBJECT_POSITION } from "../../components/FocusPointEditor/constants";
+import { FocusPointEditor } from "../../components/FocusPointEditor/FocusPointEditor";
+import { ImageUploader } from "../../components/ImageUploader/ImageUploader";
+import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedUIState } from "./hooks/usePersistedUIState";
-import { CodeSnippetToggleIcon } from "./icons/CodeSnippetToggleIcon";
-import { GhostImageToggleIcon } from "./icons/GhostImageToggleIcon";
-import { PointMarkerToggleIcon } from "./icons/PointMarkerToggleIcon";
+import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
+import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
+import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 
 const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
@@ -52,7 +52,7 @@ const DEFAULT_ASPECT_RATIO = 1;
  * - Maybe make a React component?.
  * - Maybe make a native custom element?.
  */
-export default function App() {
+export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const imageRef = useRef<HTMLImageElement>(null);
@@ -166,7 +166,7 @@ export default function App() {
   }, [setShowCodeSnippet, setShowPointMarker, setShowGhostImage]);
 
   return (
-    <AppGrid>
+    <GeneratorGrid>
       <ImageUploader
         ref={fileInputRef}
         onFormSubmit={handleFormSubmit}
@@ -237,6 +237,6 @@ export default function App() {
           )}
         </>
       )}
-    </AppGrid>
+    </GeneratorGrid>
   );
 }
