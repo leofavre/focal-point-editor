@@ -1,5 +1,6 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useCallback, useRef, useState } from "react";
+import { AppGrid, ToggleBar } from "./App.styled";
 import { AspectRatioSlider } from "./components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "./components/AspectRatioSlider/hooks";
 import { CodeSnippet } from "./components/CodeSnippet/CodeSnippet";
@@ -130,20 +131,13 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <AppGrid>
       <ImageUploader
         onFormSubmit={handleFormSubmit}
         onImageChange={handleFileChange}
-        css={{ gridRow: "1", gridColumn: "2", marginRight: "auto" }}
+        data-component="ImageUploader"
       />
-      <div
-        css={[
-          /** @todo Move inline static CSS into App > Moo */
-          { gridRow: "1", gridColumn: "2", marginLeft: "auto" },
-          /** @todo Move inline static CSS into Moo */
-          { display: "flex", gap: "0.25rem" },
-        ]}
-      >
+      <ToggleBar data-component="ToggleBar">
         {showPointMarker != null && (
           <ToggleButton
             toggled={showPointMarker}
@@ -171,7 +165,7 @@ export default function App() {
             icon={<CodeSnippetToggleIcon />}
           />
         )}
-      </div>
+      </ToggleBar>
       {imageUrl && (
         <>
           {aspectRatio != null && imageAspectRatio != null && (
@@ -185,25 +179,14 @@ export default function App() {
               showGhostImage={showGhostImage ?? false}
               onObjectPositionChange={setObjectPosition}
               onImageError={handleImageError}
-              /** @todo Move inline static CSS into App > FocusPointEditor */
-              css={{
-                gridRow: "2",
-                gridColumn: "2",
-                zIndex: 0,
-              }}
+              data-component="FocusPointEditor"
             />
           )}
           <CodeSnippet
             src={imageFileName}
             objectPosition={objectPosition}
+            data-component="CodeSnippet"
             css={{
-              /** @todo Move inline static CSS into App > CodeSnippet */
-              gridRow: "2",
-              gridColumn: "1 / 4",
-              margin: "auto 0 auto auto",
-              maxWidth: 650,
-              zIndex: 2,
-              /** @todo Keep this style here */
               opacity: showCodeSnippet ? 1 : 0,
               transition: "opacity 0.15s ease",
               pointerEvents: showCodeSnippet ? "auto" : "none",
@@ -214,19 +197,11 @@ export default function App() {
               aspectRatio={aspectRatio}
               aspectRatioList={aspectRatioList}
               onAspectRatioChange={setAspectRatio}
-              /** @todo Move inline static CSS into App > AspectRatioSlider */
-              css={{
-                gridRow: "3",
-                gridColumn: "2",
-                marginLeft: "auto",
-                marginRight: "auto",
-                maxWidth: 1200,
-                zIndex: 1,
-              }}
+              data-component="AspectRatioSlider"
             />
           )}
         </>
       )}
-    </>
+    </AppGrid>
   );
 }
