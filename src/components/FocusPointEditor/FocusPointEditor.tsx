@@ -1,17 +1,21 @@
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { ClippedImage } from "./ClippedImage/ClippedImage";
-import { clamp } from "./helpers/clamp";
-import { CURSOR_MAP } from "./constants";
 import { FocusPointEditorWrapper } from "./FocusPointEditorWrapper/FocusPointEditorWrapper";
 import { GhostImage } from "./GhostImage/GhostImage";
+import { clamp } from "./helpers/clamp";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerCoordinatesFromEvent";
 import { scaleDimensionsToContainRect } from "./helpers/scaleDimensionToContainRect";
-import { PointMarker } from "./PointMarker/PointMarker";
 import { toPercentage } from "./helpers/toPercentage";
+import { PointMarker } from "./PointMarker/PointMarker";
 import type { Coordinates, FocusPointEditorProps, ImageDimensionDelta } from "./types";
+
+const CURSOR_MAP = {
+  width: "col-resize",
+  height: "row-resize",
+} as const;
 
 const DELTA_DIMENSION_THRESHOLD_PX = 1;
 

@@ -9,7 +9,7 @@ import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
-import { DEFAULT_OBJECT_POSITION } from "./constants";
+import type { ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedUIState } from "./hooks/usePersistedUIState";
@@ -18,6 +18,7 @@ const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
 const DEFAULT_SHOW_CODE_SNIPPET = false;
 const DEFAULT_ASPECT_RATIO = 1;
+const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 
 /**
  * @todo

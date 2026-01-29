@@ -1,11 +1,11 @@
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { useCallback, useEffectEvent, useMemo } from "react";
-import { POSITION_SNAP_THRESHOLD } from "../constants";
 import { toAspectRatio } from "../helpers/toAspectRatio";
 import { toLogPosition } from "../helpers/toLogPosition";
 import { Slider } from "./AspectRatioControl.styled";
 import type { AspectRatioControlProps } from "./types";
 
+const POSITION_SNAP_THRESHOLD = 0.01 / 3;
 const PRECISION = 100_000;
 
 export function AspectRatioControl({

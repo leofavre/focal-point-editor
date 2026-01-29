@@ -1,4 +1,4 @@
-import { IMAGE_AREA_RATIO } from "../constants";
+const IMAGE_AREA_RATIO = 1 / 2;
 
 /**
  * Detects the proportional image height based on the smaller dimension of the container (width or height).
