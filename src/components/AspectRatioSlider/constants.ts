@@ -1,4 +1,4 @@
-import { toLogPosition } from "./helpers";
+import { toLogPosition } from "./helpers/toLogPosition";
 import type { AspectRatio } from "./types";
 
 const ASPECT_RATIO_MAP: Record<string, number> = {

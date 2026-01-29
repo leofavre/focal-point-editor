@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { ASPECT_RATIO_LIST, POSITION_REPLACEMENT_THRESHOLD } from "./constants";
-import { toLogPosition } from "./helpers";
-import type { AspectRatio } from "./types";
+import { ASPECT_RATIO_LIST, POSITION_REPLACEMENT_THRESHOLD } from "../constants";
+import { toLogPosition } from "../helpers/toLogPosition";
+import type { AspectRatio } from "../types";
 
 export function useAspectRatioList(originalAspectRatioValue?: number) {
   return useMemo(() => {
