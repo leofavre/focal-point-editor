@@ -12,7 +12,7 @@ import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 import type { ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
-import { usePersistedUIState } from "./hooks/usePersistedUIState";
+import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 import type { ImageState } from "./types";
 
 const DEFAULT_SHOW_POINT_MARKER = false;
@@ -60,25 +60,22 @@ export default function Generator() {
   const imageRef = useRef<HTMLImageElement>(null);
   const [image, setImage] = useState<ImageState | null>(null);
 
-  const [aspectRatio, setAspectRatio] = usePersistedUIState(
-    {
-      id: "aspectRatio",
-      value: DEFAULT_ASPECT_RATIO,
-    },
+  const [aspectRatio, setAspectRatio] = usePersistedUIRecord(
+    { id: "aspectRatio", value: DEFAULT_ASPECT_RATIO },
     { debounceTimeout: 1000 },
   );
 
-  const [showPointMarker, setShowPointMarker] = usePersistedUIState({
+  const [showPointMarker, setShowPointMarker] = usePersistedUIRecord({
     id: "showPointMarker",
     value: DEFAULT_SHOW_POINT_MARKER,
   });
 
-  const [showGhostImage, setShowGhostImage] = usePersistedUIState({
+  const [showGhostImage, setShowGhostImage] = usePersistedUIRecord({
     id: "showGhostImage",
     value: DEFAULT_SHOW_GHOST_IMAGE,
   });
 
-  const [showCodeSnippet, setShowCodeSnippet] = usePersistedUIState({
+  const [showCodeSnippet, setShowCodeSnippet] = usePersistedUIRecord({
     id: "showCodeSnippet",
     value: DEFAULT_SHOW_CODE_SNIPPET,
   });
@@ -175,6 +172,7 @@ export default function Generator() {
     });
 
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };

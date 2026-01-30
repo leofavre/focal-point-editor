@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { UIRecord, UIState } from "../types";
-import { usePersistedUIState } from "./usePersistedUIState";
+import { usePersistedUIRecord } from "./usePersistedUIRecord";
 
 const mockGetByID = vi.fn();
 const mockUpdate = vi.fn();
@@ -14,12 +14,12 @@ vi.mock("react-indexed-db-hook", () => ({
   })),
 }));
 
-describe("usePersistedUIState", () => {
+describe("usePersistedUIRecord", () => {
   it("returns undefined initially, then value when no persisted value exists", async () => {
     mockGetByID.mockResolvedValue(null);
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "showGhostImage",
         value: false,
       }),
@@ -41,7 +41,7 @@ describe("usePersistedUIState", () => {
     mockGetByID.mockResolvedValue({ id: "showGhostImage", value: persistedValue });
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "showGhostImage",
         value: false,
       }),
@@ -62,7 +62,7 @@ describe("usePersistedUIState", () => {
     mockGetByID.mockRejectedValue(new Error("IndexedDB error"));
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "showGhostImage",
         value: true,
       }),
@@ -82,7 +82,7 @@ describe("usePersistedUIState", () => {
     mockUpdate.mockResolvedValue(undefined);
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "aspectRatio",
         value: 1 / 2,
       }),
@@ -110,7 +110,7 @@ describe("usePersistedUIState", () => {
     mockUpdate.mockResolvedValue(undefined);
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "aspectRatio",
         value: 1 / 2,
       }),
@@ -138,7 +138,7 @@ describe("usePersistedUIState", () => {
     mockUpdate.mockResolvedValue(undefined);
 
     const { result } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "aspectRatio",
         value: 1 / 2,
       }),
@@ -191,14 +191,14 @@ describe("usePersistedUIState", () => {
     });
 
     const { result: result1 } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "aspectRatio",
         value: 1 / 2,
       }),
     );
 
     const { result: result2 } = renderHook(() =>
-      usePersistedUIState({
+      usePersistedUIRecord({
         id: "showGhostImage",
         value: false,
       }),
@@ -230,7 +230,7 @@ describe("usePersistedUIState", () => {
 
     const { result, rerender } = renderHook(
       ({ id, value }: UIRecord<keyof UIState>) =>
-        usePersistedUIState({
+        usePersistedUIRecord({
           id,
           value,
         }),
