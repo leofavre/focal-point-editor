@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from "react";
-import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
@@ -13,6 +13,7 @@ import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 import type { ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
+import { useBlobUrl } from "./hooks/useBlobUrl";
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 import type { ImageRecord, ImageState } from "./types";
@@ -66,7 +67,6 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  */
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const blobUrlRef = useRef<string | null>(null);
   const currentImageIdRef = useRef<string | null>(null);
   const hasLoadedInitialImageRef = useRef(false);
 
@@ -97,10 +97,7 @@ export default function Generator() {
 
   const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
 
-  const revokeCurrentBlobUrl = useEffectEvent(() => {
-    if (blobUrlRef.current == null) return;
-    URL.revokeObjectURL(blobUrlRef.current);
-  });
+  const { createBlobUrl, revokeBlobUrl } = useBlobUrl();
 
   // Load last saved image on init (most recent by createdAt)
   useEffect(() => {
@@ -112,16 +109,15 @@ export default function Generator() {
     const lastRecord = sorted[0];
     if (!lastRecord) return;
     try {
-      revokeCurrentBlobUrl();
-      const blobUrl = URL.createObjectURL(lastRecord.file);
-      blobUrlRef.current = blobUrl;
-      currentImageIdRef.current = lastRecord.id;
+      revokeBlobUrl();
+      const blobUrl = createBlobUrl(lastRecord.file);
       setImage(recordToImageState(lastRecord, blobUrl));
+      currentImageIdRef.current = lastRecord.id;
     } catch (error) {
       console.error("Error loading saved image:", error);
       currentImageIdRef.current = null;
     }
-  }, [images]);
+  }, [images, createBlobUrl, revokeBlobUrl]);
 
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
@@ -133,10 +129,8 @@ export default function Generator() {
       let naturalAspectRatio: number;
 
       try {
-        revokeCurrentBlobUrl();
-
-        blobUrl = URL.createObjectURL(file);
-        blobUrlRef.current = blobUrl;
+        revokeBlobUrl();
+        blobUrl = createBlobUrl(file);
 
         naturalAspectRatio = await new Promise<number>((resolve, reject) => {
           const img = new Image();
@@ -146,8 +140,7 @@ export default function Generator() {
         });
       } catch (error) {
         console.error("Error loading image:", error);
-        revokeCurrentBlobUrl();
-        blobUrlRef.current = null;
+        revokeBlobUrl();
         setImage(null);
         return;
       }
@@ -170,16 +163,14 @@ export default function Generator() {
         currentImageIdRef.current = null;
       }
     },
-    [addImage],
+    [addImage, createBlobUrl, revokeBlobUrl],
   );
 
   const handleImageError = useCallback(() => {
-    revokeCurrentBlobUrl();
-    blobUrlRef.current = null;
-    currentImageIdRef.current = null;
+    revokeBlobUrl();
     setImage(null);
     console.error("Error uploading image");
-  }, []);
+  }, [revokeBlobUrl]);
 
   const handleObjectPositionChange = useCallback((objectPosition: ObjectPositionString) => {
     setImage((prev) => (prev != null ? { ...prev, breakpoints: [{ objectPosition }] } : null));
@@ -191,12 +182,9 @@ export default function Generator() {
 
   useEffect(() => {
     return () => {
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-        blobUrlRef.current = null;
-      }
+      revokeBlobUrl();
     };
-  }, []);
+  }, [revokeBlobUrl]);
 
   useEffect(() => {
     const handleKeyDown = createKeyboardShortcutHandler({
