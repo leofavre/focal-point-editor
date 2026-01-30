@@ -7,7 +7,7 @@ const rootElement = document.getElementById("app");
 
 const DBConfig = {
   name: "FocusPointDB",
-  version: 1,
+  version: 2,
   objectStoresMeta: [
     {
       store: "ui",
@@ -19,6 +19,20 @@ const DBConfig = {
         {
           name: "value",
           keypath: "value",
+          options: { unique: false },
+        },
+      ],
+    },
+    {
+      store: "images",
+      storeConfig: {
+        keyPath: "id",
+        autoIncrement: false,
+      },
+      storeSchema: [
+        {
+          name: "createdAt",
+          keypath: "createdAt",
           options: { unique: false },
         },
       ],
