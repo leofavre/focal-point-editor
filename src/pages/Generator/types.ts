@@ -30,9 +30,7 @@ export type UIState = {
   showCodeSnippet: boolean;
 };
 
-export type UIRecord<T extends keyof UIState> = {
-  [K in T]: { id: K; value: UIState[K] };
-};
+export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
 
 export type GeneratorState = {
   ui: UIState;

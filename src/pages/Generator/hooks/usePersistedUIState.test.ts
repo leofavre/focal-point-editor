@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import type { UIRecord, UIState } from "../types";
 import { usePersistedUIState } from "./usePersistedUIState";
 
 const mockGetByID = vi.fn();
@@ -14,35 +15,35 @@ vi.mock("react-indexed-db-hook", () => ({
 }));
 
 describe("usePersistedUIState", () => {
-  it("returns undefined initially, then defaultValue when no persisted value exists", async () => {
+  it("returns undefined initially, then value when no persisted value exists", async () => {
     mockGetByID.mockResolvedValue(null);
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: false,
+        id: "showGhostImage",
+        value: false,
       }),
     );
 
     // Initially undefined
     expect(result.current[0]).toBeUndefined();
 
-    // After load, should be defaultValue
+    // After load, should be value
     await waitFor(() => {
       expect(result.current[0]).toBe(false);
     });
 
-    expect(mockGetByID).toHaveBeenCalledWith("testId");
+    expect(mockGetByID).toHaveBeenCalledWith("showGhostImage");
   });
 
   it("returns undefined initially, then persisted value when it exists", async () => {
     const persistedValue = true;
-    mockGetByID.mockResolvedValue({ id: "testId", value: persistedValue });
+    mockGetByID.mockResolvedValue({ id: "showGhostImage", value: persistedValue });
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: false,
+        id: "showGhostImage",
+        value: false,
       }),
     );
 
@@ -54,25 +55,25 @@ describe("usePersistedUIState", () => {
       expect(result.current[0]).toBe(persistedValue);
     });
 
-    expect(mockGetByID).toHaveBeenCalledWith("testId");
+    expect(mockGetByID).toHaveBeenCalledWith("showGhostImage");
   });
 
-  it("falls back to defaultValue when IndexedDB getByID fails", async () => {
+  it("falls back to value when IndexedDB getByID fails", async () => {
     mockGetByID.mockRejectedValue(new Error("IndexedDB error"));
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: "default",
+        id: "showGhostImage",
+        value: true,
       }),
     );
 
     // Initially undefined
     expect(result.current[0]).toBeUndefined();
 
-    // After error, should fall back to defaultValue
+    // After error, should fall back to value
     await waitFor(() => {
-      expect(result.current[0]).toBe("default");
+      expect(result.current[0]).toBe(true);
     });
   });
 
@@ -82,25 +83,25 @@ describe("usePersistedUIState", () => {
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: 0,
+        id: "aspectRatio",
+        value: 1 / 2,
       }),
     );
 
     // Wait for initial load
     await waitFor(() => {
-      expect(result.current[0]).toBe(0);
+      expect(result.current[0]).toBe(1 / 2);
     });
 
     // Update the value
     act(() => {
-      result.current[1](5);
+      result.current[1](4 / 5);
     });
 
     // Wait for state update and persistence
     await waitFor(() => {
-      expect(result.current[0]).toBe(5);
-      expect(mockUpdate).toHaveBeenCalledWith({ id: "testId", value: 5 });
+      expect(result.current[0]).toBe(4 / 5);
+      expect(mockUpdate).toHaveBeenCalledWith({ id: "aspectRatio", value: 4 / 5 });
     });
   });
 
@@ -110,47 +111,47 @@ describe("usePersistedUIState", () => {
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: 10,
+        id: "aspectRatio",
+        value: 1 / 2,
       }),
     );
 
     // Wait for initial load
     await waitFor(() => {
-      expect(result.current[0]).toBe(10);
+      expect(result.current[0]).toBe(1 / 2);
     });
 
     // Update using function updater
     act(() => {
-      result.current[1]((prev) => (prev ?? 0) + 5);
+      result.current[1]((prev) => (prev ?? 0) * 5);
     });
 
     // Wait for state update and persistence
     await waitFor(() => {
-      expect(result.current[0]).toBe(15);
-      expect(mockUpdate).toHaveBeenCalledWith({ id: "testId", value: 15 });
+      expect(result.current[0]).toBe((1 / 2) * 5);
+      expect(mockUpdate).toHaveBeenCalledWith({ id: "aspectRatio", value: (1 / 2) * 5 });
     });
   });
 
   it("does not persist when value is set to null or undefined", async () => {
-    mockGetByID.mockResolvedValue({ id: "testId", value: "initial" });
+    mockGetByID.mockResolvedValue({ id: "aspectRatio", value: 2 / 3 });
     mockUpdate.mockResolvedValue(undefined);
 
     const { result } = renderHook(() =>
       usePersistedUIState({
-        id: "testId",
-        defaultValue: "default",
+        id: "aspectRatio",
+        value: 1 / 2,
       }),
     );
 
     // Wait for initial load and initial persistence
     await waitFor(() => {
-      expect(result.current[0]).toBe("initial");
+      expect(result.current[0]).toBe(2 / 3);
     });
 
     // Wait for initial persistence to complete
     await waitFor(() => {
-      expect(mockUpdate).toHaveBeenCalledWith({ id: "testId", value: "initial" });
+      expect(mockUpdate).toHaveBeenCalledWith({ id: "aspectRatio", value: 2 / 3 });
     });
 
     // Set to undefined (should not persist)
@@ -165,117 +166,92 @@ describe("usePersistedUIState", () => {
 
     // Set to final (should persist)
     act(() => {
-      result.current[1]("final");
+      result.current[1](4 / 5);
     });
 
     // Wait for state to update
     await waitFor(() => {
-      expect(result.current[0]).toBe("final");
+      expect(result.current[0]).toBe(4 / 5);
     });
 
     expect(mockUpdate).toHaveBeenCalledTimes(2);
-    expect(mockUpdate).toHaveBeenLastCalledWith({ id: "testId", value: "final" });
-  });
-
-  it("handles different data types correctly", async () => {
-    // Test with number
-    mockGetByID.mockResolvedValue(null);
-    const { result: numberResult } = renderHook(() =>
-      usePersistedUIState({
-        id: "numberId",
-        defaultValue: 42,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(numberResult.current[0]).toBe(42);
-    });
-
-    // Test with string
-    mockGetByID.mockResolvedValue(null);
-    const { result: stringResult } = renderHook(() =>
-      usePersistedUIState({
-        id: "stringId",
-        defaultValue: "test",
-      }),
-    );
-
-    await waitFor(() => {
-      expect(stringResult.current[0]).toBe("test");
-    });
+    expect(mockUpdate).toHaveBeenLastCalledWith({ id: "aspectRatio", value: 4 / 5 });
   });
 
   it("handles multiple instances with different IDs independently", async () => {
     // Mock getByID to return different values based on the ID
     mockGetByID.mockImplementation((id: string) => {
-      if (id === "id1") {
-        return Promise.resolve({ id: "id1", value: "value1" });
+      if (id === "aspectRatio") {
+        return Promise.resolve({ id: "aspectRatio", value: 3 / 4 });
       }
-      if (id === "id2") {
-        return Promise.resolve({ id: "id2", value: "value2" });
+      if (id === "showGhostImage") {
+        return Promise.resolve({ id: "showGhostImage", value: true });
       }
       return Promise.resolve(null);
     });
 
     const { result: result1 } = renderHook(() =>
       usePersistedUIState({
-        id: "id1",
-        defaultValue: "default1",
+        id: "aspectRatio",
+        value: 1 / 2,
       }),
     );
 
     const { result: result2 } = renderHook(() =>
       usePersistedUIState({
-        id: "id2",
-        defaultValue: "default2",
+        id: "showGhostImage",
+        value: false,
       }),
     );
 
     await waitFor(() => {
-      expect(result1.current[0]).toBe("value1");
+      expect(result1.current[0]).toBe(3 / 4);
     });
 
     await waitFor(() => {
-      expect(result2.current[0]).toBe("value2");
+      expect(result2.current[0]).toBe(true);
     });
 
-    expect(mockGetByID).toHaveBeenCalledWith("id1");
-    expect(mockGetByID).toHaveBeenCalledWith("id2");
+    expect(mockGetByID).toHaveBeenCalledWith("aspectRatio");
+    expect(mockGetByID).toHaveBeenCalledWith("showGhostImage");
   });
 
-  it("treats id and defaultValue as stable so does not reload when they change", async () => {
+  it("treats id and value as stable so does not reload when they change", async () => {
     // Mock getByID to return different values based on the ID
     mockGetByID.mockImplementation((id: string) => {
-      if (id === "id1") {
-        return Promise.resolve({ id: "id1", value: "value1" });
+      if (id === "aspectRatio") {
+        return Promise.resolve({ id: "aspectRatio", value: 3 / 4 });
       }
-      if (id === "id2") {
-        return Promise.resolve({ id: "id2", value: "value2" });
+      if (id === "showGhostImage") {
+        return Promise.resolve({ id: "showGhostImage", value: true });
       }
       return Promise.resolve(null);
     });
 
     const { result, rerender } = renderHook(
-      ({ id, defaultValue }) =>
+      ({ id, value }: UIRecord<keyof UIState>) =>
         usePersistedUIState({
           id,
-          defaultValue,
+          value,
         }),
       {
-        initialProps: { id: "id1", defaultValue: "default" },
+        initialProps: { id: "aspectRatio", value: 1 / 2 },
       },
     );
 
     await waitFor(() => {
-      expect(result.current[0]).toBe("value1");
+      expect(result.current[0]).toBe(3 / 4);
     });
 
     // Change id
-    rerender({ id: "id2", defaultValue: "default" });
+    rerender({ id: "showGhostImage", value: false });
 
     // Should not have reloaded
-    expect(result.current[0]).toBe("value1");
-    expect(mockGetByID).toHaveBeenCalledWith("id1");
-    expect(mockGetByID).toHaveBeenCalledWith("id1");
+    await waitFor(() => {
+      expect(result.current[0]).toBe(3 / 4);
+    });
+
+    expect(mockGetByID).toHaveBeenCalledTimes(1);
+    expect(mockGetByID).toHaveBeenLastCalledWith("aspectRatio");
   });
 });

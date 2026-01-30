@@ -60,25 +60,27 @@ export default function Generator() {
   const imageRef = useRef<HTMLImageElement>(null);
   const [image, setImage] = useState<ImageState | null>(null);
 
-  const [aspectRatio, setAspectRatio] = usePersistedUIState({
-    id: "aspectRatio",
-    defaultValue: DEFAULT_ASPECT_RATIO,
-    debounceTimeout: 1000,
-  });
+  const [aspectRatio, setAspectRatio] = usePersistedUIState(
+    {
+      id: "aspectRatio",
+      value: DEFAULT_ASPECT_RATIO,
+    },
+    { debounceTimeout: 1000 },
+  );
 
   const [showPointMarker, setShowPointMarker] = usePersistedUIState({
     id: "showPointMarker",
-    defaultValue: DEFAULT_SHOW_POINT_MARKER,
+    value: DEFAULT_SHOW_POINT_MARKER,
   });
 
   const [showGhostImage, setShowGhostImage] = usePersistedUIState({
     id: "showGhostImage",
-    defaultValue: DEFAULT_SHOW_GHOST_IMAGE,
+    value: DEFAULT_SHOW_GHOST_IMAGE,
   });
 
   const [showCodeSnippet, setShowCodeSnippet] = usePersistedUIState({
     id: "showCodeSnippet",
-    defaultValue: DEFAULT_SHOW_CODE_SNIPPET,
+    value: DEFAULT_SHOW_CODE_SNIPPET,
   });
 
   const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
