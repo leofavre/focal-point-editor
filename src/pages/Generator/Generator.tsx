@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
@@ -29,7 +29,6 @@ const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
  * - Handle errors.
  * - Persist images and their states in IndexedDB.
  * - Reset aspectRatio when a new image is uploaded.
- * - Improve performance of the ghost image (how?)
  * - Document functions, hooks and components.
  * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
@@ -55,6 +54,7 @@ const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
  */
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const blobUrlRef = useRef<string | null>(null);
 
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageFileName, setImageFileName] = useState<string>("");
@@ -85,54 +85,60 @@ export default function Generator() {
 
   const aspectRatioList = useAspectRatioList(imageAspectRatio);
 
-  // Convert file to base64
-  const fileToBase64 = useCallback((file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  const revokeCurrentBlobUrl = useEffectEvent(() => {
+    if (blobUrlRef.current == null) return;
+    URL.revokeObjectURL(blobUrlRef.current);
+  });
+
+  const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file?.type.startsWith("image/")) return;
+
+    try {
+      revokeCurrentBlobUrl();
+
+      const blobUrl = URL.createObjectURL(file);
+      blobUrlRef.current = blobUrl;
+
+      // Load image to get natural dimensions
+      const naturalAspectRatio = await new Promise<number>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img.naturalWidth / img.naturalHeight);
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = blobUrl;
+      });
+
+      setImageFileName(file.name);
+      setImageUrl(blobUrl);
+      setImageAspectRatio(naturalAspectRatio);
+      setObjectPosition(DEFAULT_OBJECT_POSITION);
+    } catch (error) {
+      revokeCurrentBlobUrl();
+      blobUrlRef.current = null;
+      setImageUrl(null);
+      console.error("Error uploading image:", error);
+    }
   }, []);
 
-  const handleFileChange = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-
-      if (!file?.type.startsWith("image/")) return;
-
-      try {
-        // Convert file to base64
-        const base64 = await fileToBase64(file);
-
-        // Create image element to get natural dimensions
-        const img = new Image();
-        img.src = base64;
-        await Promise.resolve();
-
-        const naturalAspectRatio = img.naturalWidth / img.naturalHeight;
-
-        // Update React state
-        setImageFileName(file.name);
-        setImageUrl(base64);
-        setImageAspectRatio(naturalAspectRatio);
-        setObjectPosition(DEFAULT_OBJECT_POSITION);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-    },
-    [fileToBase64],
-  );
-
   const handleImageError = useCallback(() => {
-    if (imageUrl) {
-      URL.revokeObjectURL(imageUrl);
-      setImageUrl(null);
-    }
-  }, [imageUrl]);
+    revokeCurrentBlobUrl();
+    blobUrlRef.current = null;
+    setImageUrl(null);
+    console.error("Error uploading image");
+  }, []);
 
   const handleFormSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
