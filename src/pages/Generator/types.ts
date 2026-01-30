@@ -10,11 +10,17 @@ export type AdvancedBreakpoint = {
 };
 
 export type ImageState = {
-  id: string;
-  file: Blob;
+  name: string;
+  url: string;
   type: string;
   createdAt: number;
-  breakpoints: (Breakpoint | AdvancedBreakpoint)[];
+  naturalAspectRatio: number;
+  breakpoints?: (Breakpoint | AdvancedBreakpoint)[];
+};
+
+export type ImageRecord = ImageState & {
+  id: string;
+  file: Blob;
 };
 
 export type UIState = {
@@ -22,6 +28,10 @@ export type UIState = {
   showPointMarker: boolean;
   showGhostImage: boolean;
   showCodeSnippet: boolean;
+};
+
+export type UIRecord<T extends keyof UIState> = {
+  [K in T]: { id: K; value: UIState[K] };
 };
 
 export type GeneratorState = {

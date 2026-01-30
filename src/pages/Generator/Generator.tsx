@@ -13,6 +13,7 @@ import type { ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedUIState } from "./hooks/usePersistedUIState";
+import type { ImageState } from "./types";
 
 const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
@@ -57,10 +58,7 @@ export default function Generator() {
   const blobUrlRef = useRef<string | null>(null);
 
   const imageRef = useRef<HTMLImageElement>(null);
-  const [imageFileName, setImageFileName] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageAspectRatio, setImageAspectRatio] = useState<number>();
-  const [objectPosition, setObjectPosition] = useState(DEFAULT_OBJECT_POSITION);
+  const [image, setImage] = useState<ImageState | null>(null);
 
   const [aspectRatio, setAspectRatio] = usePersistedUIState({
     id: "aspectRatio",
@@ -83,7 +81,7 @@ export default function Generator() {
     defaultValue: DEFAULT_SHOW_CODE_SNIPPET,
   });
 
-  const aspectRatioList = useAspectRatioList(imageAspectRatio);
+  const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
 
   const revokeCurrentBlobUrl = useEffectEvent(() => {
     if (blobUrlRef.current == null) return;
@@ -109,14 +107,20 @@ export default function Generator() {
         img.src = blobUrl;
       });
 
-      setImageFileName(file.name);
-      setImageUrl(blobUrl);
-      setImageAspectRatio(naturalAspectRatio);
-      setObjectPosition(DEFAULT_OBJECT_POSITION);
+      setImage({
+        name: file.name,
+        url: blobUrl,
+        type: file.type,
+        createdAt: Date.now(),
+        naturalAspectRatio,
+        breakpoints: [{ objectPosition: DEFAULT_OBJECT_POSITION }],
+      });
     } catch (error) {
       revokeCurrentBlobUrl();
       blobUrlRef.current = null;
-      setImageUrl(null);
+
+      setImage(null);
+
       console.error("Error uploading image:", error);
     }
   }, []);
@@ -124,7 +128,9 @@ export default function Generator() {
   const handleImageError = useCallback(() => {
     revokeCurrentBlobUrl();
     blobUrlRef.current = null;
-    setImageUrl(null);
+
+    setImage(null);
+
     console.error("Error uploading image");
   }, []);
 
@@ -172,6 +178,8 @@ export default function Generator() {
     };
   }, [setShowCodeSnippet, setShowPointMarker, setShowGhostImage]);
 
+  const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
+
   return (
     <GeneratorGrid>
       <ImageUploader
@@ -209,25 +217,29 @@ export default function Generator() {
           />
         )}
       </ToggleBar>
-      {imageUrl && (
+      {image && currentObjectPosition && (
         <>
-          {aspectRatio != null && imageAspectRatio != null && (
+          {aspectRatio != null && image.naturalAspectRatio != null && (
             <FocusPointEditor
               ref={imageRef}
-              imageUrl={imageUrl}
+              imageUrl={image.url}
               aspectRatio={aspectRatio}
-              initialAspectRatio={imageAspectRatio}
-              objectPosition={objectPosition}
+              initialAspectRatio={image.naturalAspectRatio}
+              objectPosition={currentObjectPosition}
               showPointMarker={showPointMarker ?? false}
               showGhostImage={showGhostImage ?? false}
-              onObjectPositionChange={setObjectPosition}
+              onObjectPositionChange={(objectPosition) => {
+                setImage((prev) =>
+                  prev != null ? { ...prev, breakpoints: [{ objectPosition }] } : null,
+                );
+              }}
               onImageError={handleImageError}
               data-component="FocusPointEditor"
             />
           )}
           <CodeSnippet
-            src={imageFileName}
-            objectPosition={objectPosition}
+            src={image.name}
+            objectPosition={currentObjectPosition}
             data-component="CodeSnippet"
             css={{
               opacity: showCodeSnippet ? 1 : 0,
