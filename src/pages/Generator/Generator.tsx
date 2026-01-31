@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
@@ -41,8 +41,7 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  *
  * - Handle loading.
  * - Handle errors.
- * - Handle multiple tabs (current image id should be tied to current tab).
- * - Handle multiple images (needs routing).
+ * - Reset aspectRatio when a new image is uploaded (imageId changed).
  * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
@@ -107,20 +106,20 @@ export default function Generator() {
 
   const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
 
+  const navigate = useNavigate();
+
   const handleImageUpload = useCallback(
     async (imageState: ImageState | null, file: File | null) => {
-      /** @todo Instead of setting the image state after uploading the image, we should go to the corresponding route with the new image id. */
-      safeSetImage(imageState);
-
       if (imageState == null || file == null) return;
 
       try {
-        await addImage(imageState, file);
+        const nextImageId = await addImage(imageState, file);
+        navigate(`/image/${nextImageId}`);
       } catch (error) {
         console.error("Error saving image to database:", error);
       }
     },
-    [addImage],
+    [addImage, navigate],
   );
 
   const handleImageError = useCallback(() => {
