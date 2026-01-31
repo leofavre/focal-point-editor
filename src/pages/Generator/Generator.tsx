@@ -21,7 +21,7 @@ const DEFAULT_SHOW_GHOST_IMAGE = false;
 const DEFAULT_SHOW_CODE_SNIPPET = false;
 const DEFAULT_ASPECT_RATIO = 1;
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
-const INTERACTION_DEBOUNCE_MS = 2000;
+const INTERACTION_DEBOUNCE_MS = 500;
 
 /**
  * @todo
@@ -53,6 +53,7 @@ const INTERACTION_DEBOUNCE_MS = 2000;
  */
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const blobUrlRefs = useRef(new Set<string>());
 
   const { imageId } = useParams<{ imageId: string }>();
   const [image, setImage] = useState<ImageState | null>(null);
@@ -67,7 +68,8 @@ export default function Generator() {
 
       if (prevValue != null && prevValue.url !== nextValue?.url) {
         URL.revokeObjectURL(prevValue.url);
-        console.log("revoked blob url", prevValue.url);
+        blobUrlRefs.current.delete(prevValue.url);
+        console.log("removed blobUrl", blobUrlRefs.current);
       }
 
       return nextValue;
@@ -123,7 +125,6 @@ export default function Generator() {
     safeSetImage((prev) => (prev != null ? { ...prev, breakpoints: [{ objectPosition }] } : null));
   }, []);
 
-  const prevImageIdRef = useRef("");
   const imageCount = images?.length ?? 0;
 
   const stableImageRecordGetter = useEffectEvent((imageId: string) => {
@@ -131,16 +132,21 @@ export default function Generator() {
   });
 
   useEffect(() => {
-    if (prevImageIdRef.current === imageId || imageCount === 0 || imageId == null) return;
+    if (imageCount === 0) return;
+
+    if (imageId == null) {
+      safeSetImage(null);
+      return;
+    }
 
     const imageRecord = stableImageRecordGetter(imageId);
 
     if (imageRecord == null) return;
 
     try {
-      /** @todo Move URL creation the safeSetImage and then remove prevImageIdRef */
       const blobUrl = URL.createObjectURL(imageRecord.file);
-      console.log("created blob url", blobUrl);
+      blobUrlRefs.current.add(blobUrl);
+      console.log("added blobUrl", blobUrlRefs.current);
 
       safeSetImage({
         name: imageRecord.name,
@@ -151,9 +157,7 @@ export default function Generator() {
         breakpoints: imageRecord.breakpoints,
       });
 
-      console.log("loaded image with record", imageRecord);
-
-      prevImageIdRef.current = imageId;
+      console.log("loaded image from record", imageRecord);
     } catch (error) {
       safeSetImage(null);
       console.error("Error loading saved image:", error);
