@@ -70,7 +70,7 @@ export default function Generator() {
   const { images, addImage, updateImage } = usePersistedImages();
 
   /**
-   * Safe set image state. Revokes the previous blob URL if the new URL is different.
+   * Safely set image state. Revokes the previous blob URL if the new URL is different.
    */
   const safeSetImage: typeof setImage = useEffectEvent((valueOrFn) => {
     setImage((prevValue) => {
@@ -114,7 +114,7 @@ export default function Generator() {
 
       try {
         const nextImageId = await addImage(imageState, file);
-        navigate(`/image/${nextImageId}`);
+        navigate(`/${nextImageId}`);
       } catch (error) {
         console.error("Error saving image to database:", error);
       }
@@ -131,7 +131,6 @@ export default function Generator() {
     safeSetImage((prev) => (prev != null ? { ...prev, breakpoints: [{ objectPosition }] } : null));
   }, []);
 
-  // Load last saved image on init (most recent by createdAt)
   useEffect(() => {
     if (images === undefined || images.length === 0 || imageId == null) return;
 
