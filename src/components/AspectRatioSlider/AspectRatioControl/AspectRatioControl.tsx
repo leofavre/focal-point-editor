@@ -47,8 +47,8 @@ export function AspectRatioControl({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
-      const positionFromEvent =
-        event.target instanceof HTMLInputElement ? event.target.value : undefined;
+      const target = event.target as HTMLInputElement;
+      const positionFromEvent = target.value;
 
       if (positionFromEvent == null) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;

@@ -1,4 +1,4 @@
-import type { PointerEvent } from "react";
+import type { PointerEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { ClippedImage } from "./ClippedImage/ClippedImage";
 import { FocusPointEditorWrapper } from "./FocusPointEditorWrapper/FocusPointEditorWrapper";
@@ -41,33 +41,10 @@ export function FocusPointEditor({
   useEffect(() => {
     if (imageRef.current == null || imageUrl == null) return;
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const source = {
-          width: imageRef.current?.naturalWidth ?? 1,
-          height: imageRef.current?.naturalHeight ?? 1,
-        };
-
-        const rect = entry.contentRect;
-        const { width, height } = scaleDimensionsToContainRect({ source, rect });
-        const deltaWidthPx = width - rect.width;
-        const deltaHeightPx = height - rect.height;
-        const deltaWidthPercent = toPercentage(deltaWidthPx, width);
-        const deltaHeightPercent = toPercentage(deltaHeightPx, height);
-
-        const changedDimension =
-          deltaWidthPx > DELTA_DIMENSION_THRESHOLD_PX
-            ? "width"
-            : deltaHeightPx > DELTA_DIMENSION_THRESHOLD_PX
-              ? "height"
-              : undefined;
-
-        setImageDimensionDelta({
-          width: { px: deltaWidthPx, percent: deltaWidthPercent },
-          height: { px: deltaHeightPx, percent: deltaHeightPercent },
-          changedDimension,
-        });
-      }
+    const resizeObserver = new ResizeObserver(() => {
+      const imageDimensionDelta = getImageDimensionDelta(imageRef.current);
+      if (imageDimensionDelta != null) return;
+      setImageDimensionDelta(imageDimensionDelta);
     });
 
     resizeObserver.observe(imageRef.current);
@@ -76,6 +53,19 @@ export function FocusPointEditor({
       resizeObserver.disconnect();
     };
   }, [imageUrl]);
+
+  const handleImageLoad = useEffectEvent((event: SyntheticEvent<HTMLImageElement>) => {
+    onImageLoad?.(event);
+
+    const target = event.target as HTMLImageElement;
+    const imageDimensionDelta = getImageDimensionDelta(target);
+    if (imageDimensionDelta == null) return;
+    setImageDimensionDelta(imageDimensionDelta);
+  });
+
+  const handleImageError = useEffectEvent((event: SyntheticEvent<HTMLImageElement>) => {
+    onImageError?.(event);
+  });
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
@@ -154,8 +144,8 @@ export function FocusPointEditor({
         ref={imageRef}
         imageUrl={imageUrl}
         objectPosition={objectPosition}
-        onImageLoad={onImageLoad}
-        onImageError={onImageError}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
       />
       <GhostImage
         css={{
@@ -184,4 +174,34 @@ export function FocusPointEditor({
       />
     </FocusPointEditorWrapper>
   );
+}
+
+function getImageDimensionDelta(imgElement: HTMLImageElement | null): ImageDimensionDelta | null {
+  if (imgElement == null) return null;
+
+  const source = {
+    width: imgElement.naturalWidth,
+    height: imgElement.naturalHeight,
+  };
+
+  const rect = imgElement.getBoundingClientRect();
+
+  const { width, height } = scaleDimensionsToContainRect({ source, rect });
+  const deltaWidthPx = width - rect.width;
+  const deltaHeightPx = height - rect.height;
+  const deltaWidthPercent = toPercentage(deltaWidthPx, width);
+  const deltaHeightPercent = toPercentage(deltaHeightPx, height);
+
+  const changedDimension =
+    deltaWidthPx > DELTA_DIMENSION_THRESHOLD_PX
+      ? "width"
+      : deltaHeightPx > DELTA_DIMENSION_THRESHOLD_PX
+        ? "height"
+        : undefined;
+
+  return {
+    width: { px: deltaWidthPx, percent: deltaWidthPercent },
+    height: { px: deltaHeightPx, percent: deltaHeightPercent },
+    changedDimension,
+  };
 }

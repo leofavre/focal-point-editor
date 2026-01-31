@@ -206,9 +206,13 @@ export default function Generator() {
 
       updateImage(imageId, {
         breakpoints: [{ objectPosition: currentObjectPosition }],
-      }).catch((error) => {
-        console.error("Error saving position to database:", error);
-      });
+      })
+        .then(() => {
+          console.log("updated image", imageId, "with object position", currentObjectPosition);
+        })
+        .catch((error) => {
+          console.error("Error saving position to database:", error);
+        });
     },
     { timeout: INTERACTION_DEBOUNCE_MS },
     [imageId, currentObjectPosition, updateImage],
