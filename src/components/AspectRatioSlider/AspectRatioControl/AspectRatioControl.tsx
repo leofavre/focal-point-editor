@@ -5,7 +5,7 @@ import { toLogPosition } from "../helpers/toLogPosition";
 import { Slider } from "./AspectRatioControl.styled";
 import type { AspectRatioControlProps } from "./types";
 
-const POSITION_SNAP_THRESHOLD = 0.01 / 3;
+const POSITION_SNAP_THRESHOLD = 1 / 300;
 const PRECISION = 100_000;
 
 export function AspectRatioControl({

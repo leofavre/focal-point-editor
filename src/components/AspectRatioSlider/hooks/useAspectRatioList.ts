@@ -27,7 +27,7 @@ const ASPECT_RATIO_LIST: AspectRatio[] = Object.entries(ASPECT_RATIO_MAP)
   }))
   .sort((a, b) => a.value - b.value);
 
-const POSITION_REPLACEMENT_THRESHOLD = 0.01;
+const POSITION_REPLACEMENT_THRESHOLD = 1 / 10;
 
 export function useAspectRatioList(originalAspectRatioValue?: number) {
   return useMemo(() => {
