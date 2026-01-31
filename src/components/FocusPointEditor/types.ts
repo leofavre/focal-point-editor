@@ -1,4 +1,4 @@
-import type { RefObject, SyntheticEvent } from "react";
+import type { SyntheticEvent } from "react";
 import type { ObjectPositionString } from "../../types";
 
 /**
