@@ -39,9 +39,10 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  *
  * ### Basic functionality
  *
+ * - Fix UI reset with back/forward navigation.
+ * - Fix aspect ratio reset when a new image is uploaded.
  * - Handle loading.
  * - Handle errors.
- * - Reset aspectRatio when a new image is uploaded (imageId changed).
  * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
@@ -134,7 +135,6 @@ export default function Generator() {
   }, []);
 
   const prevImageIdRef = useRef("");
-  const prevImageCountRef = useRef(0);
 
   const stableImageRecordGetter = useEffectEvent((imageId: string) => {
     return images?.find((image) => image.id === imageId);
@@ -143,14 +143,7 @@ export default function Generator() {
   useEffect(() => {
     const imageCount = images?.length ?? 0;
 
-    if (
-      prevImageIdRef.current === imageId ||
-      prevImageCountRef.current === imageCount ||
-      imageCount === 0 ||
-      imageId == null
-    ) {
-      return;
-    }
+    if (prevImageIdRef.current === imageId || imageCount === 0 || imageId == null) return;
 
     const imageRecord = stableImageRecordGetter(imageId);
 
@@ -161,7 +154,6 @@ export default function Generator() {
       safeSetImage(recordToImageState(imageRecord, blobUrl));
       console.log("loaded image with record", imageRecord);
       prevImageIdRef.current = imageId;
-      prevImageCountRef.current = imageCount;
     } catch (error) {
       console.error("Error loading saved image:", error);
       safeSetImage(null);
