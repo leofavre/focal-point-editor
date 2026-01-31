@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
@@ -10,7 +10,7 @@ import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
-import type { ImageRecord, ImageState, ObjectPositionString } from "../../types";
+import type { ImageState, ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedImages } from "./hooks/usePersistedImages";
@@ -22,17 +22,6 @@ const DEFAULT_SHOW_CODE_SNIPPET = false;
 const DEFAULT_ASPECT_RATIO = 1;
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const INTERACTION_DEBOUNCE_MS = 2000;
-
-function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
-  return {
-    name: record.name,
-    url: blobUrl,
-    type: record.type,
-    createdAt: record.createdAt,
-    naturalAspectRatio: record.naturalAspectRatio,
-    breakpoints: record.breakpoints,
-  };
-}
 
 /**
  * @todo
@@ -79,6 +68,7 @@ export default function Generator() {
 
       if (prevValue != null && prevValue.url !== nextValue?.url) {
         URL.revokeObjectURL(prevValue.url);
+        console.log("revoked blob url", prevValue.url);
       }
 
       return nextValue;
@@ -135,14 +125,13 @@ export default function Generator() {
   }, []);
 
   const prevImageIdRef = useRef("");
+  const imageCount = images?.length ?? 0;
 
   const stableImageRecordGetter = useEffectEvent((imageId: string) => {
     return images?.find((image) => image.id === imageId);
   });
 
   useEffect(() => {
-    const imageCount = images?.length ?? 0;
-
     if (prevImageIdRef.current === imageId || imageCount === 0 || imageId == null) return;
 
     const imageRecord = stableImageRecordGetter(imageId);
@@ -151,14 +140,25 @@ export default function Generator() {
 
     try {
       const blobUrl = URL.createObjectURL(imageRecord.file);
-      safeSetImage(recordToImageState(imageRecord, blobUrl));
+      console.log("created blob url", blobUrl);
+
+      safeSetImage({
+        name: imageRecord.name,
+        url: blobUrl,
+        type: imageRecord.type,
+        createdAt: imageRecord.createdAt,
+        naturalAspectRatio: imageRecord.naturalAspectRatio,
+        breakpoints: imageRecord.breakpoints,
+      });
+
       console.log("loaded image with record", imageRecord);
+
       prevImageIdRef.current = imageId;
     } catch (error) {
-      console.error("Error loading saved image:", error);
       safeSetImage(null);
+      console.error("Error loading saved image:", error);
     }
-  }, [imageId, images?.length]);
+  }, [imageId, imageCount]);
 
   useEffect(() => {
     return () => {
