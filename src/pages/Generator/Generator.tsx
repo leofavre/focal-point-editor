@@ -142,6 +142,8 @@ export default function Generator() {
     }
 
     hasLoadedInitialImageRef.current = true;
+
+    /** @todo The record will be the one from the external id coming from the URL. */
     const [lastRecord] = [...images].sort((a, b) => b.createdAt - a.createdAt);
 
     if (!lastRecord) return;
