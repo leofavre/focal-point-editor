@@ -41,7 +41,8 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  *
  * - Handle loading.
  * - Handle errors.
- * - Handle multiple tabs (current image id should be tied to current tab)
+ * - Handle multiple tabs (current image id should be tied to current tab).
+ * - Handle multiple images (needs routing).
  * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
@@ -56,7 +57,6 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  *
  * ### Advanced functionality
  *
- * - Handle multiple images (needs routing).
  * - Breakpoints with container queries.
  * - Undo/redo (needs state tracking).
  * - Maybe make a browser extension?.
@@ -66,7 +66,6 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const imageIdRef = useRef<string | null>(null);
   const { imageId } = useParams<{ imageId: string }>();
   const [image, setImage] = useState<ImageState | null>(null);
   const { images, addImage, updateImage } = usePersistedImages();
@@ -116,11 +115,9 @@ export default function Generator() {
       if (imageState == null || file == null) return;
 
       try {
-        const id = await addImage(imageState, file);
-        imageIdRef.current = id;
+        await addImage(imageState, file);
       } catch (error) {
         console.error("Error saving image to database:", error);
-        imageIdRef.current = null;
       }
     },
     [addImage],
@@ -146,11 +143,9 @@ export default function Generator() {
     try {
       const blobUrl = URL.createObjectURL(imageRecord.file);
       safeSetImage(recordToImageState(imageRecord, blobUrl));
-      imageIdRef.current = imageRecord.id;
     } catch (error) {
       console.error("Error loading saved image:", error);
       safeSetImage(null);
-      imageIdRef.current = null;
     }
   }, [images, imageId]);
 
@@ -196,18 +191,16 @@ export default function Generator() {
 
   useDebouncedEffect(
     () => {
-      const id = imageIdRef.current;
+      if (imageId == null || currentObjectPosition == null) return;
 
-      if (id != null && currentObjectPosition != null) {
-        updateImage(id, {
-          breakpoints: [{ objectPosition: currentObjectPosition }],
-        }).catch((error) => {
-          console.error("Error saving position to database:", error);
-        });
-      }
+      updateImage(imageId, {
+        breakpoints: [{ objectPosition: currentObjectPosition }],
+      }).catch((error) => {
+        console.error("Error saving position to database:", error);
+      });
     },
     { timeout: INTERACTION_DEBOUNCE_MS },
-    [currentObjectPosition, updateImage],
+    [imageId, currentObjectPosition, updateImage],
   );
 
   return (
