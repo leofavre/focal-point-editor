@@ -29,22 +29,24 @@ export function FocusPointEditor({
   onImageError,
   ...rest
 }: FocusPointEditorProps) {
-  const [imageDimensionDelta, setImageDimensionDelta] = useState<ImageDimensionDelta | null>(null);
-
   const imageRef = useRef<HTMLImageElement>(null);
   const isDraggingRef = useRef(false);
   const objectPositionStartRef = useRef(objectPosition);
   const pointerCoordinatesStartRef = useRef<Coordinates | null>(null);
 
+  const [imageDimensionDelta, setImageDimensionDelta] = useState<ImageDimensionDelta | null>(null);
+
+  const updateImageDimensionDelta = useEffectEvent(() => {
+    if (imageRef.current == null) return;
+    const imageDimensionDelta = getImageDimensionDelta(imageRef.current);
+    if (imageDimensionDelta == null) return;
+    setImageDimensionDelta(imageDimensionDelta);
+  });
+
   useEffect(() => {
     if (imageRef.current == null || imageUrl == null) return;
 
-    const resizeObserver = new ResizeObserver(() => {
-      const imageDimensionDelta = getImageDimensionDelta(imageRef.current);
-      if (imageDimensionDelta == null) return;
-      setImageDimensionDelta(imageDimensionDelta);
-    });
-
+    const resizeObserver = new ResizeObserver(updateImageDimensionDelta);
     resizeObserver.observe(imageRef.current);
 
     return () => {
@@ -54,11 +56,7 @@ export function FocusPointEditor({
 
   const handleImageLoad = useEffectEvent((event: SyntheticEvent<HTMLImageElement>) => {
     onImageLoad?.(event);
-
-    const target = event.target as HTMLImageElement;
-    const imageDimensionDelta = getImageDimensionDelta(target);
-    if (imageDimensionDelta == null) return;
-    setImageDimensionDelta(imageDimensionDelta);
+    updateImageDimensionDelta();
   });
 
   const handleImageError = useEffectEvent((event: SyntheticEvent<HTMLImageElement>) => {
