@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
@@ -65,10 +66,8 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  /** @todo This ref will be removed when this page takes an external id from the URL. */
-  const hasLoadedInitialImageRef = useRef(false);
-
   const imageIdRef = useRef<string | null>(null);
+  const { imageId } = useParams<{ imageId: string }>();
   const [image, setImage] = useState<ImageState | null>(null);
   const { images, addImage, updateImage } = usePersistedImages();
 
@@ -111,6 +110,7 @@ export default function Generator() {
 
   const handleImageUpload = useCallback(
     async (imageState: ImageState | null, file: File | null) => {
+      /** @todo Instead of setting the image state after uploading the image, we should go to the corresponding route with the new image id. */
       safeSetImage(imageState);
 
       if (imageState == null || file == null) return;
@@ -137,27 +137,22 @@ export default function Generator() {
 
   // Load last saved image on init (most recent by createdAt)
   useEffect(() => {
-    if (images === undefined || images.length === 0 || hasLoadedInitialImageRef.current) {
-      return;
-    }
+    if (images === undefined || images.length === 0 || imageId == null) return;
 
-    hasLoadedInitialImageRef.current = true;
+    const imageRecord = images.find((image) => image.id === imageId);
 
-    /** @todo The record will be the one from the external id coming from the URL. */
-    const [lastRecord] = [...images].sort((a, b) => b.createdAt - a.createdAt);
-
-    if (!lastRecord) return;
+    if (imageRecord == null) return;
 
     try {
-      const blobUrl = URL.createObjectURL(lastRecord.file);
-      safeSetImage(recordToImageState(lastRecord, blobUrl));
-      imageIdRef.current = lastRecord.id;
+      const blobUrl = URL.createObjectURL(imageRecord.file);
+      safeSetImage(recordToImageState(imageRecord, blobUrl));
+      imageIdRef.current = imageRecord.id;
     } catch (error) {
       console.error("Error loading saved image:", error);
       safeSetImage(null);
       imageIdRef.current = null;
     }
-  }, [images]);
+  }, [images, imageId]);
 
   useEffect(() => {
     return () => {
