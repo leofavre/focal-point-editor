@@ -20,7 +20,6 @@ const CURSOR_MAP = {
 const DELTA_DIMENSION_THRESHOLD_PX = 1;
 
 export function FocusPointEditor({
-  ref,
   imageUrl,
   aspectRatio,
   initialAspectRatio,
@@ -34,18 +33,19 @@ export function FocusPointEditor({
 }: FocusPointEditorProps) {
   const [imageDimensionDelta, setImageDimensionDelta] = useState<ImageDimensionDelta | null>(null);
 
+  const imageRef = useRef<HTMLImageElement>(null);
   const isDraggingRef = useRef(false);
   const objectPositionStartRef = useRef(objectPosition);
   const pointerCoordinatesStartRef = useRef<Coordinates | null>(null);
 
   useEffect(() => {
-    if (ref.current == null || imageUrl == null) return;
+    if (imageRef.current == null || imageUrl == null) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const source = {
-          width: ref.current?.naturalWidth ?? 1,
-          height: ref.current?.naturalHeight ?? 1,
+          width: imageRef.current?.naturalWidth ?? 1,
+          height: imageRef.current?.naturalHeight ?? 1,
         };
 
         const rect = entry.contentRect;
@@ -70,12 +70,12 @@ export function FocusPointEditor({
       }
     });
 
-    resizeObserver.observe(ref.current);
+    resizeObserver.observe(imageRef.current);
 
     return () => {
       resizeObserver.disconnect();
     };
-  }, [imageUrl, ref]);
+  }, [imageUrl]);
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
@@ -151,7 +151,7 @@ export function FocusPointEditor({
       {...rest}
     >
       <ClippedImage
-        ref={ref}
+        ref={imageRef}
         imageUrl={imageUrl}
         objectPosition={objectPosition}
         onImageLoad={onImageLoad}

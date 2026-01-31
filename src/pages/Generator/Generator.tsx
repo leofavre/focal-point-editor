@@ -64,10 +64,13 @@ function recordToImageState(record: ImageRecord, blobUrl: string): ImageState {
  */
 export default function Generator() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const currentImageIdRef = useRef<string | null>(null);
+
+  /** @todo This ref will be removed when this page takes an external id from the URL. */
   const hasLoadedInitialImageRef = useRef(false);
 
-  const imageRef = useRef<HTMLImageElement>(null);
+  /** @todo Verify the necessity of the ref below. */
+  const imageIdRef = useRef<string | null>(null);
+
   const [image, setImage] = useState<ImageState | null>(null);
   const { images, addImage, updateImage } = usePersistedImages();
 
@@ -117,10 +120,10 @@ export default function Generator() {
 
       try {
         const id = await addImage(imageState, file);
-        currentImageIdRef.current = id;
+        imageIdRef.current = id;
       } catch (error) {
         console.error("Error saving image to database:", error);
-        currentImageIdRef.current = null;
+        imageIdRef.current = null;
       }
     },
     [addImage],
@@ -149,11 +152,11 @@ export default function Generator() {
     try {
       const blobUrl = URL.createObjectURL(lastRecord.file);
       safeSetImage(recordToImageState(lastRecord, blobUrl));
-      currentImageIdRef.current = lastRecord.id;
+      imageIdRef.current = lastRecord.id;
     } catch (error) {
       console.error("Error loading saved image:", error);
       safeSetImage(null);
-      currentImageIdRef.current = null;
+      imageIdRef.current = null;
     }
   }, [images]);
 
@@ -199,7 +202,8 @@ export default function Generator() {
 
   useDebouncedEffect(
     () => {
-      const id = currentImageIdRef.current;
+      const id = imageIdRef.current;
+
       if (id != null && currentObjectPosition != null) {
         updateImage(id, {
           breakpoints: [{ objectPosition: currentObjectPosition }],
@@ -252,7 +256,6 @@ export default function Generator() {
         <>
           {aspectRatio != null && image.naturalAspectRatio != null && (
             <FocusPointEditor
-              ref={imageRef}
               imageUrl={image.url}
               aspectRatio={aspectRatio}
               initialAspectRatio={image.naturalAspectRatio}

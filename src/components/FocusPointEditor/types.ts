@@ -39,7 +39,6 @@ export type ImageDimensionDelta = {
 };
 
 export type FocusPointEditorProps = {
-  ref: RefObject<HTMLImageElement | null>;
   imageUrl: string;
   aspectRatio: number;
   initialAspectRatio: number;
