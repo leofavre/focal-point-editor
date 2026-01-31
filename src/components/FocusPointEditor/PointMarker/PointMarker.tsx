@@ -14,8 +14,7 @@ export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProp
     event.stopPropagation();
     isDraggingRef.current = true;
 
-    const target = event.target as HTMLElement;
-    target.setPointerCapture(event.pointerId);
+    event.currentTarget.setPointerCapture(event.pointerId);
   }, []);
 
   const stableOnObjectPositionChange = useEffectEvent(onObjectPositionChange);
@@ -46,14 +45,12 @@ export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProp
 
   const handlePointerUp = useCallback((event: PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = false;
-    const target = event.target as HTMLElement;
-    target.releasePointerCapture(event.pointerId);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   }, []);
 
   const handlePointerCancel = useCallback((event: PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = false;
-    const target = event.target as HTMLElement;
-    target.releasePointerCapture(event.pointerId);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   }, []);
 
   return (

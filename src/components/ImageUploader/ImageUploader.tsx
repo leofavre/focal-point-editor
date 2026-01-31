@@ -9,7 +9,7 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
   }) satisfies typeof onImageUpload;
 
   const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.currentTarget.files?.[0];
 
     if (!file?.type.startsWith("image/")) {
       stableOnImageUpload(null, file ?? null);

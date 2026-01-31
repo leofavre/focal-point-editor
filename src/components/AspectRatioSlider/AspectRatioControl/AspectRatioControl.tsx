@@ -36,7 +36,7 @@ export function AspectRatioControl({
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const positionFromEvent = event.target.value;
+      const positionFromEvent = event.currentTarget.value;
       const positionFromEventNumber = parseFloat(positionFromEvent) / PRECISION;
       const nextAspectRatio = toAspectRatio(positionFromEventNumber, minValue, maxValue);
 
@@ -47,8 +47,7 @@ export function AspectRatioControl({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
-      const target = event.target as HTMLInputElement;
-      const positionFromEvent = target.value;
+      const positionFromEvent = event.currentTarget.value;
 
       if (positionFromEvent == null) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;

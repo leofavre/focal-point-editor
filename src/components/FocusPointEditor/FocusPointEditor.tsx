@@ -67,8 +67,7 @@ export function FocusPointEditor({
     (event: PointerEvent<HTMLDivElement>) => {
       isDraggingRef.current = true;
 
-      const target = event.target as HTMLElement;
-      target.setPointerCapture(event.pointerId);
+      event.currentTarget.setPointerCapture(event.pointerId);
 
       objectPositionStartRef.current = objectPosition;
       pointerCoordinatesStartRef.current = getPointerCoordinatesFromEvent(event);
@@ -115,8 +114,7 @@ export function FocusPointEditor({
   const handlePointerUp = useCallback((event: PointerEvent<HTMLDivElement>) => {
     isDraggingRef.current = false;
 
-    const target = event.target as HTMLElement;
-    target.releasePointerCapture(event.pointerId);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   }, []);
 
   const cursor =
