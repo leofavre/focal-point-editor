@@ -14,8 +14,8 @@ const DELTA_DIMENSION_THRESHOLD_PX = 1;
  * axis (e.g. horizontal drag when width is constrained).
  *
  * @returns An {@link ImageDimensionDelta} with width/height deltas in px and %,
- *   and `changedDimension` set to the constrained axis (`"width"` or `"height"`),
- *   or `null` if the element is missing.
+ * and `changedDimension` set to the constrained axis (`width` or `height`),
+ * or `null` if the element is missing.
  */
 export function getImageDimensionDelta(
   imgElement: HTMLImageElement | null,

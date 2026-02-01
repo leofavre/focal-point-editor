@@ -1,3 +1,4 @@
+import type { Simplify } from "type-fest";
 export type ObjectPositionString = `${string}% ${string}%`;
 
 export type ObjectPositionObject = { x: number; y: number };
@@ -11,19 +12,26 @@ export type AdvancedBreakpoint = {
   objectPosition: ObjectPositionString;
 };
 
-export type ImageState = {
+export type ImageDraftState = {
   name: string;
-  url: string;
   type: string;
   createdAt: number;
-  naturalAspectRatio: number;
   breakpoints: (Breakpoint | AdvancedBreakpoint)[];
 };
 
-export type ImageRecord = ImageState & {
-  id: string;
-  file: Blob;
-};
+export type ImageState = Simplify<
+  ImageDraftState & {
+    url: string;
+    naturalAspectRatio: number;
+  }
+>;
+
+export type ImageRecord = Simplify<
+  ImageDraftState & {
+    id: string;
+    file: Blob;
+  }
+>;
 
 export type UIState = {
   aspectRatio: number;

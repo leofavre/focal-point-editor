@@ -1,7 +1,7 @@
 import isEqual from "lodash/isequalWith";
 import { useCallback, useEffect, useState } from "react";
 import { useIndexedDB } from "react-indexed-db-hook";
-import type { ImageRecord, ImageState } from "../../../types";
+import type { ImageDraftState, ImageRecord } from "../../../types";
 
 /**
  * Custom React hook for persisting image records in IndexedDB.
@@ -9,18 +9,18 @@ import type { ImageRecord, ImageState } from "../../../types";
  * each identified by a generated random ID.
  *
  * @returns Object with:
- * - images: all persisted ImageRecord[] (undefined until loaded)
- * - addImage: save a new image, returns its id
- * - getImage: fetch one image by id
- * - updateImage: merge partial ImageState into an existing record
- * - deleteImage: remove an image by id
- * - refreshImages: reload the list from the database
+ * - `images`: all persisted image records (undefined until loaded).
+ * - `addImage`: save a new image record, returns its id.
+ * - `getImage`: fetch one image record by id.
+ * - `updateImage`: merge partial image record into an existing record.
+ * - `deleteImage`: remove an image record by id.
+ * - `refreshImages`: reload the list from the database.
  */
 export function usePersistedImages(): {
   images: ImageRecord[] | undefined;
-  addImage: (imageState: ImageState, file: Blob) => Promise<string>;
+  addImage: (imageDraftState: ImageDraftState, file: Blob) => Promise<string>;
   getImage: (id: string) => Promise<ImageRecord | undefined>;
-  updateImage: (id: string, updates: Partial<ImageState>) => Promise<string | undefined>;
+  updateImage: (id: string, updates: Partial<ImageRecord>) => Promise<string | undefined>;
   deleteImage: (id: string) => Promise<string | undefined>;
   refreshImages: () => Promise<void>;
 } {
@@ -41,12 +41,12 @@ export function usePersistedImages(): {
   }, [refreshImages]);
 
   const addImage = useCallback(
-    async (imageState: ImageState, file: Blob) => {
+    async (imageDraftState: ImageDraftState, file: Blob) => {
       const id = crypto.randomUUID();
 
       const record: ImageRecord = {
         id,
-        ...imageState,
+        ...imageDraftState,
         file,
       };
 
@@ -65,7 +65,7 @@ export function usePersistedImages(): {
   );
 
   const updateImage = useCallback(
-    async (id: string, updates: Partial<ImageState>) => {
+    async (id: string, updates: Partial<ImageRecord>) => {
       const current = await getByID<ImageRecord>(id);
 
       if (current == null) return;

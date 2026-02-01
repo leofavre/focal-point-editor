@@ -10,7 +10,7 @@ import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
-import type { ImageState, ObjectPositionString } from "../../types";
+import type { ImageDraftState, ImageState, ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedImages } from "./hooks/usePersistedImages";
@@ -30,7 +30,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
- * - Fix mess with blob URLs.
  * - Make AspectRatio appear even if there is no aspect ratio set yet.
  * - Handle loading.
  * - Handle errors.
@@ -64,7 +63,7 @@ export default function Generator() {
   const { images, addImage, updateImage } = usePersistedImages();
 
   /**
-   * Safely set image state. Revokes the previous blob URL if the new URL is different.
+   * Safely set image state. Revokes the previous blob URL if the new blob URL is different.
    */
   const safeSetImage: typeof setImage = useEffectEvent((valueOrFn) => {
     setImage((prevValue) => {
@@ -72,6 +71,7 @@ export default function Generator() {
 
       if (prevValue != null && prevValue.url !== nextValue?.url) {
         URL.revokeObjectURL(prevValue.url);
+
         blobUrlRefs.current.delete(prevValue.url);
         console.log("removed blobUrl", blobUrlRefs.current);
       }
@@ -105,11 +105,11 @@ export default function Generator() {
   const navigate = useNavigate();
 
   const handleImageUpload = useCallback(
-    async (imageState: ImageState | null, file: File | null) => {
-      if (imageState == null || file == null) return;
+    async (imageDraftState: ImageDraftState | null, file: File | null) => {
+      if (imageDraftState == null || file == null) return;
 
       try {
-        const nextImageId = await addImage(imageState, file);
+        const nextImageId = await addImage(imageDraftState, file);
         console.log("uploaded image with id", nextImageId);
         await navigate(`/${nextImageId}`);
         console.log("navigated to", `/${nextImageId}`);
@@ -129,12 +129,24 @@ export default function Generator() {
     safeSetImage((prev) => (prev != null ? { ...prev, breakpoints: [{ objectPosition }] } : null));
   }, []);
 
+  /**
+   * When the application is unmounted, revoke the blob URL of the image to avoid memory leaks.
+   */
   useEffect(() => {
     return () => {
       safeSetImage(null);
     };
   }, []);
 
+  /**
+   * Handle all keyboard shortcuts:
+   * - 'u' opens the file input to upload a new image.
+   * - 'a' or 'p' toggles the point marker.
+   * - 's' or 'l' toggles the ghost image.
+   * - 'd' or 'c' toggles the code snippet.
+   *
+   * The shortcuts are case insensitive.
+   */
   useEffect(() => {
     const handleKeyDown = createKeyboardShortcutHandler({
       u: () => {
@@ -169,6 +181,10 @@ export default function Generator() {
 
   const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
 
+  /**
+   * Update the object position of the image in the database when the user interacts with it,
+   * either by dragging the focus point or the image itself.
+   */
   useDebouncedEffect(
     () => {
       if (imageId == null || currentObjectPosition == null) return;
@@ -194,41 +210,64 @@ export default function Generator() {
     return images?.find((image) => image.id === imageId);
   });
 
+  /**
+   * Load the image record from the database when the page is loaded or the database is
+   * refreshed. A debounce is used because both events can happen almost at the same time.
+   *
+   * After the image record is loaded, the image state is created with a new blob URL and
+   * the calculated natural aspect ratio.
+   */
   useDebouncedEffect(
     () => {
-      if (imageCount === 0) return;
+      async function asyncSetImageState() {
+        if (imageCount === 0) return;
 
-      if (imageId == null) {
-        safeSetImage(null);
-        return;
+        if (imageId == null) {
+          safeSetImage(null);
+          return;
+        }
+
+        const imageRecord = stableImageRecordGetter(imageId);
+
+        if (imageRecord == null) return;
+
+        let blobUrl: string | undefined;
+
+        try {
+          blobUrl = URL.createObjectURL(imageRecord.file);
+
+          blobUrlRefs.current.add(blobUrl);
+          console.log("added blobUrl", blobUrlRefs.current);
+
+          const naturalAspectRatio = await getNaturalAspectRatioFromImageSrc(blobUrl);
+
+          safeSetImage({
+            name: imageRecord.name,
+            url: blobUrl,
+            type: imageRecord.type,
+            createdAt: imageRecord.createdAt,
+            naturalAspectRatio: naturalAspectRatio,
+            breakpoints: imageRecord.breakpoints,
+          });
+
+          console.log("loaded image from record", imageRecord);
+
+          /** @todo early return if the user has refreshed the page. how to detect? */
+          setAspectRatio(naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+        } catch (error) {
+          if (blobUrl) {
+            URL.revokeObjectURL(blobUrl);
+
+            blobUrlRefs.current.delete(blobUrl);
+            console.log("removed blobUrl", blobUrlRefs.current);
+          }
+
+          safeSetImage(null);
+          console.error("Error loading saved image:", error);
+        }
       }
 
-      const imageRecord = stableImageRecordGetter(imageId);
-
-      if (imageRecord == null) return;
-
-      try {
-        const blobUrl = URL.createObjectURL(imageRecord.file);
-        blobUrlRefs.current.add(blobUrl);
-        console.log("added blobUrl", blobUrlRefs.current);
-
-        safeSetImage({
-          name: imageRecord.name,
-          url: blobUrl,
-          type: imageRecord.type,
-          createdAt: imageRecord.createdAt,
-          naturalAspectRatio: imageRecord.naturalAspectRatio,
-          breakpoints: imageRecord.breakpoints,
-        });
-
-        console.log("loaded image from record", imageRecord);
-
-        /** @todo early return if the user has refreshed the page. how to detect? */
-        setAspectRatio(imageRecord.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
-      } catch (error) {
-        safeSetImage(null);
-        console.error("Error loading saved image:", error);
-      }
+      asyncSetImageState();
     },
     { timeout: IMAGE_LOAD_DEBOUNCE_MS },
     [imageId, imageCount],
@@ -306,4 +345,13 @@ export default function Generator() {
       )}
     </GeneratorGrid>
   );
+}
+
+function getNaturalAspectRatioFromImageSrc(url: string) {
+  return new Promise<number>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img.naturalWidth / img.naturalHeight);
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = url;
+  });
 }
