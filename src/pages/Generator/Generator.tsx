@@ -10,7 +10,7 @@ import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
-import type { ImageDraftState, ImageState, ObjectPositionString } from "../../types";
+import type { ImageDraftState, ImageRecord, ImageState, ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { getNaturalAspectRatioFromImageSrc } from "./helpers/getNaturalAspectRatioFromImageSrc";
@@ -55,8 +55,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Maybe make a native custom element?.
  */
 export default function Generator() {
-  /** @todo This ref is used for debug only and can be removed in the future. */
-  const blobUrlRefs = useRef(new Set<string>());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { imageId } = useParams<{ imageId: string }>();
@@ -72,9 +70,6 @@ export default function Generator() {
 
       if (prevValue != null && prevValue.url !== nextValue?.url) {
         URL.revokeObjectURL(prevValue.url);
-
-        blobUrlRefs.current.delete(prevValue.url);
-        console.log("removed blobUrl", blobUrlRefs.current);
       }
 
       return nextValue;
@@ -232,37 +227,13 @@ export default function Generator() {
 
         if (imageRecord == null) return;
 
-        let blobUrl: string | undefined;
-
         try {
-          blobUrl = URL.createObjectURL(imageRecord.file);
-
-          blobUrlRefs.current.add(blobUrl);
-          console.log("added blobUrl", blobUrlRefs.current);
-
-          const naturalAspectRatio = await getNaturalAspectRatioFromImageSrc(blobUrl);
-
-          safeSetImage({
-            name: imageRecord.name,
-            url: blobUrl,
-            type: imageRecord.type,
-            createdAt: imageRecord.createdAt,
-            naturalAspectRatio: naturalAspectRatio,
-            breakpoints: imageRecord.breakpoints,
-          });
-
+          const nextImageState = await createImageStateFromImageRecord(imageRecord);
+          safeSetImage(nextImageState);
           console.log("loaded image from record", imageRecord);
-
           /** @todo early return if the user has refreshed the page. how to detect? */
-          setAspectRatio(naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+          setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
         } catch (error) {
-          if (blobUrl) {
-            URL.revokeObjectURL(blobUrl);
-
-            blobUrlRefs.current.delete(blobUrl);
-            console.log("removed blobUrl", blobUrlRefs.current);
-          }
-
           safeSetImage(null);
           console.error("Error loading saved image:", error);
         }
@@ -344,4 +315,28 @@ export default function Generator() {
       />
     </GeneratorGrid>
   );
+}
+
+async function createImageStateFromImageRecord(imageRecord: ImageRecord): Promise<ImageState> {
+  let blobUrl: string | undefined;
+
+  try {
+    blobUrl = URL.createObjectURL(imageRecord.file);
+    const naturalAspectRatio = await getNaturalAspectRatioFromImageSrc(blobUrl);
+
+    return {
+      name: imageRecord.name,
+      url: blobUrl,
+      type: imageRecord.type,
+      createdAt: imageRecord.createdAt,
+      naturalAspectRatio: naturalAspectRatio,
+      breakpoints: imageRecord.breakpoints,
+    };
+  } catch (error) {
+    if (blobUrl) {
+      URL.revokeObjectURL(blobUrl);
+    }
+
+    throw error;
+  }
 }
