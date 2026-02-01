@@ -31,7 +31,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
- * - Make AspectRatio appear even if there is no aspect ratio set yet.
  * - Handle edge case where the image's natural aspect ratio is < 9:16.
  * - Handle edge case where the image's natural aspect ratio is > 4:1.
  * - Handle loading.
