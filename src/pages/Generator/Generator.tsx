@@ -30,6 +30,8 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
+ * - Fix mess with blob URLs.
+ * - Make AspectRatio appear even if there is no aspect ratio set yet.
  * - Handle loading.
  * - Handle errors.
  * - Drag image to upload.
