@@ -27,8 +27,9 @@ export function AspectRatioControl({
   }, [aspectRatioList]);
 
   const currentPosition = useMemo(() => {
+    if (aspectRatio == null) return initialPosition;
     return toLogPosition(aspectRatio, minValue, maxValue);
-  }, [aspectRatio, minValue, maxValue]);
+  }, [aspectRatio, minValue, maxValue, initialPosition]);
 
   const stableOnAspectRatioChange = useEffectEvent((aspectRatio: number) => {
     onAspectRatioChange?.(aspectRatio);
@@ -76,14 +77,21 @@ export function AspectRatioControl({
   );
 
   return (
-    <Slider {...rest} css={{ "--initial-position": initialPosition }}>
+    <Slider
+      {...rest}
+      css={{
+        "--initial-position": initialPosition ?? 1,
+        "--thumb-visibility":
+          initialPosition != null && currentPosition != null ? "visible" : "hidden",
+      }}
+    >
       <input
         ref={ref}
         type="range"
         step={1}
         min={Math.round(minPosition * PRECISION)}
         max={Math.round(maxPosition * PRECISION)}
-        value={Math.round(currentPosition * PRECISION)}
+        value={currentPosition != null ? Math.round(currentPosition * PRECISION) : undefined}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         list="aspect-ratio"

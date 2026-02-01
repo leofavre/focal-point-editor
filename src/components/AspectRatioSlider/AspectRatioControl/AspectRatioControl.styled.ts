@@ -67,6 +67,7 @@ export const Slider = styled.div`
       cursor: pointer;
       box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2);
       margin-top: -0.4375rem;
+      visibility: var(--thumb-visibility, hidden);
     }
 
     /* Thumb styling - Firefox */
@@ -79,6 +80,7 @@ export const Slider = styled.div`
       cursor: pointer;
       box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2);
       -moz-appearance: none;
+      visibility: var(--thumb-visibility, hidden);
     }
 
     /* Thumb styling - iOS Safari */

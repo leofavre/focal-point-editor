@@ -32,6 +32,8 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * ### Basic functionality
  *
  * - Make AspectRatio appear even if there is no aspect ratio set yet.
+ * - Handle edge case where the image's natural aspect ratio is < 9:16.
+ * - Handle edge case where the image's natural aspect ratio is > 4:1.
  * - Handle loading.
  * - Handle errors.
  * - Drag image to upload.
@@ -333,16 +335,14 @@ export default function Generator() {
               pointerEvents: showCodeSnippet ? "auto" : "none",
             }}
           />
-          {aspectRatio != null && (
-            <AspectRatioSlider
-              aspectRatio={aspectRatio}
-              aspectRatioList={aspectRatioList}
-              onAspectRatioChange={setAspectRatio}
-              data-component="AspectRatioSlider"
-            />
-          )}
         </>
       )}
+      <AspectRatioSlider
+        aspectRatio={aspectRatio}
+        aspectRatioList={aspectRatioList}
+        onAspectRatioChange={setAspectRatio}
+        data-component="AspectRatioSlider"
+      />
     </GeneratorGrid>
   );
 }
