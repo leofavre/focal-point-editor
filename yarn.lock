@@ -1758,6 +1758,7 @@ __metadata:
     react-dom: "npm:^19.2.3"
     react-indexed-db-hook: "npm:^1.0.14"
     react-router-dom: "npm:^7.13.0"
+    type-fest: "npm:^5.4.3"
     typescript: "npm:^5.9.3"
     use-debounced-effect: "npm:^2.0.1"
     vite: "npm:^7.3.1"
@@ -2749,6 +2750,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tagged-tag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tagged-tag@npm:1.0.0"
+  checksum: 10c0/91d25c9ffb86a91f20522cefb2cbec9b64caa1febe27ad0df52f08993ff60888022d771e868e6416cf2e72dab68449d2139e8709ba009b74c6c7ecd4000048d1
+  languageName: node
+  linkType: hard
+
 "tar@npm:^7.5.2":
   version: 7.5.3
   resolution: "tar@npm:7.5.3"
@@ -2826,6 +2834,15 @@ __metadata:
   dependencies:
     punycode: "npm:^2.3.1"
   checksum: 10c0/83130df2f649228aa91c17754b66248030a3af34911d713b5ea417066fa338aa4bc8668d06bd98aa21a2210f43fc0a3db8b9099e7747fb5830e40e39a6a1058e
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^5.4.3":
+  version: 5.4.3
+  resolution: "type-fest@npm:5.4.3"
+  dependencies:
+    tagged-tag: "npm:^1.0.0"
+  checksum: 10c0/daea168fbd24db08d0a616254d18b8b454f40be48fbe1c546693c367f65b2040a3507c5b0f8e19397633aa93f552dba38c39f8c730696a3eb07cd6fba8380b09
   languageName: node
   linkType: hard
 

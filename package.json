@@ -30,6 +30,7 @@
     "@types/jsdom": "^27",
     "@types/lodash": "^4.17.23",
     "jsdom": "^27.4.0",
+    "type-fest": "^5.4.3",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"
