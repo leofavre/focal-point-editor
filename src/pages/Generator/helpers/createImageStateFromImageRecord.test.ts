@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ImageRecord } from "../../../types";
+import { createMockImageRecord } from "../../../test-utils/mocks";
 import { createImageStateFromImageRecord } from "./createImageStateFromImageRecord";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
@@ -8,18 +8,6 @@ vi.mock("./getNaturalAspectRatioFromImageSrc");
 describe("createImageStateFromImageRecord", () => {
   const mockCreateObjectURL = vi.fn();
   const mockRevokeObjectURL = vi.fn();
-
-  function createImageRecord(overrides: Partial<ImageRecord> = {}): ImageRecord {
-    return {
-      id: "record-1",
-      name: "photo.png",
-      type: "image/png",
-      createdAt: 1234567890,
-      breakpoints: [{ objectPosition: "50% 50%" }],
-      file: new Blob(["fake image"], { type: "image/png" }),
-      ...overrides,
-    };
-  }
 
   beforeEach(() => {
     mockCreateObjectURL.mockReturnValue("blob:https://example.com/abc-123");
@@ -35,15 +23,15 @@ describe("createImageStateFromImageRecord", () => {
   });
 
   it("returns ImageState with url and naturalAspectRatio when successful", async () => {
-    const record = createImageRecord();
+    const record = createMockImageRecord();
 
     const result = await createImageStateFromImageRecord(record);
 
     expect(result).toEqual({
-      name: "photo.png",
+      name: "test.png",
       url: "blob:https://example.com/abc-123",
       type: "image/png",
-      createdAt: 1234567890,
+      createdAt: 1000,
       naturalAspectRatio: 1.5,
       breakpoints: [{ objectPosition: "50% 50%" }],
     });
@@ -51,7 +39,7 @@ describe("createImageStateFromImageRecord", () => {
 
   it("creates blob URL from record file", async () => {
     const file = new Blob(["content"], { type: "image/jpeg" });
-    const record = createImageRecord({ file });
+    const record = createMockImageRecord({ file });
 
     await createImageStateFromImageRecord(record);
 
@@ -60,7 +48,7 @@ describe("createImageStateFromImageRecord", () => {
   });
 
   it("gets natural aspect ratio from blob URL", async () => {
-    const record = createImageRecord();
+    const record = createMockImageRecord();
 
     await createImageStateFromImageRecord(record);
 
@@ -69,7 +57,7 @@ describe("createImageStateFromImageRecord", () => {
   });
 
   it("preserves all record metadata in result", async () => {
-    const record = createImageRecord({
+    const record = createMockImageRecord({
       name: "custom-name.jpg",
       type: "image/jpeg",
       createdAt: 999,
@@ -88,7 +76,7 @@ describe("createImageStateFromImageRecord", () => {
     const loadError = new Error("Failed to load image");
     vi.mocked(getNaturalAspectRatioFromImageSrc).mockRejectedValue(loadError);
 
-    await expect(createImageStateFromImageRecord(createImageRecord())).rejects.toThrow(
+    await expect(createImageStateFromImageRecord(createMockImageRecord())).rejects.toThrow(
       "Failed to load image",
     );
 
@@ -101,7 +89,7 @@ describe("createImageStateFromImageRecord", () => {
       throw new Error("Quota exceeded");
     });
 
-    await expect(createImageStateFromImageRecord(createImageRecord())).rejects.toThrow(
+    await expect(createImageStateFromImageRecord(createMockImageRecord())).rejects.toThrow(
       "Quota exceeded",
     );
 
