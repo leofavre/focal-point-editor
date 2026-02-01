@@ -13,6 +13,7 @@ import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 import type { ImageDraftState, ImageState, ObjectPositionString } from "../../types";
 import { GeneratorGrid, ToggleBar } from "./Generator.styled";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
+import { getNaturalAspectRatioFromImageSrc } from "./helpers/getNaturalAspectRatioFromImageSrc";
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 
@@ -344,13 +345,4 @@ export default function Generator() {
       )}
     </GeneratorGrid>
   );
-}
-
-function getNaturalAspectRatioFromImageSrc(url: string) {
-  return new Promise<number>((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img.naturalWidth / img.naturalHeight);
-    img.onerror = () => reject(new Error("Failed to load image"));
-    img.src = url;
-  });
 }
