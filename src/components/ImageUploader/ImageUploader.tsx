@@ -20,12 +20,7 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
     let naturalAspectRatio: number;
 
     try {
-      naturalAspectRatio = await new Promise<number>((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img.naturalWidth / img.naturalHeight);
-        img.onerror = () => reject(new Error("Failed to load image"));
-        img.src = blobUrl;
-      });
+      naturalAspectRatio = await getNaturalAspectRatioFromImageSrc(blobUrl);
     } catch (error) {
       console.error("Error loading image:", error);
 
@@ -62,4 +57,13 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
       />
     </ImageUploaderForm>
   );
+}
+
+function getNaturalAspectRatioFromImageSrc(url: string) {
+  return new Promise<number>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img.naturalWidth / img.naturalHeight);
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = url;
+  });
 }
