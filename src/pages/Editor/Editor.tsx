@@ -247,6 +247,18 @@ export default function Editor() {
     [imageId, imageCount],
   );
 
+  if (!image) {
+    return (
+      <EditorGrid>
+        <ImageUploader
+          ref={fileInputRef}
+          onImageUpload={handleImageUpload}
+          data-component="ImageUploader"
+        />
+      </EditorGrid>
+    );
+  }
+
   return (
     <EditorGrid>
       <ImageUploader

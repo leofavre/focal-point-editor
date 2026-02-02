@@ -18,6 +18,12 @@ export const EditorGrid = styled.div`
     grid-row: 1;
     grid-column: 2;
     margin-right: auto;
+
+    &:nth-child(1):nth-last-child(1) {
+      grid-row: 1 / 4;
+      grid-column: 2;
+      margin: 0;
+    }
   }
 
   [data-component="ToggleBar"] {
