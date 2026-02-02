@@ -19,6 +19,10 @@ export const ImageUploaderForm = styled.form`
     background-color: #edf2f7;
     border-color: #cbd5e0;
   }
+
+  * {
+    cursor: pointer;
+  }
 `;
 
 export const DropZone = styled.label`
@@ -61,7 +65,6 @@ export const BrowseButton = styled.span`
   background-color: #4285f4;
   border: none;
   border-radius: 0.375rem;
-  cursor: pointer;
   transition: background-color 0.15s ease;
 
   &:hover {

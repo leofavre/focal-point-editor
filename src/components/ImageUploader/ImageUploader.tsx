@@ -7,7 +7,8 @@ import {
   useState,
 } from "react";
 import { CloudUploadIcon } from "../../icons/CloudUploadIcon";
-import type { ImageDraftState } from "../../types";
+import { parseBooleanDataAttribute } from "./helpers/parseBooleanDataAttribute";
+import { processImageFiles } from "./helpers/processImageFiles";
 import {
   BrowseButton,
   DropZone,
@@ -27,8 +28,9 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
   }) satisfies typeof onImageUpload;
 
   const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    processImageFiles(event.currentTarget.files, stableOnImageUpload);
     event.currentTarget.value = "";
+    const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
+    stableOnImageUpload(imageDraftStatesAndFiles);
   }, []);
 
   const handleDragOver = useCallback((event: DragEvent<HTMLFormElement>) => {
@@ -47,7 +49,8 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
     event.preventDefault();
     event.stopPropagation();
     setIsDragOver(false);
-    processImageFiles(event.dataTransfer.files, stableOnImageUpload);
+    const imageDraftStatesAndFiles = processImageFiles(event.dataTransfer.files);
+    stableOnImageUpload(imageDraftStatesAndFiles);
   }, []);
 
   const handleFormSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -82,34 +85,4 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
       </DropZone>
     </ImageUploaderForm>
   );
-}
-
-function processImageFiles(
-  files: FileList | null,
-  onUpload: (result: ImageDraftStateAndFile[]) => void,
-): void {
-  if (files == null || files.length === 0) return;
-
-  const result: ImageDraftStateAndFile[] = [];
-
-  for (const file of Array.from(files)) {
-    if (!file.type.startsWith("image/")) continue;
-
-    const imageDraftState: ImageDraftState = {
-      name: file.name,
-      type: file.type,
-      createdAt: Date.now(),
-      breakpoints: [],
-    };
-
-    result.push({ imageDraftState, file });
-  }
-
-  if (result.length > 0) {
-    onUpload(result);
-  }
-}
-
-function parseBooleanDataAttribute(value: boolean | undefined): string | undefined {
-  return value ? "" : undefined;
 }
