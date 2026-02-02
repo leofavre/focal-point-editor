@@ -51,9 +51,9 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * - Breakpoints with container queries.
  * - Undo/redo (needs state tracking).
- * - Maybe make a browser extension?.
- * - Maybe make a React component?.
- * - Maybe make a native custom element?.
+ * - Maybe make a browser extension?
+ * - Maybe make a React component?
+ * - Maybe make a native custom element?
  */
 export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);

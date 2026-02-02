@@ -1,7 +1,8 @@
 import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
-// https://vite.dev/config/
+/** @see https://vite.dev/config/ */
 export default defineConfig({
   plugins: [
     react({
@@ -9,6 +10,10 @@ export default defineConfig({
       babel: {
         plugins: ["@emotion/babel-plugin"],
       },
+    }),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: false,
     }),
   ],
   test: {
