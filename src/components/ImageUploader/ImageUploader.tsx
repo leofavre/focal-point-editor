@@ -22,16 +22,21 @@ import {
 } from "./ImageUploader.styled";
 import type { ImageUploaderProps } from "./types";
 
-export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProps) {
+export function ImageUploader({ ref, onImageUpload, onImagesUpload, ...rest }: ImageUploaderProps) {
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const stableOnImageUpload = useEffectEvent((event: ImageDraftStateAndFile[]) => {
-    onImageUpload?.(event);
+  const stableOnImageUpload = useEffectEvent((draftAndFile: ImageDraftStateAndFile | undefined) => {
+    onImageUpload?.(draftAndFile);
   }) satisfies typeof onImageUpload;
+
+  const stableOnImagesUpload = useEffectEvent((draftsAndFiles: ImageDraftStateAndFile[]) => {
+    onImagesUpload?.(draftsAndFiles);
+  }) satisfies typeof onImagesUpload;
 
   const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
-    stableOnImageUpload(imageDraftStatesAndFiles);
+    stableOnImageUpload(imageDraftStatesAndFiles[0]);
+    stableOnImagesUpload(imageDraftStatesAndFiles);
     event.currentTarget.value = "";
   }, []);
 
@@ -52,7 +57,8 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
     event.stopPropagation();
     setIsDragOver(false);
     const imageDraftStatesAndFiles = processImageFiles(event.dataTransfer.files);
-    stableOnImageUpload(imageDraftStatesAndFiles);
+    stableOnImageUpload(imageDraftStatesAndFiles[0]);
+    stableOnImagesUpload(imageDraftStatesAndFiles);
   }, []);
 
   const handleFormSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -74,7 +80,7 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
           id="image-upload"
           type="file"
           accept="image/*"
-          multiple
+          multiple={onImagesUpload != null}
           onChange={handleFileChange}
         />
         <DropZone htmlFor="image-upload">

@@ -101,10 +101,10 @@ export default function Editor() {
   const navigate = useNavigate();
 
   const handleImageUpload = useCallback(
-    async (event: ImageDraftStateAndFile[]) => {
-      const { imageDraft, file } = event[0];
+    async (draftAndFile: ImageDraftStateAndFile | undefined) => {
+      if (draftAndFile == null) return;
 
-      if (imageDraft == null || file == null) return;
+      const { imageDraft, file } = draftAndFile;
 
       let nextImageId: string | undefined;
 

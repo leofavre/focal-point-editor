@@ -8,11 +8,8 @@ import { LandingImageCell } from "./LandingImageCell/LandingImageCell";
 export default function Landing() {
   const { images, addImages } = usePersistedImages();
 
-  const handleImageUpload = useCallback(
-    async (event: ImageDraftStateAndFile[]) => {
-      const draftsAndFiles = event.filter(
-        (item): item is ImageDraftStateAndFile => item.imageDraft != null && item.file != null,
-      );
+  const handleImagesUpload = useCallback(
+    async (draftsAndFiles: ImageDraftStateAndFile[]) => {
       await addImages(draftsAndFiles);
     },
     [addImages],
@@ -27,7 +24,7 @@ export default function Landing() {
         your important subject stays in frame.
       </Description>
       <MosaicGrid data-component="MosaicGrid">
-        <ImageUploader data-component="ImageUploader" onImageUpload={handleImageUpload} />
+        <ImageUploader data-component="ImageUploader" onImagesUpload={handleImagesUpload} />
         {(images ?? []).map((imageRecord) => (
           <LandingImageCell key={imageRecord.id} imageRecord={imageRecord} />
         ))}
