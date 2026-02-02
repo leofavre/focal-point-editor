@@ -7,6 +7,10 @@ export const LandingGrid = styled.main`
   gap: 1rem;
   margin: 1rem;
 
+  [data-component="ImageUploader"] {
+    grid-column: 1 / -1;
+  }
+
   [data-component="MosaicGrid"] {
     grid-column: 2;
     grid-row: 2;
@@ -23,11 +27,6 @@ export const MosaicGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
   grid-auto-rows: minmax(12.5rem, 1fr);
   gap: 1rem;
-`;
-
-export const Cell = styled.div`
-  background-color: #fd4;
-  aspect-ratio: 1 / 1;
 `;
 
 export const Title = styled.div``;
