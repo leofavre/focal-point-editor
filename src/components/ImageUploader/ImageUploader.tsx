@@ -6,8 +6,8 @@ import {
   useEffectEvent,
   useState,
 } from "react";
+import { parseBooleanDataAttribute } from "../../helpers/parseBooleanDataAttribute";
 import { CloudUploadIcon } from "../../icons/CloudUploadIcon";
-import { parseBooleanDataAttribute } from "./helpers/parseBooleanDataAttribute";
 import { processImageFiles } from "./helpers/processImageFiles";
 import {
   BrowseButton,
