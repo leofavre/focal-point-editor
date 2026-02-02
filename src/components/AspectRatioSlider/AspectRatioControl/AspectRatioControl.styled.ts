@@ -6,6 +6,8 @@ export const Slider = styled.div`
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  /* Compensation so that the ruler snaps to the grid lines */
+  margin-top: -12px;
 
   input {
     width: 100%;
