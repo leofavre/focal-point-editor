@@ -32,8 +32,9 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
+ * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Handle loading.
- * - Handle errors.
+ * - Handle errors in a consistent way. Review all try/catch blocks.
  * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
@@ -106,14 +107,19 @@ export default function Editor() {
 
       if (imageDraftState == null || file == null) return;
 
+      let nextImageId: string | undefined;
+
       try {
-        const nextImageId = await addImage(imageDraftState, file);
+        nextImageId = await addImage(imageDraftState, file);
         console.log("uploaded image with id", nextImageId);
-        await navigate(`/${nextImageId}`);
-        console.log("navigated to", `/${nextImageId}`);
       } catch (error) {
         console.error("Error saving image to database:", error);
       }
+
+      if (nextImageId == null) return;
+
+      await navigate(`/${nextImageId}`);
+      console.log("navigated to", `/${nextImageId}`);
     },
     [addImage, navigate],
   );
@@ -247,7 +253,15 @@ export default function Editor() {
     [imageId, imageCount],
   );
 
-  if (!image) {
+  /**
+   * @todo
+   *
+   * ### Handle states
+   *
+   * - `!imageId` means that we are uploading a new image.
+   * - `imageId && !image` means that the image is either loading or not found.
+   */
+  if (!imageId || !image) {
     return (
       <EditorGrid>
         <ImageUploader

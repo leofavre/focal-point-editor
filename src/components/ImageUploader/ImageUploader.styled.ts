@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 
 export const ImageUploaderContainer = styled.div`
-  container-type: inline-size;
+  container-type: size;
   container-name: image-uploader;
 `;
 
