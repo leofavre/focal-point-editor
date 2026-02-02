@@ -8,6 +8,7 @@ import {
 } from "react";
 import { parseBooleanDataAttribute } from "../../helpers/parseBooleanDataAttribute";
 import { CloudUploadIcon } from "../../icons/CloudUploadIcon";
+import type { ImageDraftStateAndFile } from "../../types";
 import { processImageFiles } from "./helpers/processImageFiles";
 import {
   BrowseButton,
@@ -19,7 +20,7 @@ import {
   InstructionText,
   OrDivider,
 } from "./ImageUploader.styled";
-import type { ImageDraftStateAndFile, ImageUploaderProps } from "./types";
+import type { ImageUploaderProps } from "./types";
 
 export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProps) {
   const [isDragOver, setIsDragOver] = useState(false);

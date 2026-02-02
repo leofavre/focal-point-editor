@@ -302,7 +302,7 @@ describe("usePersistedImages", () => {
       act(async () => {
         await result.current.addImage(imageState, testFile);
       }),
-    ).rejects.toThrow("IndexedDB write failed");
+    ).rejects.toThrow("Failed to add image");
   });
 
   it("propagates errors when getImage fails", async () => {

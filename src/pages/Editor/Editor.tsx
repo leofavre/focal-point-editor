@@ -6,12 +6,11 @@ import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/use
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
 import { FocusPointEditor } from "../../components/FocusPointEditor/FocusPointEditor";
 import { ImageUploader } from "../../components/ImageUploader/ImageUploader";
-import type { ImageDraftStateAndFile } from "../../components/ImageUploader/types";
 import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
-import type { ImageState, ObjectPositionString } from "../../types";
+import type { ImageDraftStateAndFile, ImageState, ObjectPositionString } from "../../types";
 import { EditorGrid, ToggleBar } from "./Editor.styled";
 import { createImageStateFromImageRecord } from "./helpers/createImageStateFromImageRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
@@ -103,14 +102,14 @@ export default function Editor() {
 
   const handleImageUpload = useCallback(
     async (event: ImageDraftStateAndFile[]) => {
-      const { imageDraftState, file } = event[0];
+      const { imageDraft, file } = event[0];
 
-      if (imageDraftState == null || file == null) return;
+      if (imageDraft == null || file == null) return;
 
       let nextImageId: string | undefined;
 
       try {
-        nextImageId = await addImage(imageDraftState, file);
+        nextImageId = await addImage(imageDraft, file);
         console.log("uploaded image with id", nextImageId);
       } catch (error) {
         console.error("Error saving image to database:", error);

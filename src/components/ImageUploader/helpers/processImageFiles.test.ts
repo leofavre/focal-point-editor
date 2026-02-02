@@ -35,12 +35,12 @@ describe("processImageFiles", () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].file).toBe(file);
-    expect(result[0].imageDraftState).toMatchObject({
+    expect(result[0].imageDraft).toMatchObject({
       name: "photo.png",
       type: "image/png",
       breakpoints: [],
     });
-    expect(result[0].imageDraftState.createdAt).toBeTypeOf("number");
+    expect(result[0].imageDraft.createdAt).toBeTypeOf("number");
   });
 
   it("filters out non-image files and keeps image files", () => {

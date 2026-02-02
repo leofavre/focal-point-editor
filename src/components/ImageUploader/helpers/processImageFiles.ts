@@ -1,5 +1,4 @@
-import type { ImageDraftState } from "../../../types";
-import type { ImageDraftStateAndFile } from "../types";
+import type { ImageDraftState, ImageDraftStateAndFile } from "../../../types";
 
 /**
  * Filters image files from a `FileList` and builds `ImageDraftStateAndFile` pairs for each.
@@ -15,14 +14,14 @@ export function processImageFiles(files: FileList | null): ImageDraftStateAndFil
   for (const file of Array.from(files)) {
     if (!file.type.startsWith("image/")) continue;
 
-    const imageDraftState: ImageDraftState = {
+    const imageDraft: ImageDraftState = {
       name: file.name,
       type: file.type,
       createdAt: Date.now(),
       breakpoints: [],
     };
 
-    result.push({ imageDraftState, file });
+    result.push({ imageDraft, file });
   }
 
   return result;

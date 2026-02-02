@@ -10,7 +10,8 @@ import type { ImageDraftState, ImageRecord } from "../../../types";
  *
  * @returns Object with:
  * - `images`: all persisted image records (undefined until loaded).
- * - `addImage`: save a new image record, returns its id.
+ * - `addImage`: save a single image via addImages; returns its id.
+ * - `addImages`: save multiple image records, then refresh once; returns ids of successful adds.
  * - `getImage`: fetch one image record by id.
  * - `updateImage`: merge partial image record into an existing record.
  * - `deleteImage`: remove an image record by id.
@@ -19,6 +20,9 @@ import type { ImageDraftState, ImageRecord } from "../../../types";
 export function usePersistedImages(): {
   images: ImageRecord[] | undefined;
   addImage: (imageDraftState: ImageDraftState, file: Blob) => Promise<string>;
+  addImages: (
+    draftsAndFiles: Array<{ imageDraft: ImageDraftState; file: Blob }>,
+  ) => Promise<string[]>;
   getImage: (id: string) => Promise<ImageRecord | undefined>;
   updateImage: (id: string, updates: Partial<ImageRecord>) => Promise<string | undefined>;
   deleteImage: (id: string) => Promise<string | undefined>;
@@ -40,21 +44,45 @@ export function usePersistedImages(): {
     refreshImages();
   }, [refreshImages]);
 
-  const addImage = useCallback(
-    async (imageDraftState: ImageDraftState, file: Blob) => {
-      const id = crypto.randomUUID();
+  const addImages = useCallback(
+    async (
+      draftsAndFiles: Array<{ imageDraft: ImageDraftState; file: Blob }>,
+    ): Promise<string[]> => {
+      const ids: string[] = [];
+      for (const { imageDraft, file } of draftsAndFiles) {
+        try {
+          const id = crypto.randomUUID();
 
-      const record: ImageRecord = {
-        id,
-        ...imageDraftState,
-        file,
-      };
+          const record: ImageRecord = {
+            id,
+            ...imageDraft,
+            file,
+          };
 
-      await add(record);
-      await refreshImages();
-      return id;
+          await add(record);
+          ids.push(id);
+        } catch (err) {
+          console.error("Error saving image to database:", err);
+        }
+      }
+      if (ids.length > 0) {
+        await refreshImages();
+      }
+      return ids;
     },
     [add, refreshImages],
+  );
+
+  const addImage = useCallback(
+    async (imageDraftState: ImageDraftState, file: Blob): Promise<string> => {
+      const ids = await addImages([{ imageDraft: imageDraftState, file }]);
+      const id = ids[0];
+      if (id == null) {
+        throw new Error("Failed to add image");
+      }
+      return id;
+    },
+    [addImages],
   );
 
   const getImage = useCallback(
@@ -98,6 +126,7 @@ export function usePersistedImages(): {
   return {
     images,
     addImage,
+    addImages,
     getImage,
     updateImage,
     deleteImage,

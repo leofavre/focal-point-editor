@@ -19,6 +19,11 @@ export type ImageDraftState = {
   breakpoints: (Breakpoint | AdvancedBreakpoint)[];
 };
 
+export type ImageDraftStateAndFile = {
+  imageDraft: ImageDraftState;
+  file: File;
+};
+
 export type ImageState = Simplify<
   ImageDraftState & {
     url: string;
