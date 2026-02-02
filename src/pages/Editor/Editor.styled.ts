@@ -18,6 +18,7 @@ export const EditorGrid = styled.div`
     grid-row: 1;
     grid-column: 2;
     margin-right: auto;
+    min-width: 15ch;
 
     &:nth-child(1):nth-last-child(1) {
       grid-row: 1 / 4;

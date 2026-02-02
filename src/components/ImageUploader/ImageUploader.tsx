@@ -14,6 +14,7 @@ import {
   DropZone,
   HiddenControl,
   IconWrapper,
+  ImageUploaderContainer,
   ImageUploaderForm,
   InstructionText,
   OrDivider,
@@ -28,9 +29,9 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
   }) satisfies typeof onImageUpload;
 
   const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    event.currentTarget.value = "";
     const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
     stableOnImageUpload(imageDraftStatesAndFiles);
+    event.currentTarget.value = "";
   }, []);
 
   const handleDragOver = useCallback((event: DragEvent<HTMLFormElement>) => {
@@ -58,31 +59,32 @@ export function ImageUploader({ ref, onImageUpload, ...rest }: ImageUploaderProp
   }, []);
 
   return (
-    <ImageUploaderForm
-      onSubmit={handleFormSubmit}
-      noValidate
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      data-drag-over={parseBooleanDataAttribute(isDragOver)}
-      {...rest}
-    >
-      <HiddenControl
-        ref={ref}
-        id="image-upload"
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleFileChange}
-      />
-      <DropZone htmlFor="image-upload">
-        <IconWrapper>
-          <CloudUploadIcon />
-        </IconWrapper>
-        <InstructionText>Drag and Drop images here</InstructionText>
-        <OrDivider>Or</OrDivider>
-        <BrowseButton>Browse images</BrowseButton>
-      </DropZone>
-    </ImageUploaderForm>
+    <ImageUploaderContainer {...rest}>
+      <ImageUploaderForm
+        onSubmit={handleFormSubmit}
+        noValidate
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        data-drag-over={parseBooleanDataAttribute(isDragOver)}
+      >
+        <HiddenControl
+          ref={ref}
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleFileChange}
+        />
+        <DropZone htmlFor="image-upload">
+          <IconWrapper>
+            <CloudUploadIcon />
+          </IconWrapper>
+          <InstructionText>Drag and Drop images here</InstructionText>
+          <OrDivider>Or</OrDivider>
+          <BrowseButton>Browse images</BrowseButton>
+        </DropZone>
+      </ImageUploaderForm>
+    </ImageUploaderContainer>
   );
 }

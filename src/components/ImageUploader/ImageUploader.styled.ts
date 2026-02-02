@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
 
+export const ImageUploaderContainer = styled.div`
+  container-type: inline-size;
+  container-name: image-uploader;
+`;
+
 export const ImageUploaderForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -14,14 +19,20 @@ export const ImageUploaderForm = styled.form`
     background-color 0.15s ease,
     border-color 0.15s ease;
   cursor: pointer;
+  box-sizing: border-box;
+  height: 100%;
+
+  * {
+    cursor: pointer;
+  }
 
   &[data-drag-over] {
     background-color: #edf2f7;
     border-color: #cbd5e0;
   }
 
-  * {
-    cursor: pointer;
+  @container image-uploader (max-inline-size: 40rem) {
+    padding: 0;
   }
 `;
 
@@ -39,6 +50,10 @@ export const IconWrapper = styled.span`
   align-items: center;
   justify-content: center;
   color: #a0aec0;
+
+  @container image-uploader (max-inline-size: 40rem) {
+    display: none;
+  }
 `;
 
 export const InstructionText = styled.span`
@@ -46,12 +61,20 @@ export const InstructionText = styled.span`
   font-weight: 500;
   color: #4a5568;
   text-align: center;
+
+  @container image-uploader (max-inline-size: 40rem) {
+    display: none;
+  }
 `;
 
 export const OrDivider = styled.span`
   font-size: 0.875rem;
   font-weight: 600;
   color: #4a5568;
+
+  @container image-uploader (max-inline-size: 40rem) {
+    display: none;
+  }
 `;
 
 export const BrowseButton = styled.span`
@@ -66,6 +89,7 @@ export const BrowseButton = styled.span`
   border: none;
   border-radius: 0.375rem;
   transition: background-color 0.15s ease;
+  width: 12ch;
 
   &:hover {
     background-color: #3367d6;
