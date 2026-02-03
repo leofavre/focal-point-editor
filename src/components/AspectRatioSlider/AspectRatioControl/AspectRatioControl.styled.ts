@@ -11,7 +11,7 @@ export const Slider = styled.div`
     margin: 0;
     padding: 0;
     width: 100%;
-    height: calc(var(--thumb-external-diameter));
+    height: calc(var(--thumb-diameter));
     background: transparent;
     border-radius: 0;
     appearance: none;
