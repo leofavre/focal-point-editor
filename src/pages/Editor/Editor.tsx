@@ -11,6 +11,7 @@ import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 import type { ImageDraftStateAndFile, ImageState, ObjectPositionString } from "../../types";
+import { Shadow } from "./components/Shadow";
 import { EditorGrid, ToggleBar } from "./Editor.styled";
 import { createImageStateFromImageRecord } from "./helpers/createImageStateFromImageRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
@@ -304,16 +305,19 @@ export default function Editor() {
       {image && (
         <>
           {aspectRatio != null && image.naturalAspectRatio != null && (
-            <FocalPointEditor
-              imageUrl={image.url}
-              aspectRatio={aspectRatio}
-              initialAspectRatio={image.naturalAspectRatio}
-              objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-              showPointMarker={showPointMarker ?? false}
-              showGhostImage={showGhostImage ?? false}
-              onObjectPositionChange={handleObjectPositionChange}
-              onImageError={handleImageError}
-            />
+            <>
+              <FocalPointEditor
+                imageUrl={image.url}
+                aspectRatio={aspectRatio}
+                initialAspectRatio={image.naturalAspectRatio}
+                objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+                showPointMarker={showPointMarker ?? false}
+                showGhostImage={showGhostImage ?? false}
+                onObjectPositionChange={handleObjectPositionChange}
+                onImageError={handleImageError}
+              />
+              <Shadow />
+            </>
           )}
           <CodeSnippet
             src={image.name}

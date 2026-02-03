@@ -14,6 +14,7 @@ export const EditorGrid = styled.main`
   width: calc(100dvw - 2rem);
   height: calc(100dvh - 2rem);
   overflow: hidden;
+  isolation: isolate;
 
   [data-component="ImageUploader"] {
     grid-row: 1;
@@ -43,7 +44,14 @@ export const EditorGrid = styled.main`
 
   [data-component="FocalPointEditor"] {
     grid-row: 1 / 3;
-    grid-column: 2;
+    grid-column: 1 / -1;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  [data-component="Shadow"] {
+    grid-row: 1 / 3;
+    grid-column: 1 / -1;
     z-index: 0;
   }
 
