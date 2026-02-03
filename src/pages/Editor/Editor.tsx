@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
+import { ReactComponent as ReadmeContent } from "../../../README.md";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
@@ -41,6 +42,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
  * - CodeSnippet with copy button.
  * - Add integration tests (which tool to use?).
+ * - Make sure website works with Google translation.
  *
  * ### Landing page
  *
@@ -58,7 +60,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  */
 export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const { imageId } = useParams<{ imageId: string }>();
   const [image, setImage] = useState<ImageState | null>(null);
   const { images, addImage, updateImage } = usePersistedImages();
@@ -187,7 +188,7 @@ export default function Editor() {
   const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
 
   /**
-   * Update the object position of the image in the database when the user interacts with it,
+   * Update the object position of the image in the database when the user interacts with it
    * either by dragging the focal point or the image itself.
    */
   useDebouncedEffect(
@@ -259,14 +260,24 @@ export default function Editor() {
    *
    * ### Handle states
    *
-   * - `!imageId` means that we are uploading a new image.
+   * - `!imageId` means that we are on the landing page.
    * - `imageId && !image` means that the image is either loading or not found.
    */
-  if (!imageId || !image) {
+  if (!imageId) {
     return (
-      <EditorGrid>
+      <>
+        <ReadmeContent />
         <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
-      </EditorGrid>
+      </>
+    );
+  }
+
+  if (imageId && !image) {
+    return (
+      <>
+        <ReadmeContent />
+        <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
+      </>
     );
   }
 

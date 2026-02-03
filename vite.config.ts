@@ -1,10 +1,12 @@
 import react from "@vitejs/plugin-react";
+import { Mode, plugin as mdPlugin } from "vite-plugin-markdown";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
 /** @see https://vite.dev/config/ */
 export default defineConfig({
   plugins: [
+    mdPlugin({ mode: [Mode.REACT] }),
     react({
       jsxImportSource: "@emotion/react",
       babel: {
