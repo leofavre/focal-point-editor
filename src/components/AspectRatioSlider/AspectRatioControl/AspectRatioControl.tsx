@@ -78,12 +78,13 @@ export function AspectRatioControl({
 
   return (
     <Slider
-      {...rest}
+      data-component="AspectRatioControl"
       css={{
         "--initial-position": initialPosition ?? 1,
         "--thumb-visibility":
           initialPosition != null && currentPosition != null ? "visible" : "hidden",
       }}
+      {...rest}
     >
       <input
         ref={ref}

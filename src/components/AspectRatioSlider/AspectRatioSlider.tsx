@@ -10,14 +10,13 @@ export function AspectRatioSlider({
   ...rest
 }: AspectRatioControlProps) {
   return (
-    <AspectRatioSliderWrapper {...rest}>
+    <AspectRatioSliderWrapper data-component="AspectRatioSlider" {...rest}>
       <AspectRatioControl
         aspectRatio={aspectRatio}
         aspectRatioList={aspectRatioList}
         onAspectRatioChange={onAspectRatioChange}
-        data-component="AspectRatioControl"
       />
-      <AspectRatioRuler aspectRatioList={aspectRatioList} data-component="AspectRatioRuler" />
+      <AspectRatioRuler aspectRatioList={aspectRatioList} />
     </AspectRatioSliderWrapper>
   );
 }

@@ -12,7 +12,7 @@ export function CodeSnippet({ ref, src, objectPosition, ...rest }: CodeSnippetPr
 
   return (
     <CodeBlock code={codeSnippet} language="html">
-      <Code ref={ref} {...rest}>
+      <Code data-component="CodeSnippet" ref={ref} {...rest}>
         <Line>
           <LineNumber />
           <LineContent>

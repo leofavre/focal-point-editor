@@ -66,7 +66,7 @@ export function ImageUploader({ ref, onImageUpload, onImagesUpload, ...rest }: I
   }, []);
 
   return (
-    <ImageUploaderContainer {...rest}>
+    <ImageUploaderContainer data-component="ImageUploader" {...rest}>
       <ImageUploaderForm
         onSubmit={handleFormSubmit}
         noValidate

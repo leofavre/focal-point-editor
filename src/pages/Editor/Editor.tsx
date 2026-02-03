@@ -264,22 +264,14 @@ export default function Editor() {
   if (!imageId || !image) {
     return (
       <EditorGrid>
-        <ImageUploader
-          ref={fileInputRef}
-          onImageUpload={handleImageUpload}
-          data-component="ImageUploader"
-        />
+        <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
       </EditorGrid>
     );
   }
 
   return (
     <EditorGrid>
-      <ImageUploader
-        ref={fileInputRef}
-        onImageUpload={handleImageUpload}
-        data-component="ImageUploader"
-      />
+      <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
       <ToggleBar data-component="ToggleBar">
         {showPointMarker != null && (
           <ToggleButton
@@ -321,13 +313,11 @@ export default function Editor() {
               showGhostImage={showGhostImage ?? false}
               onObjectPositionChange={handleObjectPositionChange}
               onImageError={handleImageError}
-              data-component="FocalPointEditor"
             />
           )}
           <CodeSnippet
             src={image.name}
             objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-            data-component="CodeSnippet"
             css={{
               opacity: showCodeSnippet ? 1 : 0,
               pointerEvents: showCodeSnippet ? "auto" : "none",
@@ -339,7 +329,6 @@ export default function Editor() {
         aspectRatio={aspectRatio}
         aspectRatioList={aspectRatioList}
         onAspectRatioChange={setAspectRatio}
-        data-component="AspectRatioSlider"
       />
     </EditorGrid>
   );

@@ -127,6 +127,7 @@ export function FocalPointEditor({
 
   return (
     <FocalPointEditorWrapper
+      data-component="FocalPointEditor"
       aspectRatio={aspectRatio}
       cursor={cursor}
       onPointerDown={handlePointerDown}
