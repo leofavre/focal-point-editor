@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
 import { Code, CodeWrapper, CopyButton, Line, LineContent, LineNumber } from "./CodeSnippet.styled";
 import type { CodeSnippetProps } from "./types";
@@ -12,6 +12,8 @@ const getCodeSnippet = ({ src, objectPosition }: CodeSnippetProps) => `<img
   "
 />`;
 
+const COPY_RESET_MS = 2_000;
+
 export function CodeSnippet({
   ref,
   src,
@@ -22,6 +24,7 @@ export function CodeSnippet({
 }: CodeSnippetProps) {
   const codeSnippet = getCodeSnippet({ src, objectPosition });
   const [copied, setCopied] = useState(copiedProp);
+  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setCopied(copiedProp);
@@ -30,8 +33,16 @@ export function CodeSnippet({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(codeSnippet);
+      if (copyResetTimeoutRef.current) {
+        clearTimeout(copyResetTimeoutRef.current);
+      }
       setCopied(true);
       onCopiedChange?.(true);
+      copyResetTimeoutRef.current = setTimeout(() => {
+        setCopied(false);
+        onCopiedChange?.(false);
+        copyResetTimeoutRef.current = null;
+      }, COPY_RESET_MS);
     } catch {
       setCopied(false);
       onCopiedChange?.(false);
