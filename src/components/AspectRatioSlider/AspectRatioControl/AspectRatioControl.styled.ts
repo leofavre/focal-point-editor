@@ -29,8 +29,8 @@ export const Slider = styled.div`
         transparent 0%,
         transparent calc(var(--thumb-radius)),
         #94a3b8 calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--initial-position)),
-        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--initial-position)),
+        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
         #3b82f6 calc(100% - var(--thumb-radius)),
         transparent calc(100% - var(--thumb-radius)),
         transparent 100%
@@ -46,8 +46,8 @@ export const Slider = styled.div`
         transparent 0%,
         transparent calc(var(--thumb-radius)),
         #94a3b8 calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--initial-position)),
-        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--initial-position)),
+        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
         #3b82f6 calc(100% - var(--thumb-radius)),
         transparent calc(100% - var(--thumb-radius)),
         transparent 100%

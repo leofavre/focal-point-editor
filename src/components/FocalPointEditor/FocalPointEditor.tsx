@@ -154,6 +154,7 @@ export function FocalPointEditor({
           aspectRatio: initialAspectRatio,
           backgroundImage: `url(${imageUrl})`,
           opacity: showGhostImage ? 0.25 : 0,
+          pointerEvents: showGhostImage ? "auto" : "none",
           cursor,
         }}
         aria-hidden={!showGhostImage}
@@ -163,6 +164,7 @@ export function FocalPointEditor({
           opacity: showPointMarker ? 1 : 0,
           left: `${objectPositionX}%`,
           top: `${objectPositionY}%`,
+          pointerEvents: showPointMarker ? "auto" : "none",
         }}
         aria-hidden={!showPointMarker}
         onObjectPositionChange={stableOnObjectPositionChange}

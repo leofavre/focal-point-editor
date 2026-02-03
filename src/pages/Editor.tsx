@@ -37,7 +37,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
- * - Focal point not draggable if not visible.
  * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Handle loading.
  * - Handle errors in a consistent way. Review all try/catch blocks.
