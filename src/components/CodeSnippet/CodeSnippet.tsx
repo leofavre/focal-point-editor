@@ -5,7 +5,11 @@ import type { CodeSnippetProps } from "./types";
 
 const getCodeSnippet = ({ src, objectPosition }: CodeSnippetProps) => `<img
   src="${src}"
-  style="object-fit: cover; object-position: ${objectPosition};"
+  style="
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: ${objectPosition};
+  "
 />`;
 
 export function CodeSnippet({

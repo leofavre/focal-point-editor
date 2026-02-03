@@ -59,7 +59,7 @@ export const EditorGrid = styled.main`
     grid-row: 2;
     grid-column: 1 / 4;
     margin: auto 0 auto auto;
-    max-width: 650px;
+    max-width: 45ch;
     z-index: 2;
   }
 
