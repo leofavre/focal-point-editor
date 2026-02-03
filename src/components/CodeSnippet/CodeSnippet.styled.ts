@@ -6,13 +6,46 @@ export const CodeWrapper = styled.div`
   width: 100%;
 `;
 
+export const TabBar = styled.div`
+  display: flex;
+  gap: 0;
+`;
+
+export const TabButton = styled.button`
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #9ca3af;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.375rem 0.375rem 0 0;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &[aria-selected="true"] {
+    color: #e5e7eb;
+    background-color: #111827;
+    border: 1px solid #111827;
+  }
+
+  &:hover:not(:disabled) {
+    color: #e5e7eb;
+    background-color: #111827;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #3b82f6;
+  }
+`;
+
 export const Code = styled(CodeBlock.Code)`
   font-size: 1rem;
   margin: 0;
   box-sizing: border-box;
   background-color: #111827;
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0 0.75rem 0.75rem 0.75rem;
   overflow: auto;
   transition: opacity 0.15s ease;
   `;
@@ -36,7 +69,7 @@ export const LineContent = styled(CodeBlock.LineContent)`
 
 export const CopyButton = styled.button`
   position: absolute;
-  top: 0.75rem;
+  top: 2.5rem;
   right: 0.75rem;
   padding: 0.375rem 0.75rem;
   font-size: 0.8125rem;
@@ -57,6 +90,5 @@ export const CopyButton = styled.button`
 
   &:focus-visible {
     outline: 2px solid #3b82f6;
-    outline-offset: 2px;
   }
 `;

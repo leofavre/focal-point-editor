@@ -22,6 +22,7 @@ import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
 const DEFAULT_SHOW_CODE_SNIPPET = false;
+const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
 const DEFAULT_ASPECT_RATIO = 1;
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 
@@ -39,7 +40,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Handle errors in a consistent way. Review all try/catch blocks.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
- * - CodeSnippet with Tailwind version.
  * - Add integration tests (which tool to use?).
  * - Make sure website works with Google translation.
  *
@@ -94,6 +94,11 @@ export default function Editor() {
   const [showCodeSnippet, setShowCodeSnippet] = usePersistedUIRecord({
     id: "showCodeSnippet",
     value: DEFAULT_SHOW_CODE_SNIPPET,
+  });
+
+  const [codeSnippetLanguage, setCodeSnippetLanguage] = usePersistedUIRecord({
+    id: "codeSnippetLanguage",
+    value: DEFAULT_CODE_SNIPPET_LANGUAGE,
   });
 
   const [codeSnippetCopied, setCodeSnippetCopied] = useState(false);
@@ -190,6 +195,11 @@ export default function Editor() {
     void currentObjectPosition;
     setCodeSnippetCopied(false);
   }, [currentObjectPosition]);
+
+  useEffect(() => {
+    void codeSnippetLanguage;
+    setCodeSnippetCopied(false);
+  }, [codeSnippetLanguage]);
 
   /**
    * Update the object position of the image in the database when the user interacts with it
@@ -337,6 +347,8 @@ export default function Editor() {
           <CodeSnippet
             src={image.name}
             objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+            language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
+            onLanguageChange={setCodeSnippetLanguage}
             copied={codeSnippetCopied}
             onCopiedChange={setCodeSnippetCopied}
             css={{

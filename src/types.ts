@@ -38,11 +38,14 @@ export type ImageRecord = Simplify<
   }
 >;
 
+export type CodeSnippetLanguage = "html" | "tailwind";
+
 export type UIState = {
   aspectRatio: number;
   showPointMarker: boolean;
   showGhostImage: boolean;
   showCodeSnippet: boolean;
+  codeSnippetLanguage: CodeSnippetLanguage;
 };
 
 export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
