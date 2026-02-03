@@ -46,6 +46,7 @@ export const CopyButton = styled.button`
   border: 1px solid #374151;
   border-radius: 0.375rem;
   cursor: pointer;
+  user-select: none;
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 
   &:hover {

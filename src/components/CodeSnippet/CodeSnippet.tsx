@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type ClipboardEvent, useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
 import { Code, CodeWrapper, CopyButton, Line, LineContent, LineNumber } from "./CodeSnippet.styled";
 import { normalizeWhitespaceInQuotes } from "./helpers/normalizeWhitespaceInQuotes";
@@ -31,14 +31,16 @@ export function CodeSnippet({
     setCopied(copiedProp);
   }, [copiedProp]);
 
-  const handleCopyCapture = (event: React.ClipboardEvent) => {
+  const handleCopyCapture = (event: ClipboardEvent) => {
     const { clipboardData } = event;
     if (clipboardData == null) return;
+
     const selection = window.getSelection();
     const selectedText = selection?.toString() ?? "";
     if (selectedText.length === 0) return;
-    event.preventDefault();
 
+    event.preventDefault();
+    clipboardData.clearData();
     clipboardData.setData("text/plain", normalizeWhitespaceInQuotes(selectedText));
   };
 
@@ -46,11 +48,14 @@ export function CodeSnippet({
     try {
       const textToCopy = normalizeWhitespaceInQuotes(codeSnippet);
       await navigator.clipboard.writeText(textToCopy);
+
       if (copyResetTimeoutRef.current) {
         clearTimeout(copyResetTimeoutRef.current);
       }
+
       setCopied(true);
       onCopiedChange?.(true);
+
       copyResetTimeoutRef.current = setTimeout(() => {
         setCopied(false);
         onCopiedChange?.(false);
