@@ -42,6 +42,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Add integration tests (which tool to use?).
  * - Make sure website works with Google translation.
  * - Think about animations and transitions.
+ * - Make image ids more friendly.
  *
  * ### Landing page
  *
