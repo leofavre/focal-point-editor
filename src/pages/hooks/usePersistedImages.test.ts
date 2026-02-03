@@ -86,9 +86,9 @@ describe("usePersistedImages", () => {
       returnedId = await result.current.addImage({ imageDraft, file: testFile });
     });
 
-    expect(returnedId).toBe("new.png");
+    expect(returnedId).toBe("new");
     expect(mockAdd).toHaveBeenCalledWith({
-      id: "new.png",
+      id: "new",
       ...imageDraft,
       file: testFile,
     });
@@ -97,7 +97,7 @@ describe("usePersistedImages", () => {
 
   it("addImage uses collision suffix when filename already exists", async () => {
     const existingRecord = createMockImageRecord({
-      id: "my-photo.jpg",
+      id: "my-photo",
       ...createMockImageDraftState({ name: "My Photo.jpg" }),
       file: testFile,
     });
@@ -115,10 +115,10 @@ describe("usePersistedImages", () => {
       returnedId = await result.current.addImage({ imageDraft, file: testFile });
     });
 
-    expect(returnedId).toBe("my-photo-2.jpg");
+    expect(returnedId).toBe("my-photo-2");
     expect(mockAdd).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: "my-photo-2.jpg",
+        id: "my-photo-2",
         name: "My Photo.jpg",
       }),
     );
