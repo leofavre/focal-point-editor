@@ -37,18 +37,15 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Handle loading.
  * - Handle errors in a consistent way. Review all try/catch blocks.
- * - Drag image to upload.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
- * - CodeSnippet with copy button.
+ * - CodeSnippet with Tailwind version.
  * - Add integration tests (which tool to use?).
  * - Make sure website works with Google translation.
  *
  * ### Landing page
  *
- * - Random square, horizontal, vertical.
- * - Sort by reversed date.
- * - Maybe an explainer Loom?
+ * - Steps and image uploader.
  *
  * ### Advanced functionality
  *
@@ -98,6 +95,8 @@ export default function Editor() {
     id: "showCodeSnippet",
     value: DEFAULT_SHOW_CODE_SNIPPET,
   });
+
+  const [codeSnippetCopied, setCodeSnippetCopied] = useState(false);
 
   const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
 
@@ -186,6 +185,11 @@ export default function Editor() {
   }, [setShowCodeSnippet, setShowPointMarker, setShowGhostImage]);
 
   const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
+
+  useEffect(() => {
+    void currentObjectPosition;
+    setCodeSnippetCopied(false);
+  }, [currentObjectPosition]);
 
   /**
    * Update the object position of the image in the database when the user interacts with it
@@ -333,6 +337,8 @@ export default function Editor() {
           <CodeSnippet
             src={image.name}
             objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+            copied={codeSnippetCopied}
+            onCopiedChange={setCodeSnippetCopied}
             css={{
               opacity: showCodeSnippet ? 1 : 0,
               pointerEvents: showCodeSnippet ? "auto" : "none",

@@ -5,4 +5,6 @@ export type CodeSnippetProps = {
   ref?: RefObject<HTMLPreElement | null>;
   src: string;
   objectPosition: ObjectPositionString;
+  copied?: boolean;
+  onCopiedChange?: (copied: boolean) => void;
 };
