@@ -2,13 +2,13 @@ import { type ClipboardEvent, useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
 import {
   Code,
-  CodeWrapper,
   CopyButton,
   Line,
   LineContent,
   LineNumber,
   TabBar,
   TabButton,
+  Wrapper,
 } from "./CodeSnippet.styled";
 import { normalizeWhitespaceInQuotes } from "./helpers/normalizeWhitespaceInQuotes";
 import type { CodeSnippetProps } from "./types";
@@ -97,7 +97,7 @@ export function CodeSnippet({
   };
 
   return (
-    <CodeWrapper data-component="CodeSnippet" onCopy={handleCopyCapture} {...rest}>
+    <Wrapper data-component="CodeSnippet" onCopy={handleCopyCapture} {...rest}>
       <TabBar role="tablist" aria-label="Code snippet format">
         <TabButton
           type="button"
@@ -129,6 +129,6 @@ export function CodeSnippet({
           </Line>
         </Code>
       </CodeBlock>
-    </CodeWrapper>
+    </Wrapper>
   );
 }

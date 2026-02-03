@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const PointerMarkerWrapper = styled.div`
+export const Wrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;

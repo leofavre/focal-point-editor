@@ -1,8 +1,5 @@
 import { detectProportionalImageHeight } from "../helpers/detectRelativeImageSize";
-import {
-  FocalPointEditorContainer,
-  FocalPointEditorContent,
-} from "./FocalPointEditorWrapper.styled";
+import { Container, Content } from "./FocalPointEditorWrapper.styled";
 import type { FocalPointEditorWrapperProps } from "./types";
 
 export function FocalPointEditorWrapper({
@@ -15,8 +12,8 @@ export function FocalPointEditorWrapper({
   ...rest
 }: FocalPointEditorWrapperProps) {
   return (
-    <FocalPointEditorContainer {...rest}>
-      <FocalPointEditorContent
+    <Container {...rest}>
+      <Content
         css={{
           aspectRatio: aspectRatio ?? "auto",
           height: `${detectProportionalImageHeight({ aspectRatio }) ?? 0}cqmin`,
@@ -27,7 +24,7 @@ export function FocalPointEditorWrapper({
         onPointerUp={onPointerUp}
       >
         {children}
-      </FocalPointEditorContent>
-    </FocalPointEditorContainer>
+      </Content>
+    </Container>
   );
 }

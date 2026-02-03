@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 
-export const ImageUploaderContainer = styled.div`
+export const Container = styled.div`
   container-type: size;
   container-name: image-uploader;
 `;
 
-export const ImageUploaderForm = styled.form`
+export const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -3,6 +3,6 @@
 
 declare module '*.md' {
   import React from 'react'
-  const ReactComponent: React.VFC;
-  export { ReactComponent };
+  const ReadmeContent: React.VFC;
+  export { ReadmeContent };
 }

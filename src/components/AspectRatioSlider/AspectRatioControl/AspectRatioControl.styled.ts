@@ -35,7 +35,6 @@ export const Slider = styled.div`
         transparent calc(100% - var(--thumb-radius)),
         transparent 100%
       );
-
     }
 
     /* Track styling - Firefox */

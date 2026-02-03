@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { CodeBlock } from "react-code-block";
 
-export const CodeWrapper = styled.div`
+export const Wrapper = styled.div`
   position: relative;
   width: 100%;
   transition: all 0.15s ease;

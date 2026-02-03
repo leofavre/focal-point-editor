@@ -1,7 +1,7 @@
 import { AspectRatioControl } from "./AspectRatioControl/AspectRatioControl";
 import type { AspectRatioControlProps } from "./AspectRatioControl/types";
 import { AspectRatioRuler } from "./AspectRatioRuler/AspectRatioRuler";
-import { AspectRatioSliderWrapper } from "./AspectRatioSlider.styled";
+import { Wrapper } from "./AspectRatioSlider.styled";
 
 export function AspectRatioSlider({
   aspectRatio,
@@ -10,13 +10,13 @@ export function AspectRatioSlider({
   ...rest
 }: AspectRatioControlProps) {
   return (
-    <AspectRatioSliderWrapper data-component="AspectRatioSlider" {...rest}>
+    <Wrapper data-component="AspectRatioSlider" {...rest}>
       <AspectRatioControl
         aspectRatio={aspectRatio}
         aspectRatioList={aspectRatioList}
         onAspectRatioChange={onAspectRatioChange}
       />
       <AspectRatioRuler aspectRatioList={aspectRatioList} />
-    </AspectRatioSliderWrapper>
+    </Wrapper>
   );
 }

@@ -1,10 +1,5 @@
 import styled from "@emotion/styled";
 
-export const ToggleBar = styled.div`
-  display: flex;
-  gap: 0.25rem;
-`;
-
 export const EditorGrid = styled.main`
   display: grid;
   grid-template-columns: 1fr minmax(20rem, 75rem) 1fr;

@@ -1,22 +1,24 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
-import { ReactComponent as ReadmeContent } from "../../../README.md";
+import { ReadmeContent } from "../../../README.md";
 import { AspectRatioSlider } from "../../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
 import { FocalPointEditor } from "../../components/FocalPointEditor/FocalPointEditor";
 import { ImageUploader } from "../../components/ImageUploader/ImageUploader";
+import { ToggleBar } from "../../components/ToggleBar/ToggleBar";
 import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
 import { CodeSnippetToggleIcon } from "../../icons/CodeSnippetToggleIcon";
 import { GhostImageToggleIcon } from "../../icons/GhostImageToggleIcon";
 import { PointMarkerToggleIcon } from "../../icons/PointMarkerToggleIcon";
 import type { ImageDraftStateAndFile, ImageState, ObjectPositionString } from "../../types";
-import { EditorGrid, ToggleBar } from "./Editor.styled";
+import { EditorGrid } from "./Editor.styled";
 import { createImageStateFromImageRecord } from "./helpers/createImageStateFromImageRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
+import { LandingGrid } from "./Landing.styled";
 
 const DEFAULT_SHOW_POINT_MARKER = false;
 const DEFAULT_SHOW_GHOST_IMAGE = false;
@@ -280,26 +282,26 @@ export default function Editor() {
    */
   if (!imageId) {
     return (
-      <>
+      <LandingGrid>
         <ReadmeContent />
         <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
-      </>
+      </LandingGrid>
     );
   }
 
   if (imageId && !image) {
     return (
-      <>
+      <LandingGrid>
         <ReadmeContent />
         <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
-      </>
+      </LandingGrid>
     );
   }
 
   return (
     <EditorGrid>
       <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload} />
-      <ToggleBar data-component="ToggleBar">
+      <ToggleBar>
         {showPointMarker != null && (
           <ToggleButton
             toggled={showPointMarker}

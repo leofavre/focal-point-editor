@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const AspectRatioSliderWrapper = styled.div`
+export const Wrapper = styled.div`
   --thumb-radius: 1rem;
   --thumb-diameter: calc(2 * var(--thumb-radius));
   --thumb-border: 2px;

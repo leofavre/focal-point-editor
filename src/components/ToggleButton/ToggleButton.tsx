@@ -1,4 +1,4 @@
-import { StyledToggleButton } from "./ToggleButton.styled";
+import { Button } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
 export function ToggleButton({
@@ -11,7 +11,7 @@ export function ToggleButton({
   ...rest
 }: ToggleButtonProps) {
   return (
-    <StyledToggleButton
+    <Button
       ref={ref}
       type="button"
       title={toggled ? titleOn : titleOff}
@@ -20,6 +20,6 @@ export function ToggleButton({
       {...rest}
     >
       {icon}
-    </StyledToggleButton>
+    </Button>
   );
 }

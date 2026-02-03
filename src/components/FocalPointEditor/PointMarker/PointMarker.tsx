@@ -2,7 +2,7 @@ import type { PointerEvent } from "react";
 import { useCallback, useEffectEvent, useRef } from "react";
 import { clamp } from "../helpers/clamp";
 import { cssObjectPositionObjectToString } from "../helpers/cssObjectPositionObjectToString";
-import { PointerMarkerWrapper } from "./PointMarker.styled";
+import { Wrapper } from "./PointMarker.styled";
 import type { PointMarkerProps } from "./types";
 
 export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProps) {
@@ -54,7 +54,7 @@ export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProp
   }, []);
 
   return (
-    <PointerMarkerWrapper
+    <Wrapper
       ref={wrapperRef}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -64,7 +64,7 @@ export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProp
     >
       <PointMarkerIcon />
       <PointMarkerIcon />
-    </PointerMarkerWrapper>
+    </Wrapper>
   );
 }
 

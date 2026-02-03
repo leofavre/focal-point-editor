@@ -12,11 +12,11 @@ import type { ImageDraftStateAndFile } from "../../types";
 import { processImageFiles } from "./helpers/processImageFiles";
 import {
   BrowseButton,
+  Container,
   DropZone,
+  Form,
   HiddenControl,
   IconWrapper,
-  ImageUploaderContainer,
-  ImageUploaderForm,
   InstructionText,
   OrDivider,
 } from "./ImageUploader.styled";
@@ -66,8 +66,8 @@ export function ImageUploader({ ref, onImageUpload, onImagesUpload, ...rest }: I
   }, []);
 
   return (
-    <ImageUploaderContainer data-component="ImageUploader" {...rest}>
-      <ImageUploaderForm
+    <Container data-component="ImageUploader" {...rest}>
+      <Form
         onSubmit={handleFormSubmit}
         noValidate
         onDragOver={handleDragOver}
@@ -91,7 +91,7 @@ export function ImageUploader({ ref, onImageUpload, onImagesUpload, ...rest }: I
           <OrDivider>Or</OrDivider>
           <BrowseButton>Browse images</BrowseButton>
         </DropZone>
-      </ImageUploaderForm>
-    </ImageUploaderContainer>
+      </Form>
+    </Container>
   );
 }

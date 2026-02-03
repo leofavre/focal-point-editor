@@ -1,4 +1,4 @@
-import { ClippedImageWrapper } from "./ClippedImage.styled";
+import { Wrapper } from "./ClippedImage.styled";
 import type { ClippedImageProps } from "./types";
 
 export function ClippedImage({
@@ -10,7 +10,7 @@ export function ClippedImage({
   ...rest
 }: ClippedImageProps) {
   return (
-    <ClippedImageWrapper {...rest}>
+    <Wrapper {...rest}>
       <img
         ref={ref}
         src={imageUrl}
@@ -20,6 +20,6 @@ export function ClippedImage({
         /** @todo Maybe review this aria-label (and others) */
         aria-label="Image uploaded by the user"
       />
-    </ClippedImageWrapper>
+    </Wrapper>
   );
 }

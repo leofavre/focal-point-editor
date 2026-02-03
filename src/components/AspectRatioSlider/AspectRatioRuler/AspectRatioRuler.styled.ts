@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const AspectRatioRulerList = styled.ul`
+export const List = styled.ul`
   position: relative;
   display: flex;
   margin: 0;
@@ -9,7 +9,7 @@ export const AspectRatioRulerList = styled.ul`
   color: #94a3b8;
 `;
 
-export const AspectRatioRulerItem = styled.li`
+export const Item = styled.li`
   width: 0.0625rem;
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@ export const AspectRatioRulerItem = styled.li`
   writing-mode: sideways-lr;
 `;
 
-export const AspectRatioRulerLabel = styled.span`
+export const Label = styled.span`
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
