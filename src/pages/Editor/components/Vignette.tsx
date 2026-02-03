@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 
 const VignetteContent = styled.div`
-  box-shadow: inset 0px 0px 1rem 1rem #f0f0f0;
+  background: linear-gradient(
+    to bottom, #f0f0f0 0%, transparent 1rem, transparent calc(100% - 1rem), #f0f0f0 100%
+  );
   pointer-events: none;
 `;
 

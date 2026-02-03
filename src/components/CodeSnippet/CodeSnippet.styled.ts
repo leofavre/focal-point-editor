@@ -4,6 +4,7 @@ import { CodeBlock } from "react-code-block";
 export const CodeWrapper = styled.div`
   position: relative;
   width: 100%;
+  transition: all 0.15s ease;
 `;
 
 export const TabBar = styled.div`
@@ -21,7 +22,6 @@ export const TabButton = styled.button`
   border-radius: 0.375rem 0.375rem 0 0;
   cursor: pointer;
   user-select: none;
-  transition: color 0.15s ease, background-color 0.15s ease;
 
   &[aria-selected="true"] {
     color: #e5e7eb;
@@ -45,7 +45,7 @@ export const Code = styled(CodeBlock.Code)`
   box-sizing: border-box;
   background-color: #111827;
   padding: 1.5rem;
-  border-radius: 0 0.75rem 0.75rem 0.75rem;
+  border-radius: 0 0rem 0rem 0.75rem;
   overflow: auto;
   transition: opacity 0.15s ease;
   `;

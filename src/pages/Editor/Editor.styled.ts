@@ -10,16 +10,16 @@ export const EditorGrid = styled.main`
   grid-template-columns: 1fr minmax(20rem, 75rem) 1fr;
   grid-template-rows: min-content 1fr 5.625rem;
   gap: 1rem;
-  margin: 1rem;
-  width: calc(100dvw - 2rem);
+  margin: 0;
+  width: calc(100dvw);
   height: calc(100dvh - 2rem);
   overflow: hidden;
   isolation: isolate;
 
   [data-component="ImageUploader"] {
-    grid-row: 1;
-    grid-column: 2;
-    margin-right: auto;
+    grid-row: 3;
+    grid-column: 1;
+    margin-left: auto;
     min-width: 15ch;
 
     &:nth-child(1):nth-last-child(1) {
@@ -36,9 +36,9 @@ export const EditorGrid = styled.main`
   }
 
   [data-component="ToggleBar"] {
-    grid-row: 1;
-    grid-column: 2;
-    margin-left: auto;
+    grid-row: 3;
+    grid-column: 3;
+    margin-right: auto;
     z-index: 1;
   }
 

@@ -35,6 +35,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
+ * - Focal point not draggable if not visible.
  * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Handle loading.
  * - Handle errors in a consistent way. Review all try/catch blocks.
@@ -42,6 +43,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Make shure to use CSS variable for values used in calculations, specially in AspectRatioSlider.
  * - Add integration tests (which tool to use?).
  * - Make sure website works with Google translation.
+ * - Think about animations and transitions.
  *
  * ### Landing page
  *
