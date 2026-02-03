@@ -35,24 +35,19 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * @todo
  * ### MELHORIZE™ UI.
  *
- * ### Basic functionality
- *
  * - Adjust container query for ImageUploader when rendered on mobile pages.
- * - Handle loading.
- * - Handle errors in a consistent way. Review all try/catch blocks.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Add integration tests (which tool to use?).
- * - Make sure website works with Google translation.
  * - Think about animations and transitions.
  *
- * ### Landing page
+ * ### Basic functionality
  *
- * - Steps and image uploader.
+ * - Handle loading.
+ * - Handle errors in a consistent way. Review all try/catch blocks.
  *
  * ### Advanced functionality
  *
  * - Breakpoints with container queries.
- * - Undo/redo (needs state tracking).
  * - Maybe make a browser extension?
  * - Maybe make a React component?
  * - Maybe make a native custom element?
