@@ -38,6 +38,30 @@ describe("createKeyboardShortcutHandler", () => {
     expect(preventDefault).not.toHaveBeenCalled();
   });
 
+  it("ignores events when metaKey (Command) is pressed", () => {
+    const callback = vi.fn();
+    const handler = createKeyboardShortcutHandler({ c: callback });
+
+    const preventDefault = vi.fn();
+    const event = { key: "c", metaKey: true, preventDefault } as unknown as KeyboardEvent;
+    handler(event);
+
+    expect(callback).not.toHaveBeenCalled();
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
+  it("ignores events when ctrlKey (Control) is pressed", () => {
+    const callback = vi.fn();
+    const handler = createKeyboardShortcutHandler({ c: callback });
+
+    const preventDefault = vi.fn();
+    const event = { key: "c", ctrlKey: true, preventDefault } as unknown as KeyboardEvent;
+    handler(event);
+
+    expect(callback).not.toHaveBeenCalled();
+    expect(preventDefault).not.toHaveBeenCalled();
+  });
+
   it("handles multiple keys mapping to the same callback", () => {
     const callback = vi.fn();
     const handler = createKeyboardShortcutHandler({
