@@ -1,4 +1,4 @@
-import type { ImageRecord, ImageState } from "../../../types";
+import type { ImageRecord, ImageState } from "../../types";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
 /**

@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createMockImageDraftState, createMockImageRecord } from "../../../test-utils/mocks";
-import type { ImageRecord } from "../../../types";
+import { createMockImageDraftState, createMockImageRecord } from "../../test-utils/mocks";
+import type { ImageRecord } from "../../types";
 import { usePersistedImages } from "./usePersistedImages";
 
 const mockAdd = vi.fn();

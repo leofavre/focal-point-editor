@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createMockImageRecord } from "../../../test-utils/mocks";
+import { createMockImageRecord } from "../../test-utils/mocks";
 import { createImageStateFromImageRecord } from "./createImageStateFromImageRecord";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
@@ -53,7 +53,9 @@ describe("createImageStateFromImageRecord", () => {
     await createImageStateFromImageRecord(record);
 
     expect(getNaturalAspectRatioFromImageSrc).toHaveBeenCalledTimes(1);
-    expect(getNaturalAspectRatioFromImageSrc).toHaveBeenCalledWith("blob:https://example.com/abc-123");
+    expect(getNaturalAspectRatioFromImageSrc).toHaveBeenCalledWith(
+      "blob:https://example.com/abc-123",
+    );
   });
 
   it("preserves all record metadata in result", async () => {

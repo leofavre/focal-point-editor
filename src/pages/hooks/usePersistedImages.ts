@@ -1,7 +1,7 @@
 import isEqual from "lodash/isequalWith";
 import { useCallback, useEffect, useState } from "react";
 import { useIndexedDB } from "react-indexed-db-hook";
-import type { ImageDraftStateAndFile, ImageRecord } from "../../../types";
+import type { ImageDraftStateAndFile, ImageRecord } from "../../types";
 
 /**
  * Custom React hook for persisting image records in IndexedDB.

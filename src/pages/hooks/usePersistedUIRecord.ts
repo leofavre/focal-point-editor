@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, useEffect, useEffectEvent, useState } from "react";
 import { useIndexedDB } from "react-indexed-db-hook";
 import useDebouncedEffect from "use-debounced-effect";
-import type { UIRecord, UIState } from "../../../types";
+import type { UIRecord, UIState } from "../../types";
 
 /**
  * Custom React hook for syncing a UI state value with IndexedDB persistence.

@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { UIRecord, UIState } from "../../../types";
+import type { UIRecord, UIState } from "../../types";
 import { usePersistedUIRecord } from "./usePersistedUIRecord";
 
 const mockGetByID = vi.fn();
