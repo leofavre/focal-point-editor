@@ -65,6 +65,7 @@ export function FocalPointEditor({
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
+      event.preventDefault();
       isDraggingRef.current = true;
 
       event.currentTarget.setPointerCapture(event.pointerId);
@@ -80,6 +81,8 @@ export function FocalPointEditor({
   const handlePointerMove = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
       if (!isDraggingRef.current || imageDimensionDelta == null) return;
+
+      event.preventDefault();
 
       const { x: pointerCoordinateX, y: pointerCoordinateY } =
         getPointerCoordinatesFromEvent(event);
@@ -117,6 +120,12 @@ export function FocalPointEditor({
     event.currentTarget.releasePointerCapture(event.pointerId);
   }, []);
 
+  const handlePointerCancel = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    isDraggingRef.current = false;
+
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }, []);
+
   const cursor =
     imageDimensionDelta?.changedDimension == null
       ? "crosshair"
@@ -133,6 +142,7 @@ export function FocalPointEditor({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
       {...rest}
     >
       <ClippedImage

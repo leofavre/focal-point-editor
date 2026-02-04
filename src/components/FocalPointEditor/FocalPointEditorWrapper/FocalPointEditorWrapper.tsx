@@ -8,6 +8,7 @@ export function FocalPointEditorWrapper({
   onPointerDown,
   onPointerMove,
   onPointerUp,
+  onPointerCancel,
   children,
   ...rest
 }: FocalPointEditorWrapperProps) {
@@ -22,6 +23,7 @@ export function FocalPointEditorWrapper({
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
       >
         {children}
       </Content>
