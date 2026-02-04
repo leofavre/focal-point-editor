@@ -6,7 +6,7 @@ export function AspectRatioRuler({ ref, aspectRatioList, ...rest }: AspectRatioR
     <List data-component="AspectRatioRuler" ref={ref} {...rest}>
       {aspectRatioList.map(({ name, position }) => {
         return (
-          <Item key={name} css={{ left: `${position * 100}%` }}>
+          <Item key={name} data-name={name} css={{ left: `${position * 100}%` }}>
             <Label>{name}</Label>
           </Item>
         );
