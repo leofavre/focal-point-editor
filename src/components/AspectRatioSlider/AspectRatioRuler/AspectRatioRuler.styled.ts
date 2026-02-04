@@ -10,7 +10,7 @@ export const List = styled.ul`
 `;
 
 export const Item = styled.li`
-  width: 0.0625rem;
+  width: 1px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,8 +28,8 @@ export const Label = styled.span`
     content: "";
     margin-bottom: 0.25rem;
     display: inline-block;
-    width: 0.0625rem;
-    height: 1.5rem;
+    width: 1px;
+    height: 1rem;
     background-color: #94a3b8;
     vertical-align: middle;
   }

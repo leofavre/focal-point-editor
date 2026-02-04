@@ -38,11 +38,7 @@ export type ImageRecord = Simplify<
   }
 >;
 
-export type CodeSnippetLanguage =
-  | "html"
-  | "tailwind"
-  | "react"
-  | "react-tailwind";
+export type CodeSnippetLanguage = "html" | "tailwind" | "react" | "react-tailwind";
 
 export type UIState = {
   aspectRatio: number;

@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   --thumb-radius: 0.75rem;
   --thumb-diameter: calc(2 * var(--thumb-radius));
   --thumb-border: 2px;
-  --runner-thickness: 4px;
+  --runner-thickness: 0.25rem;
 
   container-type: inline-size;
   container-name: aspect-ratio-slider;

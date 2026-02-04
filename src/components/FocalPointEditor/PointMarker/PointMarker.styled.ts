@@ -24,7 +24,7 @@ export const Wrapper = styled.div`
   }
 
   svg:nth-of-type(1) {
-    transform: translate(-0.0625rem, -0.0625rem);
+    transform: translate(-1px, -1px);
     opacity: 0.65;
     color: #fff;
   }

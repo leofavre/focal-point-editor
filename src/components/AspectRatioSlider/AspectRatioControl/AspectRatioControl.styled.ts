@@ -64,7 +64,7 @@ export const Slider = styled.div`
       border: var(--thumb-border) solid #3b82f6;
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 0.1875rem rgba(0, 0, 0, 0.2);
       margin-top: calc((var(--thumb-diameter) - var(--runner-thickness)) / -2);
       visibility: var(--thumb-visibility, hidden);
     }
@@ -77,7 +77,7 @@ export const Slider = styled.div`
       border: var(--thumb-border) solid #3b82f6;
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 0.1875rem rgba(0, 0, 0, 0.2);
       -moz-appearance: none;
       visibility: var(--thumb-visibility, hidden);
     }

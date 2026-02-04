@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 export const EditorGrid = styled.main`
   --external-margin: 0rem;
   display: grid;
-  grid-template-columns: 1fr 2rem 2rem minmax(0, 75rem) 2rem 2rem 1fr;
+  grid-template-columns: minmax(0, 1fr) 1fr 1fr minmax(0, 50rem) 1fr 1fr minmax(0, 1fr);
   grid-template-rows: min-content 1fr 5.625rem;
   overflow: hidden;
   isolation: isolate;

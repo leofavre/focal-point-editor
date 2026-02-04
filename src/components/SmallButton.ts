@@ -4,11 +4,11 @@ export const SmallButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(2rem);
+  min-width: calc(2rem);
   height: calc(2rem);
   padding: 0;
   border: 1px solid #9ca3af;
-  border-radius: 20%;
+  border-radius: 0.5rem;
   background-color: #fff;
   box-sizing: border-box;
   color: #374151;
