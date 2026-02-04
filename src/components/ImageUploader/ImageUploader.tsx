@@ -1,3 +1,4 @@
+import type { ComponentProps, ForwardRefExoticComponent } from "react";
 import {
   type ChangeEvent,
   type DragEvent,
@@ -9,7 +10,7 @@ import {
 import { parseBooleanDataAttribute } from "../../helpers/parseBooleanDataAttribute";
 import { CloudUploadIcon } from "../../icons/CloudUploadIcon";
 import type { ImageDraftStateAndFile } from "../../types";
-import { SmallButton } from "../SmallButton";
+import { SmallButton as SmallButtonComponent } from "../SmallButton";
 import { processImageFiles } from "./helpers/processImageFiles";
 import {
   BrowseButton,
@@ -21,6 +22,12 @@ import {
   OrDivider,
 } from "./ImageUploader.styled";
 import type { ImageUploaderProps } from "./types";
+
+const SmallButton = SmallButtonComponent as unknown as ForwardRefExoticComponent<
+  ComponentProps<typeof SmallButtonComponent> & {
+    htmlFor: string;
+  }
+>;
 
 export function ImageUploader({
   ref,
@@ -75,12 +82,12 @@ export function ImageUploader({
     <Form
       data-component="ImageUploader"
       data-variant={variant}
+      data-drag-over={parseBooleanDataAttribute(isDragOver)}
       onSubmit={handleFormSubmit}
-      noValidate
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      data-drag-over={parseBooleanDataAttribute(isDragOver)}
+      noValidate
       {...rest}
     >
       <HiddenControl
@@ -101,7 +108,7 @@ export function ImageUploader({
           <BrowseButton>Browse images</BrowseButton>
         </DropZone>
       ) : (
-        <SmallButton as="label">
+        <SmallButton as="label" htmlFor="image-upload">
           <CloudUploadIcon />
         </SmallButton>
       )}
