@@ -28,13 +28,13 @@ export function usePersistedImages(): {
   refreshImages: () => Promise<void>;
 } {
   const { addRecord, getRecord, getAllRecords, updateRecord, deleteRecord } =
-    getIndexedDBService("images");
+    getIndexedDBService<ImageRecord>("images");
 
   const [images, setImages] = useState<ImageRecord[] | undefined>(undefined);
 
   const refreshImages = useCallback(async () => {
     try {
-      const all = await getAllRecords<ImageRecord>();
+      const all = await getAllRecords();
       setImages(all ?? []);
     } catch (err) {
       throw new Error("Failed to refresh images", { cause: err });
@@ -47,7 +47,7 @@ export function usePersistedImages(): {
 
   const addImages = useCallback(
     async (draftsAndFiles: ImageDraftStateAndFile[]): Promise<string[]> => {
-      const existing = await getAllRecords<ImageRecord>();
+      const existing = await getAllRecords();
       const usedIds = new Set((existing ?? []).map((r) => r.id));
 
       const ids: string[] = [];
@@ -91,14 +91,14 @@ export function usePersistedImages(): {
 
   const getImage = useCallback(
     async (id: string) => {
-      return await getRecord<ImageRecord>(id);
+      return await getRecord(id);
     },
     [getRecord],
   );
 
   const updateImage = useCallback(
     async (id: string, updates: Partial<ImageRecord>) => {
-      const current = await getRecord<ImageRecord>(id);
+      const current = await getRecord(id);
 
       if (current == null) return;
 

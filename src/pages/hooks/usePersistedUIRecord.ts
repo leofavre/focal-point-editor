@@ -11,22 +11,22 @@ import type { UIRecord, UIState } from "../../types";
  * @returns A tuple: [value, setter] where value is the current state (or undefined initially),
  * and setter updates the state (and persists the value).
  */
-export function usePersistedUIRecord<T extends keyof UIState>(
-  { id, value: defaultValue }: UIRecord<T>,
+export function usePersistedUIRecord<K extends keyof UIState>(
+  { id, value: defaultValue }: UIRecord<K>,
   { debounceTimeout = 0 } = {},
-): [UIState[T] | undefined, Dispatch<SetStateAction<UIState[T] | undefined>>] {
-  const { getRecord, updateRecord } = getIndexedDBService("ui");
-  const [value, setter] = useState<UIState[T]>();
+): [UIState[K] | undefined, Dispatch<SetStateAction<UIState[K] | undefined>>] {
+  const { getRecord, updateRecord } = getIndexedDBService<UIRecord<K>>("ui");
+  const [value, setter] = useState<UIState[K]>();
 
-  // All stable so updating them does not trigger a re-render nor database update.
+  // All stable so updating them does not trigger re-renders nor database updates.
   const stableIdGetter = useEffectEvent(() => id);
   const stableDefaultValueGetter = useEffectEvent(() => defaultValue);
-  const stableGetById = useEffectEvent(getRecord);
-  const stableUpdate = useEffectEvent(updateRecord);
+  const stableGetRecord = useEffectEvent(getRecord);
+  const stableUpdateRecord = useEffectEvent(updateRecord);
 
   // Initial load.
   useEffect(() => {
-    stableGetById(stableIdGetter())
+    stableGetRecord(stableIdGetter())
       .then((data) => {
         setter(data?.value ?? stableDefaultValueGetter());
       })
@@ -39,7 +39,7 @@ export function usePersistedUIRecord<T extends keyof UIState>(
   useDebouncedEffect(
     () => {
       if (value == null) return;
-      stableUpdate({ id: stableIdGetter(), value: value });
+      stableUpdateRecord({ id: stableIdGetter(), value: value });
     },
     { timeout: debounceTimeout },
     [value],

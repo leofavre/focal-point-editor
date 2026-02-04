@@ -58,11 +58,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Add integration tests (which tool to use?).
  * - Add Storybook tests (to see how it works?).
  *
- * ### Backend
- *
- * - Add an abstraction layer so that we can switch from using IndexedDB, to SessionStorage
- * or LocalStorage, or even a custom backend.
- *
  * ### Advanced functionality
  *
  * - Support external image sources.

@@ -4,7 +4,9 @@ import type { DatabaseKey, DatabaseService } from "./types";
 
 let databaseInitialized = false;
 
-export function getIndexedDBService<T, K extends DatabaseKey>(tableName: string) {
+export function getIndexedDBService<T, K extends DatabaseKey = string>(
+  tableName: string,
+): DatabaseService<T, K> {
   if (databaseInitialized === false) {
     initDB(DBConfig);
     databaseInitialized = true;
@@ -22,5 +24,5 @@ export function getIndexedDBService<T, K extends DatabaseKey>(tableName: string)
     async deleteRecord(key: K) {
       await indexedDB.deleteRecord(key);
     },
-  } satisfies DatabaseService<T, K>;
+  };
 }
