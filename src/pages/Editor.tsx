@@ -38,28 +38,30 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Make shure focus is visible, specially in AspectRatioSlider.
+ * - Verify accessibility.
+ * - Review aria labels.
  * - Think about animations and transitions.
  * - Favicon.
  *
  * ### Basic functionality
  *
  * - Handle loading.
- * - Handle errors in a consistent way. Review all try/catch blocks.
- * - Review aria labels.
- *
- * ### Advanced functionality
- *
- * - Verify accessibility.
- * - Breakpoints with container queries.
- * - Maybe make a browser extension?
- * - Maybe make a React component?
- * - Maybe make a native custom element?
+ * - Handle errors in a consistent way. Review try/catch blocks.
  *
  * ### DevOps
  *
  * - Remove console logs on build. Keep console errors for now.
  * - Set-up changelogs in the project.
  * - Add integration tests (which tool to use?).
+ * - Add Storybook tests (to see how it works?).
+ *
+ * ### Advanced functionality
+ *
+ * - Support external image sources.
+ * - Breakpoints with container queries.
+ * - Maybe make a browser extension?
+ * - Maybe make a React component?
+ * - Maybe make a native custom element?
  */
 export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
