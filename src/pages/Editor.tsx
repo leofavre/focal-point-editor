@@ -37,7 +37,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * - Better typography.
  * - Better icons.
- * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Verify accessibility.
  * - Review aria labels.
