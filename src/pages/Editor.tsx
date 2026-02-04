@@ -33,25 +33,33 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
 
 /**
  * @todo
+ *
  * ### MELHORIZE™ UI.
  *
  * - Adjust container query for ImageUploader when rendered on mobile pages.
  * - Make shure focus is visible, specially in AspectRatioSlider.
- * - Add integration tests (which tool to use?).
  * - Think about animations and transitions.
+ * - Favicon.
  *
  * ### Basic functionality
  *
  * - Handle loading.
  * - Handle errors in a consistent way. Review all try/catch blocks.
+ * - Review aria labels.
  *
  * ### Advanced functionality
  *
- * - Set-up changelogs in the project.
+ * - Verify accessibility.
  * - Breakpoints with container queries.
  * - Maybe make a browser extension?
  * - Maybe make a React component?
  * - Maybe make a native custom element?
+ *
+ * ### DevOps
+ *
+ * - Remove console logs on build. Keep console errors for now.
+ * - Set-up changelogs in the project.
+ * - Add integration tests (which tool to use?).
  */
 export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -153,7 +161,8 @@ export default function Editor() {
    * - 's' or 'l' toggles the ghost image.
    * - 'd' or 'c' toggles the code snippet.
    *
-   * The shortcuts are case insensitive.
+   * The shortcuts are case insensitive and are not triggered
+   * when modified with meta keys like Control or Command.
    */
   useEffect(() => {
     const handleKeyDown = createKeyboardShortcutHandler({
@@ -253,7 +262,13 @@ export default function Editor() {
           const nextImageState = await createImageStateFromImageRecord(imageRecord);
           safeSetImage(nextImageState);
           console.log("loaded image from record", imageRecord);
-          /** @todo early return if the user has refreshed the page. how to detect? */
+
+          /**
+           * @todo
+           *
+           * Early return if the user has refreshed the page.
+           * How to detect?
+           */
           setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
         } catch (error) {
           safeSetImage(null);
