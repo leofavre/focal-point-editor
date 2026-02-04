@@ -35,8 +35,8 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### MELHORIZE™ UI.
  *
- * - Better typography.
  * - Better icons.
+ * - Better typography.
  * - Make shure focus is visible, specially in AspectRatioSlider.
  * - Verify accessibility.
  * - Review aria labels.
