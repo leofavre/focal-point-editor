@@ -1,4 +1,4 @@
-name: Commit
+name: Commit to pull request
 
 on:
   pull_request:
