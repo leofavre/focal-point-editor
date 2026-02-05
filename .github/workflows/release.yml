@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "focal-point-editor-v*"
+  release:
+    types:
+      - published
 
 jobs:
   setup:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Point release branch at tag
@@ -39,7 +39,7 @@ jobs:
   deploy:
     name: Deploy to Netlify
     runs-on: ubuntu-latest
-    needs: [setup,update]
+    needs: [setup, update]
     permissions:
       contents: read
       deployments: write
@@ -64,7 +64,7 @@ jobs:
           publish-dir: './dist'
           production-branch: release
           production-deploy: true
-          deploy-message: "${{ format('Commit: {0} ({1})', github.event.head_commit.message, github.event.head_commit.id) }}"
+          deploy-message: "${{ format('Release: {0} ({1})', github.event.release.tag_name, github.event.release.url) }}"
           enable-pull-request-comment: true
           enable-commit-comment: false
           enable-commit-status: false

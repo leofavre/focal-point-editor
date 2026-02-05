@@ -87,7 +87,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           publish-dir: './dist'
           production-deploy: false
-          deploy-message: "${{ format('Commit: {0} ({1})', github.event.head_commit.message, github.event.head_commit.id) }}"
+          deploy-message: "${{ format('Commit: {0} ({1})', github.event.head_commit.message, github.event.head_commit.url) }}"
           enable-pull-request-comment: true
           enable-commit-comment: false
           enable-commit-status: false
