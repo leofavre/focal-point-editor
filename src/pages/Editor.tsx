@@ -52,6 +52,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### DevOps
  *
+ * - Improve CI actions by automating version bump and release to prod in the same flow.
  * - Control cache invalidation, given it's a PWA.
  * - Add integration tests (which tool to use?).
  * - Add Storybook tests (to see how it works?).
