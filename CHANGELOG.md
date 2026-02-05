@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.5](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.3.4...focal-point-editor-v0.3.5) (2026-02-05)
+
+
+### Bug Fixes
+
+* rethink deploy process ([d929481](https://github.com/leofavre/focal-point-editor/commit/d929481b162e96ae04c403e24ceea8e5dc05e4fe))
+* update release flow ([49e2a47](https://github.com/leofavre/focal-point-editor/commit/49e2a47da5ebe81485c377abfb065970ad64b72a))
+
 ## [0.3.4](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.3.3...focal-point-editor-v0.3.4) (2026-02-05)
 
 
