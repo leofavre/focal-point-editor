@@ -2,7 +2,8 @@ name: Commit
 
 on:
   push:
-    branches: ['**']
+    branches-ignore:
+      - main
 
 jobs:
   setup:
@@ -20,8 +21,6 @@ jobs:
           YARN_VERSION=$(jq -r '.volta.yarn' package.json)
           echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
           echo "yarn-version=$YARN_VERSION" >> $GITHUB_OUTPUT
-          echo "Commit message: ${{ github.event.head_commit.message }}"
-          echo "${{ startsWith(github.event.head_commit.message, 'chore(main):') }}"
 
   typecheck:
     name: Type Check
@@ -90,7 +89,7 @@ jobs:
           publish-dir: './dist'
           production-branch: main
           production-deploy: false
-          deploy-message: "${{ format('PR {0}', github.event.head_commit.message) }}"
+          deploy-message: "${{ format('Commit: {0}', github.event.head_commit.message) }}"
           enable-pull-request-comment: true
           enable-commit-comment: false
           enable-commit-status: false
