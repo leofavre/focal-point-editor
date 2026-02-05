@@ -84,9 +84,9 @@ jobs:
         with:
           publish-dir: './dist'
           production-branch: main
-          production-deploy: ${{ github.event_name == 'pull_request' }}
+          production-deploy: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: ${{ github.event_name == 'pull_request' && format('PR {0}', github.event.pull_request.number) || 'Deploy from GitHub Actions' }}
+          deploy-message: ${{ github.event.pull_request.title || 'Deploy from GitHub Actions' }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
