@@ -61,7 +61,7 @@ jobs:
         run: yarn test:run
 
   deploy:
-    name: Deploy to Netlify
+    name: Deploy Preview to Netlify
     runs-on: ubuntu-latest
     needs: [setup, typecheck, test]
     permissions:
