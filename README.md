@@ -49,7 +49,7 @@ yarn dev
 
 ## Deployment and CI
 
-[Netlify](https://www.netlify.com/) deploys from `yarn build` with publish directory `dist` (see [netlify.toml](netlify.toml)). [GitHub Actions](.github/workflows/ci.yml) run typecheck, tests and Netlify deploy; pull requests get a deploy preview. [Release Please](https://github.com/googleapis/release-please) manages version bumps and changelog updates from conventional commits.
+[Netlify](https://www.netlify.com/) deploys from `yarn build` with publish directory `dist` (see [netlify.toml](netlify.toml)). [GitHub Actions](.github/workflows/ci.yml) run typecheck, tests and Netlify deploy; pull requests get a deploy preview. [Release Please](https://github.com/googleapis/release-please) manages version bumps and changelog updates from conventional commits. Merging the release PR triggers the GitHub release and production deploy (deploy runs after the release step).
 
 ## License and author
 
