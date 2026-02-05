@@ -1,0 +1,76 @@
+name: Release Commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      node-version: ${{ steps.versions.outputs.node-version }}
+      yarn-version: ${{ steps.versions.outputs.yarn-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract versions from package.json
+        id: versions
+        run: |
+          NODE_VERSION=$(jq -r '.volta.node' package.json)
+          YARN_VERSION=$(jq -r '.volta.yarn' package.json)
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "yarn-version=$YARN_VERSION" >> $GITHUB_OUTPUT
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: volta-cli/action@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          yarn-version: ${{ needs.setup.outputs.yarn-version }}
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: yarn-deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Run typecheck
+        run: yarn typecheck
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: volta-cli/action@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          yarn-version: ${{ needs.setup.outputs.yarn-version }}
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: yarn-deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Run tests
+        run: yarn test:run
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [setup, typecheck, test]
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run release please
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .release-please-config.json
