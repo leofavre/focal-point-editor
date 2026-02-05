@@ -85,6 +85,7 @@ jobs:
         with:
           publish-dir: './dist'
           production-branch: main
+          production-deploy: ${{ github.event.pull_request.merged == true }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: ${{ format('PR {0}{1} – {2}', '#', github.event.pull_request.number, github.event.pull_request.title)}}
           enable-pull-request-comment: true
