@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
-import { ReactComponent as ReadmeContent } from "../../README.md";
+import { ReactComponent as Instructions } from "../../INSTRUCTIONS.md";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
@@ -49,11 +49,10 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Handle errors in a consistent way. Review try/catch blocks.
  * - Fix app not working in Incognito mode on mobile Chrome.
  * - Make sure app works without any database (single image direct to React state on upload?).
- * - Keep aspectRatio on refresh.
+ * - Handle multiple tabs open at the same time.
  *
  * ### DevOps
  *
- * - Set up app versioning.
  * - Control cache invalidation, given it's a PWA.
  * - Add integration tests (which tool to use?).
  * - Add Storybook tests (to see how it works?).
@@ -68,6 +67,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  */
 export default function Editor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isFirstImageLoadInSessionRef = useRef(true);
   const { imageId } = useParams<{ imageId: string }>();
   const [image, setImage] = useState<ImageState | null>(null);
   const { images, addImage, updateImage } = usePersistedImages();
@@ -285,12 +285,11 @@ export default function Editor() {
           safeSetImage(nextImageState);
           console.log("loaded image from record", imageRecord);
 
-          /**
-           * @todo
-           *
-           * Early return if the user has refreshed the page.
-           * How to detect?
-           */
+          if (isFirstImageLoadInSessionRef.current) {
+            isFirstImageLoadInSessionRef.current = false;
+            return;
+          }
+
           setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
         } catch (error) {
           safeSetImage(null);
@@ -317,7 +316,7 @@ export default function Editor() {
       <LandingGrid>
         <ImageUploader variant="large" ref={fileInputRef} onImageUpload={handleImageUpload} />
         <Markdown>
-          <ReadmeContent />
+          <Instructions />
         </Markdown>
       </LandingGrid>
     );
@@ -328,7 +327,7 @@ export default function Editor() {
       <LandingGrid>
         <ImageUploader variant="large" ref={fileInputRef} onImageUpload={handleImageUpload} />
         <Markdown>
-          <ReadmeContent />
+          <Instructions />
         </Markdown>
       </LandingGrid>
     );
