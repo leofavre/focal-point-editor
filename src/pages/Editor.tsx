@@ -49,7 +49,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Handle errors in a consistent way. Review try/catch blocks.
  * - Fix app not working in Incognito mode on mobile Chrome.
  * - Make sure app works without any database (single image direct to React state on upload?).
- * - Handle multiple tabs open at the same time.
  *
  * ### DevOps
  *
