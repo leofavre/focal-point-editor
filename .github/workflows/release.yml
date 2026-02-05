@@ -1,8 +1,8 @@
-name: Commit
+name: Release Commit
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main
 
 jobs:
@@ -60,39 +60,17 @@ jobs:
       - name: Run tests
         run: yarn test:run
 
-  deploy:
-    name: Deploy to Netlify
+  release:
+    name: Release
     runs-on: ubuntu-latest
     needs: [setup, typecheck, test]
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
-      deployments: write
     steps:
       - uses: actions/checkout@v4
-      - uses: volta-cli/action@v4
+      - name: Run release please
+        uses: googleapis/release-please-action@v4
         with:
-          node-version: ${{ needs.setup.outputs.node-version }}
-          yarn-version: ${{ needs.setup.outputs.yarn-version }}
-      - uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: yarn-deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish-dir: './dist'
-          production-branch: main
-          production-deploy: false
-          deploy-message: "${{ format('Commit: {0}', github.event.head_commit.message) }}"
-          enable-pull-request-comment: true
-          enable-commit-comment: false
-          enable-commit-status: false
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .release-please-config.json
