@@ -35,8 +35,6 @@ jobs:
     permissions:
       contents: write
       deployments: write
-      issues: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: volta-cli/action@v4
@@ -59,7 +57,7 @@ jobs:
           production-branch: main
           production-deploy: true
           deploy-message: "${{ format('Release: #{0} — {1}', github.event.pull_request.id, github.event.pull_request.merge_commit_sha) }}"
-          enable-pull-request-comment: true
+          enable-pull-request-comment: false
           enable-commit-comment: false
           enable-commit-status: false
         env:
