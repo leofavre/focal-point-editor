@@ -35,6 +35,8 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### MELHORIZE™ UI.
  *
+ * - Uploader contains instructions.
+ * - One icon per step.
  * - Better icons.
  * - Better typography.
  * - Make shure focus is visible, specially in AspectRatioSlider.
