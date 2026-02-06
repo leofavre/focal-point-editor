@@ -4,14 +4,22 @@ on:
   pull_request:
     types:
       - labeled
+      - opened
+      - synchronize
+      - ready_for_review
     branches:
       - main
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug
+        run: |
+          echo "github.event.pull_request.labels: ${{ toJson(github.event.pull_request.labels) }}"
+          echo "github.event.pull_request.title: ${{ github.event.pull_request.title }}"
   automerge:
-    if: |
-      contains(github.event.pull_request.labels, 'autorelease: pending') == true &&
-      startsWith(github.event.pull_request.title, 'chore(main): release') == true
+    if: false
     runs-on: ubuntu-latest
     permissions:
       contents: write
