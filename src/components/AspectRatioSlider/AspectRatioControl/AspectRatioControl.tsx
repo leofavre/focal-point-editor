@@ -8,6 +8,12 @@ import type { AspectRatioControlProps } from "./types";
 const POSITION_SNAP_THRESHOLD = 1 / 300;
 const PRECISION = 100_000;
 
+/**
+ * A purposefully out of range value, used to prevent React from
+ * complaining that the input is changing from uncontrolled to controlled.
+ */
+const OUT_OF_RANGE_VALUE = 100_000;
+
 export function AspectRatioControl({
   ref,
   aspectRatio,
@@ -95,7 +101,7 @@ export function AspectRatioControl({
         value={
           currentPosition != null && Number.isNaN(currentPosition) === false
             ? Math.round(currentPosition * PRECISION)
-            : undefined
+            : OUT_OF_RANGE_VALUE
         }
         onChange={handleChange}
         onKeyDown={handleKeyDown}
