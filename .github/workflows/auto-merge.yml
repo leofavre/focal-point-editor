@@ -3,23 +3,16 @@ name: Auto-merge Release PR
 on:
   pull_request:
     types:
-      - labeled
       - opened
-      - synchronize
+      - labeled
       - ready_for_review
     branches:
       - main
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: |
-          echo "github.event.pull_request.labels: ${{ toJson(github.event.pull_request.labels) }}"
-          echo "github.event.pull_request.title: ${{ github.event.pull_request.title }}"
   automerge:
-    if: false
+    if: |
+      startsWith(github.event.pull_request.title, 'chore(main): release') == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
