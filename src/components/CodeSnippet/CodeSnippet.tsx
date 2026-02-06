@@ -51,10 +51,7 @@ function getCodeSnippetTailwind(src: string, objectPosition: string): string {
 />`;
 }
 
-function getCodeSnippetReactTailwind(
-  src: string,
-  objectPosition: string
-): string {
+function getCodeSnippetReactTailwind(src: string, objectPosition: string): string {
   const objectPositionClass = objectPosition.replace(/ /g, "_");
   return `<img
   src="${src}"
@@ -70,7 +67,7 @@ function getCodeSnippetReactTailwind(
 function getCodeSnippet(
   language: CodeSnippetProps["language"],
   src: string,
-  objectPosition: string
+  objectPosition: string,
 ): string {
   switch (language) {
     case "tailwind":
@@ -98,8 +95,7 @@ export function CodeSnippet({
   ...rest
 }: CodeSnippetProps) {
   const codeSnippet = getCodeSnippet(language, src, objectPosition);
-  const codeBlockLanguage =
-    language === "react" || language === "react-tailwind" ? "jsx" : "html";
+  const codeBlockLanguage = language === "react" || language === "react-tailwind" ? "jsx" : "html";
 
   const [copied, setCopied] = useState(copiedProp);
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

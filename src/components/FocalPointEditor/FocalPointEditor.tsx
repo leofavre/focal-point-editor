@@ -56,7 +56,7 @@ export function FocalPointEditor({
   }, [imageUrl]);
 
   /**
-   * Fix a bug where the image and the focal point icon are not draggable
+   * Fixes a bug where the image and the focal point icon are not draggable
    * on mobile devices because the page-scroll event is triggered instead.
    *
    * Using the native `{ passive: false }` option guarantees that the page-scroll

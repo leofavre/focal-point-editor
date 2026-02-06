@@ -164,7 +164,7 @@ export default function Editor() {
   }, []);
 
   /**
-   * Handle all keyboard shortcuts:
+   * Handles all keyboard shortcuts:
    * - 'u' opens the file input to upload a new image.
    * - 'a' or 'p' toggles the point marker.
    * - 's' or 'l' toggles the ghost image.
@@ -208,7 +208,7 @@ export default function Editor() {
   const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
 
   /**
-   * Reset the code snippet copied state when the object position changes.
+   * Resets the code snippet copied state when the object position changes.
    */
   useEffect(() => {
     void currentObjectPosition;
@@ -216,7 +216,7 @@ export default function Editor() {
   }, [currentObjectPosition]);
 
   /**
-   * Reset the code snippet copied state when the code snippet language changes.
+   * Resets the code snippet copied state when the code snippet language changes.
    */
   useEffect(() => {
     void codeSnippetLanguage;
@@ -224,7 +224,7 @@ export default function Editor() {
   }, [codeSnippetLanguage]);
 
   /**
-   * Inject `overflow: hidden` to the body element when the editor is rendered.
+   * Injects `overflow: hidden` to the body element when the editor is rendered.
    */
   useEffect(() => {
     document.body.style.overflow = image && imageId ? "hidden" : "auto";
@@ -235,7 +235,7 @@ export default function Editor() {
   }, [image, imageId]);
 
   /**
-   * Update the object position of the image in the database when the user interacts with it
+   * Updates the object position of the image in the database when the user interacts with it
    * either by dragging the focal point or the image itself.
    */
   useDebouncedEffect(
@@ -264,7 +264,7 @@ export default function Editor() {
   });
 
   /**
-   * Load the image record from the database when the page is loaded or the database is
+   * Loads the image record from the database when the page is loaded or the database is
    * refreshed. A debounce is used because both events can happen almost at the same time.
    *
    * After the image record is loaded, the image state is created with a new blob URL and
