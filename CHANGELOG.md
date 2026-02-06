@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.5.0...focal-point-editor-v0.6.0) (2026-02-06)
+
+
+### Features
+
+* automate release ([547227c](https://github.com/leofavre/focal-point-editor/commit/547227c8dd3cf962bc01ad08ffe52a3ab58e5f94))
+
 ## [0.5.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.4.0...focal-point-editor-v0.5.0) (2026-02-06)
 
 
