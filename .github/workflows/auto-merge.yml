@@ -3,8 +3,6 @@ name: Auto-merge Release PR
 on:
   pull_request:
     types:
-      - ready_for_review
-      - opened
       - labeled
     branches:
       - main
@@ -12,7 +10,7 @@ on:
 jobs:
   automerge:
     if: |
-      github.event.pull_request.merged == false &&
+      contains(github.event.pull_request.labels, 'autorelease: pending') == true &&
       startsWith(github.event.pull_request.title, 'chore(main): release') == true
     runs-on: ubuntu-latest
     permissions:
