@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { parseBooleanDataAttribute } from "../../helpers/parseBooleanDataAttribute";
+import { IconUpload } from "../../icons/IconUpload";
 import type { ImageDraftStateAndFile } from "../../types";
 import { SmallButton as SmallButtonComponent } from "../SmallButton";
 import { processImageFiles } from "./helpers/processImageFiles";
@@ -97,7 +98,7 @@ export function ImageUploader({
         </>
       ) : (
         <SmallButton as="label" htmlFor="image-upload">
-          <img src="/icons/upload.svg" alt="Upload" style={{ width: 22 }} />
+          <IconUpload />
         </SmallButton>
       )}
     </Form>

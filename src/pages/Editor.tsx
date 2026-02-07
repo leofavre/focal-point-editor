@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
-import { ReactComponent as Instructions } from "../../INSTRUCTIONS.md";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
 import { FocalPointEditor } from "../components/FocalPointEditor/FocalPointEditor";
 import { ImageUploader } from "../components/ImageUploader/ImageUploader";
-import { Markdown } from "../components/Markdown/Markdown";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
+import { IconCode } from "../icons/IconCode";
+import { IconMask } from "../icons/IconMask";
+import { IconUpload } from "../icons/IconUpload";
 import type { ImageDraftStateAndFile, ImageState, ObjectPositionString } from "../types";
-import { EditorGrid } from "./Editor.styled";
+import { EditorGrid, IntroContent } from "./Editor.styled";
 import { createImageStateFromImageRecord } from "./helpers/createImageStateFromImageRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedImages } from "./hooks/usePersistedImages";
@@ -313,9 +314,43 @@ export default function Editor() {
     return (
       <EditorGrid>
         <ImageUploader variant="large" ref={fileInputRef} onImageUpload={handleImageUpload}>
-          <Markdown>
-            <Instructions />
-          </Markdown>
+          <IntroContent>
+            <h1>Focal Point Editor</h1>
+            <p>Crop images in responsive layouts without losing what matters most.</p>
+            <h2>Steps</h2>
+            <ol>
+              <li>
+                <IconUpload />
+                <p>Choose an image</p>
+                <ul>
+                  <li>
+                    Select an image from your device. It’s kept locally, so it can be edited
+                    offline. No uploads.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <IconMask />
+                <p>Mask it</p>
+                <ul>
+                  <li>
+                    Use the slider to set the mask aspect ratio and drag the image to control how
+                    it’s cropped.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <IconCode />
+                <p>Grab the code</p>
+                <ul>
+                  <li>
+                    When you’re done, copy the code to use the image in full-width banners and
+                    responsive layouts.
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </IntroContent>
         </ImageUploader>
       </EditorGrid>
     );
