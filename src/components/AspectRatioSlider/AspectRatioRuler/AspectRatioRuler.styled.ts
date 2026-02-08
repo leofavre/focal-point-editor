@@ -20,7 +20,8 @@ export const Item = styled.li`
   writing-mode: sideways-lr;
 
   &[data-name="original"] {
-    /* top: calc(var(--runner-thickness) * -2); */
+    top: calc(var(--runner-thickness) * -3);
+    color: var(--color-loud);
   }
 `;
 
@@ -41,6 +42,7 @@ export const Label = styled.span`
   }
 
   [data-name="original"] > &::after {
-    /* height: calc(var(--base-line-05x) + var(--runner-thickness) * 2); */
+    height: calc(var(--base-line-05x) + var(--runner-thickness) * 3);
+    background-color: var(--color-loud);
   }
 `;
