@@ -45,7 +45,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * ### Basic functionality
  *
  * - Fix loading state saying "not found...".
- * - Fix image not resetting to original aspect ratio after  upload.
+ * - Fix image not resetting to original aspect ratio after upload.
  * - Fix app not working in Incognito mode on mobile Chrome.
  * - Fix ImageUploaderButton not toggling while image is loading.
  * - Handle errors in a consistent way. Review try/catch blocks. Test neverthrow.
