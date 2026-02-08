@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const GhostImage = styled.div`
+export const ImageOverflow = styled.div`
   position: absolute;
   top: 0;
   left: 0;

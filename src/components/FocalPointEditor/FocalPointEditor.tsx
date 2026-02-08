@@ -2,14 +2,14 @@ import type { PointerEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { ClippedImage } from "./ClippedImage/ClippedImage";
 import { FocalPointEditorWrapper } from "./FocalPointEditorWrapper/FocalPointEditorWrapper";
-import { GhostImage } from "./GhostImage/GhostImage";
+import { ImageOverflow } from "./ImageOverflow/ImageOverflow";
 import { clamp } from "./helpers/clamp";
 import { cssObjectPositionObjectToString } from "./helpers/cssObjectPositionObjectToString";
 import { cssObjectPositionStringToObject } from "./helpers/cssObjectPositionStringToObject";
 import { getImageDimensionDelta } from "./helpers/getImageDimensionDelta";
 import { getPointerCoordinatesFromEvent } from "./helpers/getPointerCoordinatesFromEvent";
 import { toPercentage } from "./helpers/toPercentage";
-import { PointMarker } from "./PointMarker/PointMarker";
+import { FocalPoint } from "./FocalPoint/FocalPoint";
 import type { Coordinates, FocalPointEditorProps, ImageDimensionDelta } from "./types";
 
 const CURSOR_MAP = {
@@ -22,8 +22,8 @@ export function FocalPointEditor({
   aspectRatio,
   initialAspectRatio,
   objectPosition,
-  showPointMarker,
-  showGhostImage,
+  showFocalPoint,
+  showImageOverflow,
   onObjectPositionChange,
   onImageLoad,
   onImageError,
@@ -183,7 +183,7 @@ export function FocalPointEditor({
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
       />
-      <GhostImage
+      <ImageOverflow
         css={{
           ...(imageDimensionDelta?.changedDimension === "width"
             ? { height: "100%" }
@@ -194,20 +194,20 @@ export function FocalPointEditor({
           )`,
           aspectRatio: initialAspectRatio,
           backgroundImage: `url(${imageUrl})`,
-          opacity: showGhostImage ? 0.25 : 0,
-          pointerEvents: showGhostImage ? "auto" : "none",
+          opacity: showImageOverflow ? 0.25 : 0,
+          pointerEvents: showImageOverflow ? "auto" : "none",
           cursor,
         }}
-        aria-hidden={!showGhostImage}
+        aria-hidden={!showImageOverflow}
       />
-      <PointMarker
+      <FocalPoint
         css={{
-          opacity: showPointMarker ? 1 : 0,
+          opacity: showFocalPoint ? 1 : 0,
           left: `${objectPositionX}%`,
           top: `${objectPositionY}%`,
-          pointerEvents: showPointMarker ? "auto" : "none",
+          pointerEvents: showFocalPoint ? "auto" : "none",
         }}
-        aria-hidden={!showPointMarker}
+        aria-hidden={!showFocalPoint}
         onObjectPositionChange={stableOnObjectPositionChange}
       />
     </FocalPointEditorWrapper>

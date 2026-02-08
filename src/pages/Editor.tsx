@@ -20,8 +20,8 @@ import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutH
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 
-const DEFAULT_SHOW_POINT_MARKER = false;
-const DEFAULT_SHOW_GHOST_IMAGE = false;
+const DEFAULT_SHOW_FOCAL_POINT = false;
+const DEFAULT_SHOW_IMAGE_OVERFLOW = false;
 const DEFAULT_SHOW_CODE_SNIPPET = false;
 const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
 const DEFAULT_ASPECT_RATIO = 1;
@@ -95,13 +95,13 @@ export default function Editor() {
     { service: "sessionStorage", debounceTimeout: INTERACTION_DEBOUNCE_MS },
   );
 
-  const [showPointMarker, setShowPointMarker] = usePersistedUIRecord(
-    { id: "showPointMarker", value: DEFAULT_SHOW_POINT_MARKER },
+  const [showFocalPoint, setShowFocalPoint] = usePersistedUIRecord(
+    { id: "showFocalPoint", value: DEFAULT_SHOW_FOCAL_POINT },
     { service: "sessionStorage" },
   );
 
-  const [showGhostImage, setShowGhostImage] = usePersistedUIRecord(
-    { id: "showGhostImage", value: DEFAULT_SHOW_GHOST_IMAGE },
+  const [showImageOverflow, setShowImageOverflow] = usePersistedUIRecord(
+    { id: "showImageOverflow", value: DEFAULT_SHOW_IMAGE_OVERFLOW },
     { service: "sessionStorage" },
   );
 
@@ -169,8 +169,8 @@ export default function Editor() {
   /**
    * Handles all keyboard shortcuts:
    * - 'u' opens the file input to upload a new image.
-   * - 'a' or 'p' toggles the point marker.
-   * - 's' or 'l' toggles the ghost image.
+   * - 'a' or 'p' toggles the focal point.
+   * - 's' or 'l' toggles the image overflow.
    * - 'd' or 'c' toggles the code snippet.
    *
    * The shortcuts are case insensitive and are not triggered
@@ -182,16 +182,16 @@ export default function Editor() {
         fileInputRef.current?.click();
       },
       a: () => {
-        setShowPointMarker((prev) => !prev);
+        setShowFocalPoint((prev) => !prev);
       },
       p: () => {
-        setShowPointMarker((prev) => !prev);
+        setShowFocalPoint((prev) => !prev);
       },
       s: () => {
-        setShowGhostImage((prev) => !prev);
+        setShowImageOverflow((prev) => !prev);
       },
       l: () => {
-        setShowGhostImage((prev) => !prev);
+        setShowImageOverflow((prev) => !prev);
       },
       d: () => {
         setShowCodeSnippet((prev) => !prev);
@@ -206,7 +206,7 @@ export default function Editor() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [setShowCodeSnippet, setShowPointMarker, setShowGhostImage]);
+  }, [setShowCodeSnippet, setShowFocalPoint, setShowImageOverflow]);
 
   const currentObjectPosition = image?.breakpoints?.[0]?.objectPosition;
 
@@ -327,23 +327,23 @@ export default function Editor() {
 
   return (
     <EditorGrid>
-      {showPointMarker != null && (
+      {showFocalPoint != null && (
         <ToggleButton
-          data-component="PointerMarkerButton"
-          toggled={showPointMarker}
-          onToggle={() => setShowPointMarker((prev) => !prev)}
-          titleOn="Hide pointer marker"
-          titleOff="Show pointer marker"
+          data-component="FocalPointButton"
+          toggled={showFocalPoint}
+          onToggle={() => setShowFocalPoint((prev) => !prev)}
+          titleOn="Hide focal point"
+          titleOff="Show focal point"
           icon={<IconReference />}
         />
       )}
-      {showGhostImage != null && (
+      {showImageOverflow != null && (
         <ToggleButton
-          data-component="GhostImageButton"
-          toggled={showGhostImage}
-          onToggle={() => setShowGhostImage((prev) => !prev)}
-          titleOn="Hide ghost image"
-          titleOff="Show ghost image"
+          data-component="ImageOverflowButton"
+          toggled={showImageOverflow}
+          onToggle={() => setShowImageOverflow((prev) => !prev)}
+          titleOn="Hide image overflow"
+          titleOff="Show image overflow"
           icon={<IconMask />}
         />
       )}
@@ -359,8 +359,8 @@ export default function Editor() {
               aspectRatio={aspectRatio}
               initialAspectRatio={image.naturalAspectRatio}
               objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-              showPointMarker={showPointMarker ?? false}
-              showGhostImage={showGhostImage ?? false}
+              showFocalPoint={showFocalPoint ?? false}
+              showImageOverflow={showImageOverflow ?? false}
               onObjectPositionChange={handleObjectPositionChange}
               onImageError={handleImageError}
             />

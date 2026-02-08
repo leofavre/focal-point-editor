@@ -1,5 +1,5 @@
 import type { ObjectPositionString } from "../../../types";
 
-export type PointMarkerProps = {
+export type FocalPointProps = {
   onObjectPositionChange: (objectPosition: ObjectPositionString) => void;
 };

@@ -35,12 +35,12 @@ export const EditorGrid = styled.main`
     z-index: 1;
   }
 
-  [data-component="PointerMarkerButton"] {
+  [data-component="FocalPointButton"] {
     grid-row: 3;
     grid-column: 2;
   }
 
-  [data-component="GhostImageButton"] {
+  [data-component="ImageOverflowButton"] {
     grid-row: 3;
     grid-column: 3;
   }
