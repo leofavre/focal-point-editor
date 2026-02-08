@@ -1,12 +1,14 @@
 import styled from "@emotion/styled";
 
 export const List = styled.ul`
+  font-family: "Sono", monospace;
+
   position: relative;
   display: flex;
   margin: 0;
   align-items: flex-start;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--color-neutral);
 `;
 
 export const Item = styled.li`
@@ -16,6 +18,10 @@ export const Item = styled.li`
   justify-content: center;
   position: absolute;
   writing-mode: sideways-lr;
+
+  &[data-name="original"] {
+    /* top: calc(var(--runner-thickness) * -2); */
+  }
 `;
 
 export const Label = styled.span`
@@ -29,8 +35,12 @@ export const Label = styled.span`
     margin-bottom: 0.25rem;
     display: inline-block;
     width: 1px;
-    height: 1rem;
-    background-color: #94a3b8;
+    height: var(--base-line-05x);
+    background-color: var(--color-neutral);
     vertical-align: middle;
+  }
+
+  [data-name="original"] > &::after {
+    /* height: calc(var(--base-line-05x) + var(--runner-thickness) * 2); */
   }
 `;

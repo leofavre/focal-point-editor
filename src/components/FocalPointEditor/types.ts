@@ -43,8 +43,8 @@ export type FocalPointEditorProps = {
   aspectRatio: number;
   initialAspectRatio: number;
   objectPosition: ObjectPositionString;
-  showPointMarker: boolean;
-  showGhostImage: boolean;
+  showFocalPoint: boolean;
+  showImageOverflow: boolean;
   onObjectPositionChange: (objectPosition: ObjectPositionString) => void;
   onImageLoad?: (event: SyntheticEvent<HTMLImageElement>) => void;
   onImageError?: (event: SyntheticEvent<HTMLImageElement>) => void;

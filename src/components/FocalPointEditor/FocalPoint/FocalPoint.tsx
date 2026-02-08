@@ -2,10 +2,10 @@ import type { PointerEvent } from "react";
 import { useCallback, useEffectEvent, useRef } from "react";
 import { clamp } from "../helpers/clamp";
 import { cssObjectPositionObjectToString } from "../helpers/cssObjectPositionObjectToString";
-import { Wrapper } from "./PointMarker.styled";
-import type { PointMarkerProps } from "./types";
+import { Wrapper } from "./FocalPoint.styled";
+import type { FocalPointProps } from "./types";
 
-export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProps) {
+export function FocalPoint({ onObjectPositionChange, ...rest }: FocalPointProps) {
   const isDraggingRef = useRef(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -62,13 +62,13 @@ export function PointMarker({ onObjectPositionChange, ...rest }: PointMarkerProp
       onPointerCancel={handlePointerCancel}
       {...rest}
     >
-      <PointMarkerIcon />
-      <PointMarkerIcon />
+      <FocalPointIcon />
+      <FocalPointIcon />
     </Wrapper>
   );
 }
 
-function PointMarkerIcon() {
+function FocalPointIcon() {
   return (
     /** biome-ignore lint/a11y/noSvgWithoutTitle: Image hidden from screen readers */
     <svg viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">

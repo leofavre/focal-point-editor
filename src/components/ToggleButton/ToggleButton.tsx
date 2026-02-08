@@ -1,26 +1,52 @@
-import { SmallButton } from "../SmallButton";
+import { type MouseEvent, useCallback, useEffectEvent } from "react";
+import { Button } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
 export function ToggleButton({
   toggled,
   onToggle,
+  onClick,
+  onFocus,
+  onBlur,
   titleOn,
   titleOff,
   icon,
   ref,
+  type,
   ...rest
 }: ToggleButtonProps) {
+  const label = toggled ? titleOn : titleOff;
+
+  const stableOnClick = useEffectEvent((event: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event);
+  });
+
+  const stableOnToggle = useEffectEvent((toggled: boolean) => {
+    onToggle?.(toggled);
+  });
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      stableOnClick(event);
+      stableOnToggle(toggled);
+    },
+    [toggled],
+  );
+
   return (
-    <SmallButton
+    <Button
       ref={ref}
       as="button"
-      type="button"
-      title={toggled ? titleOn : titleOff}
+      type={type}
+      title={label}
       aria-pressed={toggled}
-      onClick={onToggle}
+      onClick={handleClick}
+      onFocus={onFocus}
+      onBlur={onBlur}
       {...rest}
     >
       {icon}
-    </SmallButton>
+      <span>{label}</span>
+    </Button>
   );
 }

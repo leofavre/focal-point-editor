@@ -19,7 +19,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - name: Enable PR auto-merge
+      - name: Auto-merge release PR
         run: gh pr merge --auto --squash "${{ github.event.pull_request.number }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

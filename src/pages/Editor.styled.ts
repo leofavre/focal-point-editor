@@ -1,13 +1,12 @@
 import styled from "@emotion/styled";
 
 export const EditorGrid = styled.main`
-  --external-margin: 0rem;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 1fr 1fr minmax(0, 50rem) 1fr 1fr minmax(0, 1fr);
-  grid-template-rows: min-content 1fr 5.625rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 12ch) minmax(0, 12ch) minmax(8rem, 50rem) minmax(0, 12ch) minmax(0, 12ch) minmax(0, 1fr);
+  grid-template-rows: 7rem 1fr 7rem;
   overflow: hidden;
   isolation: isolate;
-  gap: 0.5rem;
+  gap: var(--base-line-05x);
   margin: 0;
   width: 100dvw;
   height: 100dvh;
@@ -36,24 +35,23 @@ export const EditorGrid = styled.main`
     z-index: 1;
   }
 
-  [data-component="PointerMarkerButton"] {
+  [data-component="FocalPointButton"] {
     grid-row: 3;
     grid-column: 2;
   }
 
-  [data-component="GhostImageButton"] {
+  [data-component="ImageOverflowButton"] {
     grid-row: 3;
     grid-column: 3;
   }
 
   [data-component="CodeSnippetButton"] {
     grid-row: 3;
-    grid-column: 6;
+    grid-column: 5;
   }
 
-  [data-component="ImageUploader"] {
+  [data-component="ImageUploaderButton"] {
     grid-row: 3;
-    grid-column: 5;
-    margin-bottom: auto;
+    grid-column: 6;
   }
 `;

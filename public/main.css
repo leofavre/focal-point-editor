@@ -1,23 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&family=Sono:wght,MONO@200..800,1&display=swap");
 
 :root {
-  --landing-fg-heading: #0a0a0a;
-  --landing-fg-subtitle: #475569;
-  --landing-fg-section: #0a0a0a;
-  --landing-fg-step-title: #171717;
-  --landing-fg-step-body: #64748b;
+  --color-loud: #eb8552;
+  --color-neutral: #827377;
+  --color-body: #2a2828;
+  --color-glow: rgb(from var(--color-loud) r g b / 40%);
+
+  --base-line: calc(22 / 16 * 1rem);
+  --base-line-025x: calc(var(--base-line) * 0.25);
+  --base-line-05x: calc(var(--base-line) * 0.5);
+  --base-line-1x: calc(var(--base-line) * 1);
+  --base-line-2x: calc(var(--base-line) * 2);
+  --base-line-4x: calc(var(--base-line) * 4);
+
+  --thumb-radius: var(--base-line-05x);
+  --thumb-diameter: calc(2 * var(--thumb-radius));
+  --runner-thickness: 4px;
 }
 
 html {
-  font-family: "Source Sans 3", system-ui, sans-serif;
+  font-family: "Red Hat Text", sans-serif;
+  font-optical-sizing: auto;
   font-size: 16px;
   height: 100%;
   margin: 0;
   padding: 0;
+  color: var(--color-body);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: #fff;
 }

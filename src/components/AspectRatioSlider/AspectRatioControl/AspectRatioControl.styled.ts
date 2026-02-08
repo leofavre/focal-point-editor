@@ -1,13 +1,18 @@
 import styled from "@emotion/styled";
+import { focusVisibleStyle } from "../../shared";
 
 export const Slider = styled.div`
+  --color-start: var(--color-neutral);
+  --color-end: var(--color-neutral);
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--base-line-05x);
   width: 100%;
 
   input {
+    position: relative;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -20,76 +25,99 @@ export const Slider = styled.div`
     cursor: pointer;
     outline: none;
 
+    &:focus-visible::before {
+      content: "";
+      position: absolute;
+      display: block;
+      inset: calc(var(--base-line-05x) - (var(--runner-thickness) / 2)) calc(var(--thumb-radius));
+      z-index: 0;
+      ${focusVisibleStyle}
+    }
+
     /* Track styling - WebKit (Chrome, Safari, Edge) */
     &::-webkit-slider-runnable-track {
+      position: relative;
       width: 100%;
       height: var(--runner-thickness);
       background: linear-gradient(
         to right,
         transparent 0%,
         transparent calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
-        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
-        #3b82f6 calc(100% - var(--thumb-radius)),
+        var(--color-start) calc(var(--thumb-radius)),
+        var(--color-start) calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        var(--color-end) calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        var(--color-end) calc(100% - var(--thumb-radius)),
         transparent calc(100% - var(--thumb-radius)),
         transparent 100%
       );
+      z-index: 1;
     }
 
     /* Track styling - Firefox */
     &::-moz-range-track {
+      position: relative;
       width: 100%;
       height: var(--runner-thickness);
       background: linear-gradient(
         to right,
         transparent 0%,
         transparent calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius)),
-        #94a3b8 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
-        #3b82f6 calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
-        #3b82f6 calc(100% - var(--thumb-radius)),
+        var(--color-start) calc(var(--thumb-radius)),
+        var(--color-start) calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        var(--color-end) calc(var(--thumb-radius) + (100% - var(--thumb-diameter)) * var(--thumb-initial-position)),
+        var(--color-end) calc(100% - var(--thumb-radius)),
         transparent calc(100% - var(--thumb-radius)),
         transparent 100%
       );
+      z-index: 1;
     }
 
     /* Thumb styling - WebKit (Chrome, Safari, Edge) */
     &::-webkit-slider-thumb {
-      appearance: none;
       -webkit-appearance: none;
+      appearance: none;
       width: var(--thumb-diameter);
       height: var(--thumb-diameter);
-      background: rgba(255, 255, 255, 0.5);
-      border: var(--thumb-border) solid #3b82f6;
-      border-radius: 50%;
+      background: none;
+      background-size: 16px 10px;
+      background-image: url("/runner.svg");
+      background-repeat: no-repeat;
+      background-position: top center;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
       cursor: pointer;
-      box-shadow: 0 1px 0.1875rem rgba(0, 0, 0, 0.2);
       margin-top: calc((var(--thumb-diameter) - var(--runner-thickness)) / -2);
       visibility: var(--thumb-visibility, hidden);
     }
 
     /* Thumb styling - Firefox */
     &::-moz-range-thumb {
-      width: calc(var(--thumb-diameter) - var(--runner-thickness));
-      height: calc(var(--thumb-diameter) - var(--runner-thickness));
-      background: rgba(255, 255, 255, 0.5);
-      border: var(--thumb-border) solid #3b82f6;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 1px 0.1875rem rgba(0, 0, 0, 0.2);
       -moz-appearance: none;
+      width: var(--thumb-diameter);
+      height: var(--thumb-diameter);
+      background: none;
+      background-size: 16px 10px;
+      background-image: url("/runner.svg");
+      background-repeat: no-repeat;
+      background-position: top center;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      cursor: pointer;
       visibility: var(--thumb-visibility, hidden);
     }
 
     /* Thumb styling - iOS Safari */
     &::-webkit-slider-thumb:active {
-      background: rgba(255, 255, 255, 0.5);
+      outline: none;
+      border: none;
     }
 
     /* Thumb styling - Firefox active state */
     &::-moz-range-thumb:active {
-      background: rgba(255, 255, 255, 0.5);
+      outline: none;
+      border: none;
     }
 
     &:focus {
@@ -97,11 +125,13 @@ export const Slider = styled.div`
     }
 
     &:focus::-webkit-slider-thumb {
-      box-shadow: 0 0 0 0.1875rem rgba(59, 130, 246, 0.2);
+      outline: none;
+      border: none;
     }
 
     &:focus::-moz-range-thumb {
-      box-shadow: 0 0 0 0.1875rem rgba(59, 130, 246, 0.2);
+      outline: none;
+      border: none;
     }
   }
 `;

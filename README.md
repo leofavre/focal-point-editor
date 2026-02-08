@@ -1,17 +1,17 @@
 # Focal Point Editor
 
-Mask images in responsive layouts without losing what matters most.
+Crop images in responsive layouts without losing what matters most.
 
 ## How it works
 
 1. **Choose an image**
-   - Select an image from your device. Images stay where they are — no uploads.
+   - Select an image from your device. It’s kept locally, so it can be edited offline. No uploads.
 
 2. **Edit the focal point**
-   - Preview how the image behaves across different aspect ratios. Drag the image within the mask to control how it's cropped.
+   - Test how the image adapts to different aspect ratios. Set a focal point to keep important areas visible as the container changes.
 
 3. **Grab the code**
-   - When you're done, copy the HTML and CSS code to use the image in full-width banners and responsive layouts.
+   - When you’re done, copy the HTML and CSS code to use the image in full-width banners and responsive layouts.
 
 ## Prerequisites
 

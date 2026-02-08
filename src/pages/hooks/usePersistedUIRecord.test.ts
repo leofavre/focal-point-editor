@@ -24,7 +24,7 @@ describe("usePersistedUIRecord", () => {
 
     const { result } = renderHook(() =>
       usePersistedUIRecord({
-        id: "showGhostImage",
+        id: "showImageOverflow",
         value: false,
       }),
     );
@@ -37,16 +37,16 @@ describe("usePersistedUIRecord", () => {
       expect(result.current[0]).toBe(false);
     });
 
-    expect(mockGetRecord).toHaveBeenCalledWith("showGhostImage");
+    expect(mockGetRecord).toHaveBeenCalledWith("showImageOverflow");
   });
 
   it("returns undefined initially, then persisted value when it exists", async () => {
     const persistedValue = true;
-    mockGetRecord.mockResolvedValue({ id: "showGhostImage", value: persistedValue });
+    mockGetRecord.mockResolvedValue({ id: "showImageOverflow", value: persistedValue });
 
     const { result } = renderHook(() =>
       usePersistedUIRecord({
-        id: "showGhostImage",
+        id: "showImageOverflow",
         value: false,
       }),
     );
@@ -59,7 +59,7 @@ describe("usePersistedUIRecord", () => {
       expect(result.current[0]).toBe(persistedValue);
     });
 
-    expect(mockGetRecord).toHaveBeenCalledWith("showGhostImage");
+    expect(mockGetRecord).toHaveBeenCalledWith("showImageOverflow");
   });
 
   it("falls back to value when IndexedDB getByID fails", async () => {
@@ -67,7 +67,7 @@ describe("usePersistedUIRecord", () => {
 
     const { result } = renderHook(() =>
       usePersistedUIRecord({
-        id: "showGhostImage",
+        id: "showImageOverflow",
         value: true,
       }),
     );
@@ -188,8 +188,8 @@ describe("usePersistedUIRecord", () => {
       if (id === "aspectRatio") {
         return Promise.resolve({ id: "aspectRatio", value: 3 / 4 });
       }
-      if (id === "showGhostImage") {
-        return Promise.resolve({ id: "showGhostImage", value: true });
+      if (id === "showImageOverflow") {
+        return Promise.resolve({ id: "showImageOverflow", value: true });
       }
       return Promise.resolve(null);
     });
@@ -203,7 +203,7 @@ describe("usePersistedUIRecord", () => {
 
     const { result: result2 } = renderHook(() =>
       usePersistedUIRecord({
-        id: "showGhostImage",
+        id: "showImageOverflow",
         value: false,
       }),
     );
@@ -217,7 +217,7 @@ describe("usePersistedUIRecord", () => {
     });
 
     expect(mockGetRecord).toHaveBeenCalledWith("aspectRatio");
-    expect(mockGetRecord).toHaveBeenCalledWith("showGhostImage");
+    expect(mockGetRecord).toHaveBeenCalledWith("showImageOverflow");
   });
 
   it("treats id and value as stable so does not reload when they change", async () => {
@@ -226,8 +226,8 @@ describe("usePersistedUIRecord", () => {
       if (id === "aspectRatio") {
         return Promise.resolve({ id: "aspectRatio", value: 3 / 4 });
       }
-      if (id === "showGhostImage") {
-        return Promise.resolve({ id: "showGhostImage", value: true });
+      if (id === "showImageOverflow") {
+        return Promise.resolve({ id: "showImageOverflow", value: true });
       }
       return Promise.resolve(null);
     });
@@ -248,7 +248,7 @@ describe("usePersistedUIRecord", () => {
     });
 
     // Change id
-    rerender({ id: "showGhostImage", value: false });
+    rerender({ id: "showImageOverflow", value: false });
 
     // Should not have reloaded
     await waitFor(() => {
