@@ -57,8 +57,8 @@ export const EditorGrid = styled.main`
   }
 
   [data-component="ImageUploader"][data-variant="large"] {
-    grid-column: 3 / 6;
-    grid-row: 2;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
     margin: auto;
     max-width: 1200px;
   }

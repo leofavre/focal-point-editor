@@ -4,6 +4,7 @@ import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
+import { Dialog } from "../components/Dialog/Dialog";
 import { FocalPointEditor } from "../components/FocalPointEditor/FocalPointEditor";
 import { HowToUse } from "../components/HowToUse/HowToUse";
 import { ImageUploader } from "../components/ImageUploader/ImageUploader";
@@ -44,6 +45,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### Basic functionality
  *
+ * - Reset to original aspect ratio when uploaded.
  * - Handle errors in a consistent way. Review try/catch blocks. Test neverthrow.
  * - Fix app not working in Incognito mode on mobile Chrome.
  * - Make sure app works without any database (single image direct to React state on upload?).
@@ -396,18 +398,19 @@ export default function Editor() {
               onImageError={handleImageError}
             />
           )}
-          <CodeSnippet
-            src={image.name}
-            objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-            language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
-            onLanguageChange={setCodeSnippetLanguage}
-            copied={codeSnippetCopied}
-            onCopiedChange={setCodeSnippetCopied}
-            css={{
-              transform: showCodeSnippet ? "translateY(0)" : "translateY(100%)",
-              pointerEvents: showCodeSnippet ? "auto" : "none",
-            }}
-          />
+          <Dialog open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
+            <CodeSnippet
+              src={image.name}
+              objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+              language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
+              onLanguageChange={setCodeSnippetLanguage}
+              copied={codeSnippetCopied}
+              onCopiedChange={(isCopied) => {
+                setCodeSnippetCopied(isCopied);
+                setShowCodeSnippet(false);
+              }}
+            />
+          </Dialog>
         </>
       )}
       <AspectRatioSlider

@@ -53,6 +53,7 @@
     "react-code-block": "^1.1.3",
     "react-dom": "^19.2.3",
     "react-indexed-db-hook": "^1.0.14",
+    "react-merge-refs": "^3.0.2",
     "react-router-dom": "^7.13.0",
     "use-debounced-effect": "^2.0.1"
   }
