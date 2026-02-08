@@ -1,6 +1,5 @@
 import type { PropsWithChildren, RefObject } from "react";
 import type { ImageDraftStateAndFile } from "../../types";
-import type { ToggleButtonProps } from "../ToggleButton/types";
 
 type SingleImageUploaderProps = {
   onImagesUpload?: never;
@@ -18,7 +17,6 @@ export type ImageUploaderProps = PropsWithChildren<
   }
 >;
 
-export type ImageUploaderButtonProps = (SingleImageUploaderProps | MultipleImagesUploaderProps) &
-  Pick<ToggleButtonProps, "toggled" | "onToggle"> & {
-    ref?: RefObject<HTMLButtonElement | null>;
-  };
+export type ImageUploaderButtonProps = (SingleImageUploaderProps | MultipleImagesUploaderProps) & {
+  ref?: RefObject<HTMLButtonElement | null>;
+};

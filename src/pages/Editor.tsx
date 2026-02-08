@@ -395,11 +395,7 @@ export default function Editor() {
           icon={<IconCode />}
         />
       )}
-      <ImageUploaderButton
-        toggled={isLoading}
-        ref={uploaderButtonRef}
-        onImageUpload={handleImageUpload}
-      />
+      <ImageUploaderButton ref={uploaderButtonRef} onImageUpload={handleImageUpload} />
     </EditorGrid>
   );
 }

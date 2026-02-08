@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useMergeRefs } from "react-merge-refs";
 import { IconUpload } from "../../icons/IconUpload";
 import { ToggleButton } from "../ToggleButton/ToggleButton";
@@ -10,13 +10,13 @@ export function ImageUploaderButton({
   ref,
   onImageUpload,
   onImagesUpload,
-  toggled,
-  onToggle,
   ...rest
 }: ImageUploaderButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const mergedRefs = useMergeRefs([ref, buttonRef]) as typeof buttonRef;
+
+  const [openedByButton, setOpenedByButton] = useState(false);
 
   const { handleFileChange, handleFormSubmit } = useImageUploadHandlers({
     onImageUpload,
@@ -32,15 +32,24 @@ export function ImageUploaderButton({
           accept="image/*"
           multiple={onImagesUpload != null}
           onChange={handleFileChange}
+          onClick={() => {
+            setOpenedByButton(document.activeElement === buttonRef.current);
+          }}
           tabIndex={-1}
         />
         <ToggleButton
           ref={mergedRefs}
           data-component="ImageUploaderButton"
           type="button"
-          toggled={toggled}
-          onToggle={onToggle}
-          onClick={() => inputRef?.current?.click()}
+          toggled={openedByButton}
+          onClick={() => {
+            inputRef?.current?.click();
+          }}
+          onFocus={() => {
+            if (openedByButton) {
+              setOpenedByButton(false);
+            }
+          }}
           titleOn="Upload"
           titleOff="Upload"
           icon={<IconUpload />}
