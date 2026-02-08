@@ -54,11 +54,4 @@ export const EditorGrid = styled.main`
     grid-row: 3;
     grid-column: 6;
   }
-
-  [data-component="ImageUploader"] {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
-    margin: auto;
-    max-width: 1200px;
-  }
 `;

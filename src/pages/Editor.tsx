@@ -7,7 +7,7 @@ import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
 import { Dialog } from "../components/Dialog/Dialog";
 import { FocalPointEditor } from "../components/FocalPointEditor/FocalPointEditor";
 import { HowToUse } from "../components/HowToUse/HowToUse";
-import { ImageUploader } from "../components/ImageUploader/ImageUploader";
+import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
 import { IconCode } from "../icons/IconCode";
@@ -41,13 +41,16 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Remove titles from SVGs.
  * - Think about animations and transitions.
  * - Favicon.
+ * - Improve Full Screen Drop Zone.
+ * - Improve Landing page.
+ * - Improve Focal Point draggable icon.
+ * - Improve Code snippet.
  *
  * ### Basic functionality
  *
  * - Fix loading state saying "not found...".
  * - Fix image not resetting to original aspect ratio after upload.
  * - Fix app not working in Incognito mode on mobile Chrome.
- * - Separate drag and drop from button uploader so that it fills the whole screen.
  * - Handle errors in a consistent way. Review try/catch blocks. Test neverthrow.
  * - Make sure app works without any database (single image direct to React state on upload?).
  *
@@ -66,7 +69,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Maybe make a native custom element?
  */
 export default function Editor() {
-  const uploaderInputRef = useRef<HTMLInputElement>(null);
   const uploaderButtonRef = useRef<HTMLButtonElement>(null);
   const isFirstImageLoadInSessionRef = useRef(true);
 
@@ -177,7 +179,6 @@ export default function Editor() {
   useEffect(() => {
     const handleKeyDown = createKeyboardShortcutHandler({
       u: () => {
-        uploaderInputRef.current?.click();
         uploaderButtonRef.current?.click();
       },
       a: () => {
@@ -316,85 +317,92 @@ export default function Editor() {
 
   if (!imageId) {
     return (
-      <EditorGrid>
-        <ImageUploader ref={uploaderInputRef} onImageUpload={handleImageUpload}>
-          <HowToUse />
-        </ImageUploader>
-      </EditorGrid>
+      <>
+        <FullScreenDropZone onImageUpload={handleImageUpload} />
+        <EditorGrid>
+          <div>
+            <HowToUse />
+            <ImageUploaderButton ref={uploaderButtonRef} onImageUpload={handleImageUpload} />
+          </div>
+        </EditorGrid>
+      </>
     );
   }
 
   return (
-    <EditorGrid>
-      {showFocalPoint != null && (
-        <ToggleButton
-          type="button"
-          data-component="FocalPointButton"
-          toggled={showFocalPoint}
-          onToggle={(toggled) => setShowFocalPoint(!toggled)}
-          titleOn="Focal point"
-          titleOff="Focal point"
-          icon={<IconReference />}
+    <>
+      <FullScreenDropZone onImageUpload={handleImageUpload} />
+      <EditorGrid>
+        {showFocalPoint != null && (
+          <ToggleButton
+            type="button"
+            data-component="FocalPointButton"
+            toggled={showFocalPoint}
+            onToggle={(toggled) => setShowFocalPoint(!toggled)}
+            titleOn="Focal point"
+            titleOff="Focal point"
+            icon={<IconReference />}
+          />
+        )}
+        {showImageOverflow != null && (
+          <ToggleButton
+            type="button"
+            data-component="ImageOverflowButton"
+            toggled={showImageOverflow}
+            onToggle={(toggled) => setShowImageOverflow(!toggled)}
+            titleOn="Overflow"
+            titleOff="Overflow"
+            icon={<IconMask />}
+          />
+        )}
+        {isLoading ? (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Loading...</h3>
+        ) : !image ? (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Not found...</h3>
+        ) : (
+          <>
+            {aspectRatio != null && image.naturalAspectRatio != null && (
+              <FocalPointEditor
+                imageUrl={image.url}
+                aspectRatio={aspectRatio}
+                initialAspectRatio={image.naturalAspectRatio}
+                objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+                showFocalPoint={showFocalPoint ?? false}
+                showImageOverflow={showImageOverflow ?? false}
+                onObjectPositionChange={handleObjectPositionChange}
+                onImageError={handleImageError}
+              />
+            )}
+            <Dialog transparent open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
+              <CodeSnippet
+                src={image.name}
+                objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+                language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
+                onLanguageChange={setCodeSnippetLanguage}
+                copied={codeSnippetCopied}
+                onCopiedChange={setCodeSnippetCopied}
+              />
+            </Dialog>
+          </>
+        )}
+        <AspectRatioSlider
+          aspectRatio={aspectRatio}
+          aspectRatioList={aspectRatioList}
+          onAspectRatioChange={setAspectRatio}
         />
-      )}
-      {showImageOverflow != null && (
-        <ToggleButton
-          type="button"
-          data-component="ImageOverflowButton"
-          toggled={showImageOverflow}
-          onToggle={(toggled) => setShowImageOverflow(!toggled)}
-          titleOn="Overflow"
-          titleOff="Overflow"
-          icon={<IconMask />}
-        />
-      )}
-      {isLoading ? (
-        <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Loading...</h3>
-      ) : !image ? (
-        <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Not found...</h3>
-      ) : (
-        <>
-          {aspectRatio != null && image.naturalAspectRatio != null && (
-            <FocalPointEditor
-              imageUrl={image.url}
-              aspectRatio={aspectRatio}
-              initialAspectRatio={image.naturalAspectRatio}
-              objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-              showFocalPoint={showFocalPoint ?? false}
-              showImageOverflow={showImageOverflow ?? false}
-              onObjectPositionChange={handleObjectPositionChange}
-              onImageError={handleImageError}
-            />
-          )}
-          <Dialog transparent open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
-            <CodeSnippet
-              src={image.name}
-              objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-              language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
-              onLanguageChange={setCodeSnippetLanguage}
-              copied={codeSnippetCopied}
-              onCopiedChange={setCodeSnippetCopied}
-            />
-          </Dialog>
-        </>
-      )}
-      <AspectRatioSlider
-        aspectRatio={aspectRatio}
-        aspectRatioList={aspectRatioList}
-        onAspectRatioChange={setAspectRatio}
-      />
-      {showCodeSnippet != null && (
-        <ToggleButton
-          type="button"
-          data-component="CodeSnippetButton"
-          toggled={showCodeSnippet}
-          onToggle={(toggled) => setShowCodeSnippet(!toggled)}
-          titleOn="Code"
-          titleOff="Code"
-          icon={<IconCode />}
-        />
-      )}
-      <ImageUploaderButton ref={uploaderButtonRef} onImageUpload={handleImageUpload} />
-    </EditorGrid>
+        {showCodeSnippet != null && (
+          <ToggleButton
+            type="button"
+            data-component="CodeSnippetButton"
+            toggled={showCodeSnippet}
+            onToggle={(toggled) => setShowCodeSnippet(!toggled)}
+            titleOn="Code"
+            titleOff="Code"
+            icon={<IconCode />}
+          />
+        )}
+        <ImageUploaderButton ref={uploaderButtonRef} onImageUpload={handleImageUpload} />
+      </EditorGrid>
+    </>
   );
 }
