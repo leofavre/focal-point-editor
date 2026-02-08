@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useMergeRefs } from "react-merge-refs";
 import { IconUpload } from "../../icons/IconUpload";
 import type { ImageDraftStateAndFile } from "../../types";
 import { ToggleButton } from "../ToggleButton/ToggleButton";
@@ -17,19 +18,9 @@ import type { ImageUploaderButtonProps } from "./types";
 export const ImageUploaderButton = forwardRef<HTMLInputElement, ImageUploaderButtonProps>(
   function ImageUploaderButton({ onImageUpload, onImagesUpload }, forwardedRef) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [isUploading, setIsUploading] = useState(false);
+    const mergedRefs = useMergeRefs([inputRef, forwardedRef]);
 
-    const setInputRef = useCallback(
-      (el: HTMLInputElement | null) => {
-        (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
-        if (typeof forwardedRef === "function") {
-          forwardedRef(el);
-        } else if (forwardedRef) {
-          (forwardedRef as React.MutableRefObject<HTMLInputElement | null>).current = el;
-        }
-      },
-      [forwardedRef],
-    );
+    const [isUploading, setIsUploading] = useState(false);
 
     const stableOnImageUpload = useEffectEvent(
       async (draftAndFile: ImageDraftStateAndFile | undefined) => {
@@ -44,14 +35,11 @@ export const ImageUploaderButton = forwardRef<HTMLInputElement, ImageUploaderBut
     ) satisfies typeof onImagesUpload;
 
     const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-      setIsUploading(true);
-
       try {
         const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
         stableOnImageUpload(imageDraftStatesAndFiles[0]);
         stableOnImagesUpload(imageDraftStatesAndFiles);
       } finally {
-        setIsUploading(false);
         event.currentTarget.value = "";
       }
     }, []);
@@ -64,7 +52,7 @@ export const ImageUploaderButton = forwardRef<HTMLInputElement, ImageUploaderBut
       <InvisibleForm onSubmit={handleFormSubmit}>
         <InvisibleLabel>
           <InvisibleControl
-            ref={setInputRef}
+            ref={mergedRefs}
             type="file"
             accept="image/*"
             multiple={onImagesUpload != null}
