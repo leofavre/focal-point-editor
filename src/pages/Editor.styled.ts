@@ -2,11 +2,11 @@ import styled from "@emotion/styled";
 
 export const EditorGrid = styled.main`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 1fr 1fr minmax(0, 50rem) 1fr 1fr minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 12ch) minmax(0, 12ch) minmax(8rem, 50rem) minmax(0, 12ch) minmax(0, 12ch) minmax(0, 1fr);
   grid-template-rows: 7rem 1fr 7rem;
   overflow: hidden;
   isolation: isolate;
-  gap: 0.5rem;
+  gap: var(--base-line-05x);
   margin: 0;
   width: 100dvw;
   height: 100dvh;

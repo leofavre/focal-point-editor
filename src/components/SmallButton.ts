@@ -5,10 +5,10 @@ export const SmallButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.5rem;
-  min-width: calc(1rem + var(--base-line));
+  gap: var(--base-line-025x);
+  min-width: calc(var(--base-line) + var(--base-line-05x));
   height: 2rem;
-  padding: 0 0.5rem;
+  padding: 0 var(--base-line-025x);
   border: 1px solid rgb(from var(--color-neutral) r g b);
   background-color: #fff;
   box-sizing: border-box;

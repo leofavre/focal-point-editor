@@ -7,7 +7,7 @@ export const Slider = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--base-line-05x);
   width: 100%;
 
   input {
