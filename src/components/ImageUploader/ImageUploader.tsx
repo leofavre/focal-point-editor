@@ -30,13 +30,16 @@ export function ImageUploader({
   }, []);
 
   const handleDrop = useCallback(
-    (event: DragEvent<HTMLFormElement>) => {
+    async (event: DragEvent<HTMLFormElement>) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDragOver(false);
+
       const imageDraftStatesAndFiles = processImageFiles(event.dataTransfer.files);
-      stableOnImageUpload(imageDraftStatesAndFiles[0]);
-      stableOnImagesUpload(imageDraftStatesAndFiles);
+      await Promise.all([
+        stableOnImageUpload(imageDraftStatesAndFiles[0]),
+        stableOnImagesUpload(imageDraftStatesAndFiles),
+      ]);
     },
     [stableOnImageUpload, stableOnImagesUpload],
   );

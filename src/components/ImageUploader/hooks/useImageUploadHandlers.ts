@@ -22,10 +22,14 @@ export function useImageUploadHandlers({
   const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
-      await stableOnImageUpload(imageDraftStatesAndFiles[0]);
-      await stableOnImagesUpload(imageDraftStatesAndFiles);
+      await Promise.all([
+        stableOnImageUpload(imageDraftStatesAndFiles[0]),
+        stableOnImagesUpload(imageDraftStatesAndFiles),
+      ]);
     } finally {
-      event.currentTarget.value = "";
+      if (event.currentTarget != null) {
+        event.currentTarget.value = "";
+      }
     }
   }, []);
 
