@@ -31,7 +31,7 @@ export function ImageUploader({
     await onImagesUpload?.(draftsAndFiles);
   }) satisfies typeof onImagesUpload;
 
-  const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const imageDraftStatesAndFiles = processImageFiles(event.currentTarget.files);
       stableOnImageUpload(imageDraftStatesAndFiles[0]);
