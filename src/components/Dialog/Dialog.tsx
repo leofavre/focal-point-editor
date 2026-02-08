@@ -3,7 +3,15 @@ import { mergeRefs } from "react-merge-refs";
 import { DialogWrapper } from "./Dialog.styled";
 import type { DialogProps } from "./types";
 
-export function Dialog({ open, defaultOpen, onOpenChange, children, ref, ...rest }: DialogProps) {
+export function Dialog({
+  ref,
+  transparent,
+  open,
+  defaultOpen,
+  onOpenChange,
+  children,
+  ...rest
+}: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const mergedRefs = mergeRefs([dialogRef, ref]);
 
@@ -44,7 +52,11 @@ export function Dialog({ open, defaultOpen, onOpenChange, children, ref, ...rest
   }, []);
 
   return (
-    <DialogWrapper ref={mergedRefs} {...rest}>
+    <DialogWrapper
+      ref={mergedRefs}
+      css={{ backgroundColor: transparent ? "transparent" : "white" }}
+      {...rest}
+    >
       {children}
     </DialogWrapper>
   );

@@ -14,6 +14,5 @@ type MultipleImagesUploaderProps = {
 export type ImageUploaderProps = PropsWithChildren<
   (SingleImageUploaderProps | MultipleImagesUploaderProps) & {
     ref?: RefObject<HTMLInputElement | null>;
-    variant: "small" | "large";
   }
 >;

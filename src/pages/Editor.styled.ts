@@ -47,16 +47,15 @@ export const EditorGrid = styled.main`
 
   [data-component="CodeSnippetButton"] {
     grid-row: 3;
+    grid-column: 5;
+  }
+
+  [data-component="ImageUploaderButton"] {
+    grid-row: 3;
     grid-column: 6;
   }
 
-  [data-component="ImageUploader"][data-variant="small"] {
-    grid-row: 3;
-    grid-column: 5;
-    margin-bottom: auto;
-  }
-
-  [data-component="ImageUploader"][data-variant="large"] {
+  [data-component="ImageUploader"] {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
     margin: auto;

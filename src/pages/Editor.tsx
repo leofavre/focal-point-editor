@@ -116,6 +116,7 @@ export default function Editor() {
   );
 
   const [codeSnippetCopied, setCodeSnippetCopied] = useState(false);
+  const [showImageUploader, setShowImageUploader] = useState(false);
 
   const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
 
@@ -123,6 +124,8 @@ export default function Editor() {
 
   const handleImageUpload = useCallback(
     async (draftAndFile: ImageDraftStateAndFile | undefined) => {
+      setShowImageUploader(false);
+
       if (draftAndFile == null) return;
 
       const { imageDraft, file } = draftAndFile;
@@ -315,44 +318,8 @@ export default function Editor() {
   if (!imageId) {
     return (
       <EditorGrid>
-        <ImageUploader variant="large" ref={fileInputRef} onImageUpload={handleImageUpload}>
-          <HowToUse>
-            <h1>Focal Point Editor</h1>
-            <p>Crop images in responsive layouts without losing what matters most.</p>
-            <h2>Steps</h2>
-            <ol>
-              <li>
-                <IconUpload />
-                <p>Choose an image</p>
-                <ul>
-                  <li>
-                    Select an image from your device. It’s kept locally, so it can be edited
-                    offline. No uploads.
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <IconMask />
-                <p>Mask and crop it</p>
-                <ul>
-                  <li>
-                    Use the slider to set the mask aspect ratio and drag the image to control how
-                    it’s cropped.
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <IconCode />
-                <p>Grab the code</p>
-                <ul>
-                  <li>
-                    When you’re done, copy the code to use the image in full-width banners and
-                    responsive layouts.
-                  </li>
-                </ul>
-              </li>
-            </ol>
-          </HowToUse>
+        <ImageUploader onImageUpload={handleImageUpload}>
+          <HowToUse />
         </ImageUploader>
       </EditorGrid>
     );
@@ -398,7 +365,7 @@ export default function Editor() {
               onImageError={handleImageError}
             />
           )}
-          <Dialog open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
+          <Dialog transparent open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
             <CodeSnippet
               src={image.name}
               objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
@@ -415,7 +382,6 @@ export default function Editor() {
         aspectRatioList={aspectRatioList}
         onAspectRatioChange={setAspectRatio}
       />
-      <ImageUploader variant="small" ref={fileInputRef} onImageUpload={handleImageUpload} />
       {showCodeSnippet != null && (
         <ToggleButton
           data-component="CodeSnippetButton"
@@ -426,6 +392,19 @@ export default function Editor() {
           icon={<IconCode />}
         />
       )}
+      <ToggleButton
+        data-component="ImageUploaderButton"
+        toggled={showImageUploader}
+        onToggle={() => setShowImageUploader((prev) => !prev)}
+        titleOn="Hide image uploader"
+        titleOff="Show image uploader"
+        icon={<IconUpload />}
+      />
+      <Dialog open={showImageUploader} onOpenChange={setShowImageUploader}>
+        <ImageUploader ref={fileInputRef} onImageUpload={handleImageUpload}>
+          <HowToUse />
+        </ImageUploader>
+      </Dialog>
     </EditorGrid>
   );
 }

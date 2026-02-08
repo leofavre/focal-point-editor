@@ -1,4 +1,3 @@
-import type { ComponentProps, ForwardRefExoticComponent } from "react";
 import {
   type ChangeEvent,
   type DragEvent,
@@ -8,24 +7,15 @@ import {
   useState,
 } from "react";
 import { parseBooleanDataAttribute } from "../../helpers/parseBooleanDataAttribute";
-import { IconUpload } from "../../icons/IconUpload";
 import type { ImageDraftStateAndFile } from "../../types";
-import { SmallButton as SmallButtonComponent } from "../SmallButton";
 import { processImageFiles } from "./helpers/processImageFiles";
 import { DropZone, Form, HiddenControl } from "./ImageUploader.styled";
 import type { ImageUploaderProps } from "./types";
-
-const SmallButton = SmallButtonComponent as unknown as ForwardRefExoticComponent<
-  ComponentProps<typeof SmallButtonComponent> & {
-    htmlFor: string;
-  }
->;
 
 export function ImageUploader({
   ref,
   onImageUpload,
   onImagesUpload,
-  variant,
   children,
   ...rest
 }: ImageUploaderProps) {
@@ -74,7 +64,6 @@ export function ImageUploader({
   return (
     <Form
       data-component="ImageUploader"
-      data-variant={variant}
       data-drag-over={parseBooleanDataAttribute(isDragOver)}
       onSubmit={handleFormSubmit}
       onDragOver={handleDragOver}
@@ -83,16 +72,8 @@ export function ImageUploader({
       noValidate
       {...rest}
     >
-      {variant === "large" ? (
-        <>
-          {children}
-          <DropZone htmlFor="image-upload"></DropZone>
-        </>
-      ) : (
-        <SmallButton as="label" htmlFor="image-upload">
-          <IconUpload />
-        </SmallButton>
-      )}
+      {children}
+      <DropZone htmlFor="image-upload"></DropZone>
       <HiddenControl
         ref={ref}
         id="image-upload"

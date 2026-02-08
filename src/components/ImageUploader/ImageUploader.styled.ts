@@ -13,6 +13,8 @@ export const Form = styled.form`
     border-color 0.15s ease;
   cursor: pointer;
   box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 2 / 1;
 
   * {
     cursor: pointer;
@@ -21,18 +23,7 @@ export const Form = styled.form`
   &[data-drag-over] {
     background-color: rgb(from var(--color-neutral) r g b / 10%);
   }
-
-  &[data-variant="small"] {
-    display: block;
-    padding: 0;
-    border: none;
-    background: none;
-  }
-
-  &[data-variant="large"] {
-    width: 100%;
-    aspect-ratio: 2 / 1;
-  }
+  
 
   [data-component="HowToUse"] {
     padding-left: var(--base-line-2x);

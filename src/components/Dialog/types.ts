@@ -5,4 +5,5 @@ export type DialogProps = PropsWithChildren<{
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  transparent?: boolean;
 }>;
