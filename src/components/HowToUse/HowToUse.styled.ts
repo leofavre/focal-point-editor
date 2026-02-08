@@ -27,7 +27,7 @@ export const Content = styled.div`
 
   ol {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(22ch, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(24ch, 1fr));
     gap: var(--base-line-2x);
     box-sizing: border-box;
   }
