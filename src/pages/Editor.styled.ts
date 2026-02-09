@@ -41,22 +41,22 @@ export const EditorGrid = styled.main`
     z-index: 1;
   }
 
-  [data-component="FocalPointButton"] {
+  > [data-component="FocalPointButton"] {
     grid-row: 3;
     grid-column: 2;
   }
 
-  [data-component="ImageOverflowButton"] {
+  > [data-component="ImageOverflowButton"] {
     grid-row: 3;
     grid-column: 3;
   }
 
-  [data-component="CodeSnippetButton"] {
+  > [data-component="CodeSnippetButton"] {
     grid-row: 3;
     grid-column: 5;
   }
 
-  [data-component="ImageUploaderButton"] {
+  > [data-component="ImageUploaderButton"] {
     grid-row: 3;
     grid-column: 6;
   }

@@ -14,8 +14,8 @@ export const LandingWrapper = styled.div`
   [data-component="ImageUploaderButton"] {
     width: calc(100% - var(--base-line));
     max-width: 16rem;
-    grid-row: auto !important;
-    grid-column: auto !important;
+    grid-row: auto;
+    grid-column: auto;
   }
 
   [data-component="HowToUse"] {

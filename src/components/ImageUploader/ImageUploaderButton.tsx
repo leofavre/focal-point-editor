@@ -61,7 +61,7 @@ export function ImageUploaderButton({
   }, []);
 
   return (
-    <InvisibleForm onSubmit={handleFormSubmit}>
+    <InvisibleForm data-component="ImageUploaderButton" onSubmit={handleFormSubmit} {...rest}>
       <InvisibleLabel>
         <InvisibleControl
           ref={inputRef}
@@ -73,7 +73,6 @@ export function ImageUploaderButton({
         />
         <ToggleButton
           ref={mergedRefs}
-          data-component="ImageUploaderButton"
           type="button"
           toggled={isOpened}
           onClick={handleButtonClick}
@@ -81,7 +80,6 @@ export function ImageUploaderButton({
           titleOff="Upload"
           icon={<IconUpload />}
           scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
-          {...rest}
         />
       </InvisibleLabel>
     </InvisibleForm>
