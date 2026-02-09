@@ -1,5 +1,6 @@
 import copy from "copy-to-clipboard";
-import { type ClipboardEvent, useEffect, useRef, useState } from "react";
+import type { ClipboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
 import {
   Code,

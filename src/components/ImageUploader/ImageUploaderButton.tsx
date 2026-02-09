@@ -1,4 +1,5 @@
-import { type ChangeEvent, useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { useMergeRefs } from "react-merge-refs";
 import { IconUpload } from "../../icons/IconUpload";
 import { ToggleButton } from "../ToggleButton/ToggleButton";

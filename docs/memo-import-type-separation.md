@@ -15,5 +15,3 @@ import type { Result, SomeReason } from "../helpers/errorHandling";
 // ✗ Avoid – mixing type and value in same import
 import { accept, type Result, reject } from "../helpers/errorHandling";
 ```
-
-**Exception:** Imports from `"react"` may use inline `type` (e.g. `import { type ChangeEvent, useCallback } from "react"`).

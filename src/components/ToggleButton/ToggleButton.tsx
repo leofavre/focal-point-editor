@@ -1,4 +1,5 @@
-import { type MouseEvent, useCallback, useEffectEvent } from "react";
+import type { MouseEvent } from "react";
+import { useCallback, useEffectEvent } from "react";
 import { Button } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
