@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { focusVisibleStyle } from "../shared";
 
 export const Button = styled.button`
   --scale: 1;
@@ -37,7 +36,9 @@ export const Button = styled.button`
   }
 
   &:focus-visible {
-    ${focusVisibleStyle}
+    outline: calc(0.25rem * var(--scale)) solid var(--color-glow);
+    border-radius: 0rem;
+    outline-offset: 0;
   }
 
   &[aria-pressed="true"] {
