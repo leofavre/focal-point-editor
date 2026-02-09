@@ -1,4 +1,5 @@
-import type { CreateImageStateReason, Result } from "../../helpers/errorHandling";
+import type { CreateImageStateReason } from "../../errorTypes";
+import type { Result } from "../../helpers/errorHandling";
 import { accept, reject } from "../../helpers/errorHandling";
 import type { ImageRecord, ImageState } from "../../types";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";

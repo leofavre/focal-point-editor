@@ -1,4 +1,5 @@
-import type { ImageUploadValidationReason, Result } from "../../../helpers/errorHandling";
+import type { ImageUploadValidationReason } from "../../../errorTypes";
+import type { Result } from "../../../helpers/errorHandling";
 import { accept, reject } from "../../../helpers/errorHandling";
 import type { ImageDraftState, ImageDraftStateAndFile } from "../../../types";
 

@@ -1,4 +1,5 @@
-import type { ImageLoadFailedReason, Result } from "../../helpers/errorHandling";
+import type { ImageLoadFailedReason } from "../../errorTypes";
+import type { Result } from "../../helpers/errorHandling";
 import { resultFromPromise } from "../../helpers/errorHandling";
 
 /**
