@@ -38,7 +38,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * - Verify accessibility.
  * - Review aria labels.
- * - Remove titles from SVGs.
  * - Think about animations and transitions.
  * - Improve Full Screen Drop Zone.
  * - Improve Landing page.

@@ -2,6 +2,7 @@ import type { SVGProps } from "react";
 
 export const IconUpload = (props: SVGProps<SVGSVGElement>) => {
   return (
+    /** biome-ignore lint/a11y/noSvgWithoutTitle: Decorative icon, hidden from screen readers */
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlSpace="preserve"
@@ -9,7 +10,6 @@ export const IconUpload = (props: SVGProps<SVGSVGElement>) => {
       aria-hidden
       {...props}
     >
-      <title>Upload</title>
       <path
         d="m0 0 4.591 4.591L9.181 0"
         fill="none"
