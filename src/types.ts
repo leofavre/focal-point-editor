@@ -49,8 +49,3 @@ export type UIState = {
 };
 
 export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
-
-export type EditorState = {
-  ui: UIState;
-  images: ImageState[];
-};
