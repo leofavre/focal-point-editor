@@ -1,4 +1,5 @@
-import { type ChangeEvent, type FormEvent, useCallback, useEffectEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import { useCallback, useEffectEvent } from "react";
 import { processResults } from "../../../helpers/errorHandling";
 import type { ImageDraftStateAndFile } from "../../../types";
 import { processImageFilesWithErrorHandling } from "../helpers/processImageFilesWithErrorHandling";
@@ -27,7 +28,7 @@ export function useImageUploadHandlers({
     stableOnImagesUpload(accepted);
 
     /**
-     * @todo Show error to the user in the UI.
+     * @todo Maybe show error to the user in the UI.
      */
     rejected.forEach((error) => {
       console.error("Error uploading image:", error);

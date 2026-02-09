@@ -33,7 +33,7 @@ export function FullScreenDropZone({ onImageUpload, onImagesUpload }: FullScreen
       stableOnImagesUpload(accepted);
 
       /**
-       * @todo Show error to the user in the UI.
+       * @todo Maybe show error to the user in the UI.
        */
       rejected.forEach((error) => {
         console.error("Error uploading image:", error);

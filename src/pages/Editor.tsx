@@ -293,6 +293,9 @@ export default function Editor() {
 
         const result = await createImageStateFromImageRecord(imageRecord);
 
+        /**
+         * @todo Maybe show error to the user in the UI.
+         */
         if (result.rejected != null) {
           safeSetImage(null);
           setIsLoading(false);

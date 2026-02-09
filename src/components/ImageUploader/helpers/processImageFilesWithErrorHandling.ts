@@ -1,11 +1,10 @@
-import { accept, type Result, reject } from "../../../helpers/errorHandling";
+import type { ImageUploadValidationReason, Result } from "../../../helpers/errorHandling";
+import { accept, reject } from "../../../helpers/errorHandling";
 import type { ImageDraftState, ImageDraftStateAndFile } from "../../../types";
-
-export type ImageDraftStateAndFileError = "NoFilesProvidedError" | "NotImageError";
 
 export type ImageDraftStateAndFileResult = Result<
   ImageDraftStateAndFile,
-  ImageDraftStateAndFileError
+  ImageUploadValidationReason
 >;
 
 export function processImageFilesWithErrorHandling(
