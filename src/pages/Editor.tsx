@@ -56,6 +56,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * ### DevOps
  *
+ * - Fix broken pre-release pipeline. Maybe add PAT?
  * - Control cache invalidation, given it's a PWA.
  * - Add integration tests (which tool to use?).
  * - Add Storybook tests (to see how it works?).
