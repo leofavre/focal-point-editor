@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { processResults } from "../../helpers/errorHandling";
 
 import { Overlay } from "./FullScreenDropZone.styled";
-import { processImageFilesWithErrorHandling } from "./helpers/processImageFilesWithErrorHandling";
+import { processImageFilesWithErrorHandling } from "./helpers/laser";
 import { useImageUploadHandlers } from "./hooks/useImageUploadHandlers";
 import type { FullScreenDropZoneProps } from "./types";
 
