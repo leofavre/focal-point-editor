@@ -1,7 +1,7 @@
-import type { HTMLProps, ReactNode, RefObject } from "react";
+import type { HTMLProps, ReactNode, Ref } from "react";
 
 export type ToggleButtonProps = {
-  ref?: RefObject<HTMLButtonElement | null>;
+  ref?: Ref<HTMLButtonElement>;
   type: "button" | "submit";
   toggled: boolean;
   onToggle?: (toggled: boolean) => void;

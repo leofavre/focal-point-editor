@@ -1,4 +1,4 @@
-import type { PointerEvent, ReactNode } from "react";
+import type { PointerEvent, ReactNode, Ref } from "react";
 
 export type FocalPointEditorWrapperProps = {
   aspectRatio?: number;
@@ -9,5 +9,5 @@ export type FocalPointEditorWrapperProps = {
   onPointerCancel?: (event: PointerEvent<HTMLDivElement>) => void;
   children: ReactNode;
   /** Ref forwarded to the content div that receives pointer events. Used for non-passive listeners on mobile. */
-  contentRef?: React.RefObject<HTMLDivElement | null>;
+  contentRef?: Ref<HTMLDivElement>;
 };

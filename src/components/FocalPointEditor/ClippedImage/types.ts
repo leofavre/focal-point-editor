@@ -1,7 +1,7 @@
-import type { RefObject, SyntheticEvent } from "react";
+import type { Ref, SyntheticEvent } from "react";
 
 export type ClippedImageProps = {
-  ref?: RefObject<HTMLImageElement | null>;
+  ref?: Ref<HTMLImageElement>;
   imageUrl: string;
   objectPosition: string;
   onImageLoad?: (event: SyntheticEvent<HTMLImageElement>) => void;

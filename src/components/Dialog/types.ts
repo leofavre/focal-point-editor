@@ -1,7 +1,7 @@
-import type { PropsWithChildren, RefObject } from "react";
+import type { PropsWithChildren, Ref } from "react";
 
 export type DialogProps = PropsWithChildren<{
-  ref?: RefObject<HTMLDialogElement | null>;
+  ref?: Ref<HTMLDialogElement>;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;

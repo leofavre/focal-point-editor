@@ -16,7 +16,7 @@ export function ImageUploaderButton({
 }: ImageUploaderButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const mergedRefs = useMergeRefs([ref, buttonRef]) as typeof buttonRef;
+  const mergedRefs = useMergeRefs([ref, buttonRef]);
 
   const [isOpened, setIsOpened] = useState(false);
 

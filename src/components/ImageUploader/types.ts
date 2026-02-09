@@ -1,4 +1,4 @@
-import type { RefObject } from "react";
+import type { Ref } from "react";
 import type { ImageDraftStateAndFile } from "../../types";
 
 type SingleImageUploaderProps = {
@@ -14,7 +14,7 @@ type MultipleImagesUploaderProps = {
 export type ImageUploaderProps = SingleImageUploaderProps | MultipleImagesUploaderProps;
 
 export type ImageUploaderButtonProps = ImageUploaderProps & {
-  ref?: RefObject<HTMLButtonElement | null>;
+  ref?: Ref<HTMLButtonElement>;
   size?: "small" | "medium" | "large";
 };
 
