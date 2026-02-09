@@ -1,3 +1,5 @@
+import type { CreateImageStateReason, Result } from "../../helpers/errorHandling";
+import { accept, reject } from "../../helpers/errorHandling";
 import type { ImageRecord, ImageState } from "../../types";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
@@ -7,34 +9,34 @@ import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromIm
  *
  * Creates a blob URL from the record's file, loads the image to compute its natural
  * aspect ratio, then returns a complete image state. If any step fails, the blob URL
- * is revoked (if it was created) and the error is rethrown.
+ * is revoked (if it was created) and a rejected Result is returned.
  *
- * @returns A promise that resolves with the full image state.
- * @throws Rethrows any error from blob URL creation or image loading. The blob URL is
- * revoked before rethrowing if it was created.
+ * @returns A promise that resolves with Result: accepted ImageState or rejected with BlobCreateFailed or ImageLoadFailed.
  */
 export async function createImageStateFromImageRecord(
   imageRecord: ImageRecord,
-): Promise<ImageState> {
+): Promise<Result<ImageState, CreateImageStateReason>> {
   let blobUrl: string | undefined;
 
   try {
     blobUrl = URL.createObjectURL(imageRecord.file);
-    const naturalAspectRatio = await getNaturalAspectRatioFromImageSrc(blobUrl);
-
-    return {
-      name: imageRecord.name,
-      url: blobUrl,
-      type: imageRecord.type,
-      createdAt: imageRecord.createdAt,
-      naturalAspectRatio: naturalAspectRatio,
-      breakpoints: imageRecord.breakpoints,
-    };
-  } catch (error) {
-    if (blobUrl) {
-      URL.revokeObjectURL(blobUrl);
-    }
-
-    throw error;
+  } catch {
+    return reject({ reason: "BlobCreateFailed" });
   }
+
+  const ratioResult = await getNaturalAspectRatioFromImageSrc(blobUrl);
+
+  if (ratioResult.rejected != null) {
+    URL.revokeObjectURL(blobUrl);
+    return reject({ reason: ratioResult.rejected.reason });
+  }
+
+  return accept({
+    name: imageRecord.name,
+    url: blobUrl,
+    type: imageRecord.type,
+    createdAt: imageRecord.createdAt,
+    naturalAspectRatio: ratioResult.accepted,
+    breakpoints: imageRecord.breakpoints,
+  });
 }

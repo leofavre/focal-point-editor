@@ -1,4 +1,4 @@
-type Err<R extends string> = { reason: R };
+export type Err<R extends string> = { reason: R };
 
 export type Result<A, R extends string> =
   | { accepted: A; rejected?: never }
@@ -17,9 +17,9 @@ export function processResults<A, R extends string>(
 ): { accepted: A[]; rejected: Err<R>[] } {
   const { accepted, rejected } = results.reduce(
     (acc, result) => {
-      if (result.accepted !== undefined) {
+      if (result.accepted != null) {
         acc.accepted.push(result.accepted);
-      } else if (result.rejected !== undefined) {
+      } else if (result.rejected != null) {
         acc.rejected.push(result.rejected);
       }
       return acc;
@@ -29,3 +29,34 @@ export function processResults<A, R extends string>(
 
   return { accepted, rejected };
 }
+
+/**
+ * Wraps a Promise so that it never rejects: on fulfillment returns accept(value),
+ * on rejection returns reject({ reason }).
+ */
+export async function resultFromPromise<A, R extends string>(
+  promise: Promise<A>,
+  reason: R,
+): Promise<Result<A, R>> {
+  try {
+    const value = await promise;
+    return accept(value);
+  } catch {
+    return reject({ reason });
+  }
+}
+
+/**
+ * Central list of error reasons. Use the const values in reject() / resultFromPromise
+ * so the app stays type-safe and reason strings stay in one place.
+ */
+
+/** Image upload validation (file input / drop zone). */
+export type NoFilesProvidedReason = "NoFilesProvidedError";
+export type NotImageReason = "NotImageError";
+export type ImageUploadValidationReason = NoFilesProvidedReason | NotImageReason;
+
+/** Image load / create-image-state flows. */
+export type ImageLoadFailedReason = "ImageLoadFailed";
+export type BlobCreateFailedReason = "BlobCreateFailed";
+export type CreateImageStateReason = ImageLoadFailedReason | BlobCreateFailedReason;

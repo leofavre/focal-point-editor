@@ -50,50 +50,51 @@ describe("getNaturalAspectRatioFromImageSrc", () => {
     vi.unstubAllGlobals();
   });
 
-  it("resolves with aspect ratio when image loads successfully", async () => {
-    const aspectRatio = await getNaturalAspectRatioFromImageSrc("blob:https://example.com/abc");
+  it("resolves with accepted aspect ratio when image loads successfully", async () => {
+    const result = await getNaturalAspectRatioFromImageSrc("blob:https://example.com/abc");
 
-    expect(aspectRatio).toBe(1.5); // 300 / 200
+    expect(result.accepted).toBe(1.5); // 300 / 200
   });
 
   it("uses naturalWidth and naturalHeight from loaded image", async () => {
     mockDimensions = { naturalWidth: 800, naturalHeight: 600 };
 
-    const aspectRatio = await getNaturalAspectRatioFromImageSrc("blob:test");
+    const result = await getNaturalAspectRatioFromImageSrc("blob:test");
 
-    expect(aspectRatio).toBeCloseTo(800 / 600, 10); // ~1.333...
+    expect(result.accepted).toBeCloseTo(800 / 600, 10); // ~1.333...
   });
 
   it("handles square images", async () => {
     mockDimensions = { naturalWidth: 500, naturalHeight: 500 };
 
-    const aspectRatio = await getNaturalAspectRatioFromImageSrc("blob:square");
+    const result = await getNaturalAspectRatioFromImageSrc("blob:square");
 
-    expect(aspectRatio).toBe(1);
+    expect(result.accepted).toBe(1);
   });
 
   it("handles portrait orientation", async () => {
     mockDimensions = { naturalWidth: 400, naturalHeight: 600 };
 
-    const aspectRatio = await getNaturalAspectRatioFromImageSrc("blob:portrait");
+    const result = await getNaturalAspectRatioFromImageSrc("blob:portrait");
 
-    expect(aspectRatio).toBeCloseTo(2 / 3, 10); // ~0.667
+    expect(result.accepted).toBeCloseTo(2 / 3, 10); // ~0.667
   });
 
-  it("rejects with error when image fails to load", async () => {
+  it("returns rejected with ImageLoadFailed when image fails to load", async () => {
     mockBehavior = "error";
 
-    await expect(getNaturalAspectRatioFromImageSrc("blob:invalid")).rejects.toThrow(
-      "Failed to load image",
-    );
+    const result = await getNaturalAspectRatioFromImageSrc("blob:invalid");
+
+    expect(result.rejected).toEqual({ reason: "ImageLoadFailed" });
   });
 
   it("sets img.src to the provided url", async () => {
     mockDimensions = { naturalWidth: 100, naturalHeight: 100 };
     const url = "blob:https://example.com/xyz-123";
 
-    await getNaturalAspectRatioFromImageSrc(url);
+    const result = await getNaturalAspectRatioFromImageSrc(url);
 
+    expect(result.accepted).toBe(1);
     const imgInstance = MockImage.mock.results[0].value;
     expect(imgInstance.src).toBe(url);
   });

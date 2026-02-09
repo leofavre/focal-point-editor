@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { accept, reject } from "../../helpers/errorHandling";
 import { createMockImageRecord } from "../../test-utils/mocks";
 import { createImageStateFromImageRecord } from "./createImageStateFromImageRecord";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
@@ -15,19 +16,19 @@ describe("createImageStateFromImageRecord", () => {
 
     vi.spyOn(URL, "createObjectURL").mockImplementation(mockCreateObjectURL);
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(mockRevokeObjectURL);
-    vi.mocked(getNaturalAspectRatioFromImageSrc).mockResolvedValue(1.5);
+    vi.mocked(getNaturalAspectRatioFromImageSrc).mockResolvedValue(accept(1.5));
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("returns ImageState with url and naturalAspectRatio when successful", async () => {
+  it("returns accepted ImageState with url and naturalAspectRatio when successful", async () => {
     const record = createMockImageRecord();
 
     const result = await createImageStateFromImageRecord(record);
 
-    expect(result).toEqual({
+    expect(result.accepted).toEqual({
       name: "test.png",
       url: "blob:https://example.com/abc-123",
       type: "image/png",
@@ -68,33 +69,32 @@ describe("createImageStateFromImageRecord", () => {
 
     const result = await createImageStateFromImageRecord(record);
 
-    expect(result.name).toBe("custom-name.jpg");
-    expect(result.type).toBe("image/jpeg");
-    expect(result.createdAt).toBe(999);
-    expect(result.breakpoints).toEqual([{ objectPosition: "25% 75%" }]);
+    expect(result.accepted?.name).toBe("custom-name.jpg");
+    expect(result.accepted?.type).toBe("image/jpeg");
+    expect(result.accepted?.createdAt).toBe(999);
+    expect(result.accepted?.breakpoints).toEqual([{ objectPosition: "25% 75%" }]);
   });
 
-  it("revokes blob URL and rethrows when getNaturalAspectRatioFromImageSrc fails", async () => {
-    const loadError = new Error("Failed to load image");
-    vi.mocked(getNaturalAspectRatioFromImageSrc).mockRejectedValue(loadError);
-
-    await expect(createImageStateFromImageRecord(createMockImageRecord())).rejects.toThrow(
-      "Failed to load image",
+  it("revokes blob URL and returns rejected when getNaturalAspectRatioFromImageSrc fails", async () => {
+    vi.mocked(getNaturalAspectRatioFromImageSrc).mockResolvedValue(
+      reject({ reason: "ImageLoadFailed" }),
     );
 
+    const result = await createImageStateFromImageRecord(createMockImageRecord());
+
+    expect(result.rejected).toEqual({ reason: "ImageLoadFailed" });
     expect(mockRevokeObjectURL).toHaveBeenCalledTimes(1);
     expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:https://example.com/abc-123");
   });
 
-  it("does not revoke blob URL when createObjectURL fails", async () => {
+  it("returns rejected with BlobCreateFailed when createObjectURL fails", async () => {
     mockCreateObjectURL.mockImplementation(() => {
       throw new Error("Quota exceeded");
     });
 
-    await expect(createImageStateFromImageRecord(createMockImageRecord())).rejects.toThrow(
-      "Quota exceeded",
-    );
+    const result = await createImageStateFromImageRecord(createMockImageRecord());
 
+    expect(result.rejected).toEqual({ reason: "BlobCreateFailed" });
     expect(mockRevokeObjectURL).not.toHaveBeenCalled();
   });
 });

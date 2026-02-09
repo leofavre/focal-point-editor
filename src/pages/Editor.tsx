@@ -291,23 +291,26 @@ export default function Editor() {
           return;
         }
 
-        try {
-          const nextImageState = await createImageStateFromImageRecord(imageRecord);
-          safeSetImage(nextImageState);
-          setIsLoading(false);
-          console.log("loaded image from record", imageRecord);
+        const result = await createImageStateFromImageRecord(imageRecord);
 
-          if (isFirstImageLoadInSessionRef.current) {
-            isFirstImageLoadInSessionRef.current = false;
-            return;
-          }
-
-          setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
-        } catch (error) {
+        if (result.rejected != null) {
           safeSetImage(null);
           setIsLoading(false);
-          console.error("Error loading saved image:", error);
+          console.error("Error loading saved image:", result.rejected.reason);
+          return;
         }
+
+        const nextImageState = result.accepted;
+        safeSetImage(nextImageState);
+        setIsLoading(false);
+        console.log("loaded image from record", imageRecord);
+
+        if (isFirstImageLoadInSessionRef.current) {
+          isFirstImageLoadInSessionRef.current = false;
+          return;
+        }
+
+        setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
       }
 
       asyncSetImageState();

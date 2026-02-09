@@ -6,8 +6,8 @@ export function normalizeWhitespaceInQuotes(text: string): string {
   return text.replace(
     /(")([^"]*)(")|(')([^']*)(')/g,
     (_match, _dqOpen, dqContent, _dqClose, _sqOpen, sqContent, _sqClose) => {
-      const content = dqContent !== undefined ? dqContent : (sqContent ?? "");
-      const quote = dqContent !== undefined ? '"' : "'";
+      const content = dqContent != null ? dqContent : (sqContent ?? "");
+      const quote = dqContent != null ? '"' : "'";
       const normalized = content.replace(/\s+/g, " ").trim();
       return quote + normalized + quote;
     },
