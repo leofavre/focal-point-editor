@@ -1,7 +1,7 @@
 import { type ChangeEvent, type FormEvent, useCallback, useEffectEvent } from "react";
 import { processResults } from "../../../helpers/errorHandling";
 import type { ImageDraftStateAndFile } from "../../../types";
-import { processImageFilesWithErrorHandling } from "../helpers/laser";
+import { processImageFilesWithErrorHandling } from "../helpers/processImageFilesWithErrorHandling";
 import type { ImageUploaderProps } from "../types";
 
 type UseImageUploadHandlersProps = Pick<ImageUploaderProps, "onImageUpload" | "onImagesUpload">;
