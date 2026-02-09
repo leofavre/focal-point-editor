@@ -11,8 +11,12 @@ function keyFor(tableName: string, recordKey: string | number): string {
   return `${SESSION_PREFIX}${tableName}_${String(recordKey)}`;
 }
 
+function hasId(obj: unknown): obj is { id: unknown } {
+  return typeof obj === "object" && obj != null && "id" in obj;
+}
+
 function getRecordKeyFromValue<T>(value: T, key?: DatabaseKey): string {
-  const id = (value as { id?: unknown }).id ?? key;
+  const id = hasId(value) ? value.id : key;
   return String(id);
 }
 

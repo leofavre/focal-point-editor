@@ -58,7 +58,13 @@ export function FullScreenDropZone({ onImageUpload, onImagesUpload }: FullScreen
     };
 
     const handleDragLeave = (event: DragEvent) => {
-      if (event.relatedTarget != null && document.contains(event.relatedTarget as Node)) return;
+      if (
+        event.relatedTarget != null &&
+        event.relatedTarget instanceof Node &&
+        document.contains(event.relatedTarget)
+      ) {
+        return;
+      }
 
       dragCounterRef.current -= 1;
 
