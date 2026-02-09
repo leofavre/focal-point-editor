@@ -39,7 +39,6 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Review aria labels.
  * - Remove titles from SVGs.
  * - Think about animations and transitions.
- * - Favicon.
  * - Improve Full Screen Drop Zone.
  * - Improve Landing page.
  * - Improve Focal Point draggable icon.
