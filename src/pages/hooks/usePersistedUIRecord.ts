@@ -9,6 +9,16 @@ import type { UIRecord, UIState } from "../../types";
 const noopGetRecord = async (): Promise<undefined> => undefined;
 const noopUpdateRecord = async (): Promise<void> => {};
 
+export type UsePersistedUIRecordOptions = {
+  debounceTimeout?: number;
+  service?: "sessionStorage" | "indexedDB";
+};
+
+export type UsePersistedUIRecordReturn<K extends keyof UIState> = [
+  UIState[K] | undefined,
+  Dispatch<SetStateAction<UIState[K] | undefined>>,
+];
+
 /**
  * Custom React hook for syncing a UI state value with IndexedDB or sessionStorage.
  * Retrieves the persisted value for the given id from the "ui" store (if available),
@@ -21,14 +31,8 @@ const noopUpdateRecord = async (): Promise<void> => {};
  */
 export function usePersistedUIRecord<K extends keyof UIState>(
   { id, value: defaultValue }: UIRecord<K>,
-  {
-    debounceTimeout = 0,
-    service = "indexedDB",
-  }: {
-    debounceTimeout?: number;
-    service?: "sessionStorage" | "indexedDB";
-  } = {},
-): [UIState[K] | undefined, Dispatch<SetStateAction<UIState[K] | undefined>>] {
+  { debounceTimeout = 0, service = "indexedDB" }: UsePersistedUIRecordOptions = {},
+): UsePersistedUIRecordReturn<K> {
   // Call both so hook order is stable (getIndexedDBService uses useIndexedDB).
   const indexedDBResult = getIndexedDBService<UIRecord<K>>("ui");
   const sessionStorageResult = getSessionStorageService<UIRecord<K>>("ui");

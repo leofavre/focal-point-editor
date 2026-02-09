@@ -1,14 +1,20 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { accept, reject } from "../../helpers/errorHandling";
-import { createMockImageRecord } from "../../test-utils/mocks";
-import { createImageStateFromImageRecord } from "./createImageStateFromImageRecord";
+import { createMockImageDraftState } from "../../test-utils/mocks";
+import { createImageStateFromDraftAndFile } from "./createImageStateFromDraftAndFile";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
 vi.mock("./getNaturalAspectRatioFromImageSrc");
 
-describe("createImageStateFromImageRecord", () => {
+describe("createImageStateFromDraftAndFile", () => {
   const mockCreateObjectURL = vi.fn();
   const mockRevokeObjectURL = vi.fn();
+
+  function createDraftAndFile(overrides: { file?: Blob; imageDraft?: ReturnType<typeof createMockImageDraftState> } = {}) {
+    const file = overrides.file ?? new Blob(["mock"], { type: "image/png" });
+    const imageDraft = overrides.imageDraft ?? createMockImageDraftState();
+    return { imageDraft, file };
+  }
 
   beforeEach(() => {
     mockCreateObjectURL.mockReturnValue("blob:https://example.com/abc-123");
@@ -24,9 +30,9 @@ describe("createImageStateFromImageRecord", () => {
   });
 
   it("returns accepted ImageState with url and naturalAspectRatio when successful", async () => {
-    const record = createMockImageRecord();
+    const draftAndFile = createDraftAndFile();
 
-    const result = await createImageStateFromImageRecord(record);
+    const result = await createImageStateFromDraftAndFile(draftAndFile);
 
     expect(result.accepted).toEqual({
       name: "test.png",
@@ -38,20 +44,20 @@ describe("createImageStateFromImageRecord", () => {
     });
   });
 
-  it("creates blob URL from record file", async () => {
+  it("creates blob URL from file", async () => {
     const file = new Blob(["content"], { type: "image/jpeg" });
-    const record = createMockImageRecord({ file });
+    const draftAndFile = createDraftAndFile({ file });
 
-    await createImageStateFromImageRecord(record);
+    await createImageStateFromDraftAndFile(draftAndFile);
 
     expect(mockCreateObjectURL).toHaveBeenCalledTimes(1);
     expect(mockCreateObjectURL).toHaveBeenCalledWith(file);
   });
 
   it("gets natural aspect ratio from blob URL", async () => {
-    const record = createMockImageRecord();
+    const draftAndFile = createDraftAndFile();
 
-    await createImageStateFromImageRecord(record);
+    await createImageStateFromDraftAndFile(draftAndFile);
 
     expect(getNaturalAspectRatioFromImageSrc).toHaveBeenCalledTimes(1);
     expect(getNaturalAspectRatioFromImageSrc).toHaveBeenCalledWith(
@@ -59,15 +65,16 @@ describe("createImageStateFromImageRecord", () => {
     );
   });
 
-  it("preserves all record metadata in result", async () => {
-    const record = createMockImageRecord({
+  it("preserves all draft metadata in result", async () => {
+    const imageDraft = createMockImageDraftState({
       name: "custom-name.jpg",
       type: "image/jpeg",
       createdAt: 999,
       breakpoints: [{ objectPosition: "25% 75%" }],
     });
+    const draftAndFile = createDraftAndFile({ imageDraft });
 
-    const result = await createImageStateFromImageRecord(record);
+    const result = await createImageStateFromDraftAndFile(draftAndFile);
 
     expect(result.accepted?.name).toBe("custom-name.jpg");
     expect(result.accepted?.type).toBe("image/jpeg");
@@ -80,7 +87,7 @@ describe("createImageStateFromImageRecord", () => {
       reject({ reason: "ImageLoadFailed" }),
     );
 
-    const result = await createImageStateFromImageRecord(createMockImageRecord());
+    const result = await createImageStateFromDraftAndFile(createDraftAndFile());
 
     expect(result.rejected).toEqual({ reason: "ImageLoadFailed" });
     expect(mockRevokeObjectURL).toHaveBeenCalledTimes(1);
@@ -92,7 +99,7 @@ describe("createImageStateFromImageRecord", () => {
       throw new Error("Quota exceeded");
     });
 
-    const result = await createImageStateFromImageRecord(createMockImageRecord());
+    const result = await createImageStateFromDraftAndFile(createDraftAndFile());
 
     expect(result.rejected).toEqual({ reason: "BlobCreateFailed" });
     expect(mockRevokeObjectURL).not.toHaveBeenCalled();

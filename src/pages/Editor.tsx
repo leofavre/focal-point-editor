@@ -15,7 +15,8 @@ import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
 import type { ImageDraftStateAndFile, ImageState, ObjectPositionString } from "../types";
 import { EditorGrid } from "./Editor.styled";
-import { createImageStateFromImageRecord } from "./helpers/createImageStateFromImageRecord";
+import { createImageStateFromDraftAndFile } from "./helpers/createImageStateFromDraftAndFile";
+import { createImageStateFromRecord } from "./helpers/createImageStateFromRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
@@ -50,9 +51,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  *
  * - Fix loading state saying "not found...".
  * - Fix image not resetting to original aspect ratio after upload.
- * - Fix app not working in Incognito mode on mobile Chrome.
- * - Make sure app works without any database (single image direct to React state on upload?).
- * - Handle errors in a consistent way. Review try/catch blocks. Test neverthrow.
+ * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by no relying on IndexedDB?
  * - Remove all deprecated and dead code.
  *
  * ### DevOps
@@ -130,20 +129,32 @@ export default function Editor() {
       if (draftAndFile == null) return;
 
       const { imageDraft, file } = draftAndFile;
-      const result = await addImage({ imageDraft, file });
+
+      const imageStateResult = await createImageStateFromDraftAndFile(draftAndFile);
 
       /**
        * @todo Maybe show error to the user in the UI.
        */
-      if (result.rejected != null) {
-        console.error("Error saving image to database:", result.rejected.reason);
+      if (imageStateResult.rejected != null) {
+        console.error("Error creating image state:", imageStateResult.rejected.reason);
         return;
       }
 
-      const nextImageId = result.accepted;
-      console.log("uploaded image with id", nextImageId);
-      await navigate(`/${nextImageId}`);
-      console.log("navigated to", `/${nextImageId}`);
+      /**
+       * The image is set before it's added to the database. This guarantees that the app
+       * works even without persistent storage. The worst case scenario is the user hitting
+       * refresh and losing the image and the current object position.
+       */
+      safeSetImage(imageStateResult.accepted);
+      setIsLoading(false);
+
+      const addResult = await addImage({ imageDraft, file });
+
+      if (addResult.accepted != null) {
+        console.log("saved image with id", addResult.accepted);
+        await navigate(`/${addResult.accepted}`);
+        console.log("navigated to", `/${addResult.accepted}`);
+      }
     },
     [addImage, navigate],
   );
@@ -284,7 +295,9 @@ export default function Editor() {
   useDebouncedEffect(
     () => {
       async function asyncSetImageState() {
-        if (imageCount === 0 || imageId == null) {
+        if (imageId == null) return;
+
+        if (imageCount === 0) {
           safeSetImage(null);
           setIsLoading(false);
           return;
@@ -298,7 +311,7 @@ export default function Editor() {
           return;
         }
 
-        const result = await createImageStateFromImageRecord(imageRecord);
+        const result = await createImageStateFromRecord(imageRecord);
 
         /**
          * @todo Maybe show error to the user in the UI.
@@ -329,7 +342,7 @@ export default function Editor() {
     [imageId, imageCount],
   );
 
-  if (!imageId) {
+  if (!imageId && !image) {
     return (
       <>
         <FullScreenDropZone onImageUpload={handleImageUpload} />

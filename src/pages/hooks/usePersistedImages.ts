@@ -1,7 +1,7 @@
 import { isEqual } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import type { Err, Result } from "../../helpers/errorHandling";
-import { accept, reject, processResults } from "../../helpers/errorHandling";
+import { accept, processResults, reject } from "../../helpers/errorHandling";
 import { getIndexedDBService } from "../../services/indexedDBService";
 import type { DatabaseService } from "../../services/types";
 import type { ImageDraftStateAndFile, ImageRecord } from "../../types";
@@ -13,6 +13,21 @@ const noopIndexedDBService: DatabaseService<ImageRecord> = {
   getAllRecords: async () => [],
   updateRecord: async () => {},
   deleteRecord: async () => {},
+};
+
+export type UsePersistedImagesReturn = {
+  images: ImageRecord[] | undefined;
+  addImage: (draftAndFile: ImageDraftStateAndFile) => Promise<Result<string, "AddImageFailed">>;
+  addImages: (
+    draftsAndFiles: ImageDraftStateAndFile[],
+  ) => Promise<{ accepted: string[]; rejected: Err<"AddImageFailed">[] }>;
+  getImage: (id: string) => Promise<ImageRecord | undefined>;
+  updateImage: (
+    id: string,
+    updates: Partial<ImageRecord>,
+  ) => Promise<Result<string | undefined, "UpdateImageFailed">>;
+  deleteImage: (id: string) => Promise<string | undefined>;
+  refreshImages: () => Promise<Result<void, "RefreshFailed">>;
 };
 
 /**
@@ -29,22 +44,7 @@ const noopIndexedDBService: DatabaseService<ImageRecord> = {
  * - `deleteImage`: removes an image record by id.
  * - `refreshImages`: reloads the list from the database; returns Result.
  */
-export function usePersistedImages(): {
-  images: ImageRecord[] | undefined;
-  addImage: (
-    draftAndFile: ImageDraftStateAndFile,
-  ) => Promise<Result<string, "AddImageFailed">>;
-  addImages: (
-    draftsAndFiles: ImageDraftStateAndFile[],
-  ) => Promise<{ accepted: string[]; rejected: Err<"AddImageFailed">[] }>;
-  getImage: (id: string) => Promise<ImageRecord | undefined>;
-  updateImage: (
-    id: string,
-    updates: Partial<ImageRecord>,
-  ) => Promise<Result<string | undefined, "UpdateImageFailed">>;
-  deleteImage: (id: string) => Promise<string | undefined>;
-  refreshImages: () => Promise<Result<void, "RefreshFailed">>;
-} {
+export function usePersistedImages(): UsePersistedImagesReturn {
   const indexedDBResult = getIndexedDBService<ImageRecord>("images");
   const { addRecord, getRecord, getAllRecords, updateRecord, deleteRecord } =
     indexedDBResult.rejected != null ? noopIndexedDBService : indexedDBResult.accepted;
@@ -81,9 +81,7 @@ export function usePersistedImages(): {
         const all = await getAllRecords();
         existing = all ?? [];
       } catch {
-        return processResults(
-          draftsAndFiles.map(() => reject({ reason: "AddImageFailed" })),
-        );
+        return processResults(draftsAndFiles.map(() => reject({ reason: "AddImageFailed" })));
       }
       const usedIds = new Set(existing.map((r) => r.id));
 
@@ -116,9 +114,7 @@ export function usePersistedImages(): {
   );
 
   const addImage = useCallback(
-    async (
-      draftAndFile: ImageDraftStateAndFile,
-    ): Promise<Result<string, "AddImageFailed">> => {
+    async (draftAndFile: ImageDraftStateAndFile): Promise<Result<string, "AddImageFailed">> => {
       const { accepted: ids } = await addImages([draftAndFile]);
       const id = ids[0];
       if (id != null) return accept(id);

@@ -1,26 +1,24 @@
 import type { CreateImageStateReason } from "../../errorTypes";
 import type { Result } from "../../helpers/errorHandling";
 import { accept, reject } from "../../helpers/errorHandling";
-import type { ImageRecord, ImageState } from "../../types";
+import type { ImageDraftStateAndFile, ImageState } from "../../types";
 import { getNaturalAspectRatioFromImageSrc } from "./getNaturalAspectRatioFromImageSrc";
 
 /**
- * Converts an {@link ImageRecord} from persistent storage into an {@link ImageState}
- * suitable for rendering in the UI.
- *
- * Creates a blob URL from the record's file, loads the image to compute its natural
- * aspect ratio, then returns a complete image state. If any step fails, the blob URL
- * is revoked (if it was created) and a rejected Result is returned.
+ * Builds {@link ImageState} (blob URL + natural aspect ratio) from {@link ImageDraftStateAndFile}
+ * without any persistence. Use this to show the editor immediately after upload, before or without
+ * saving to IndexedDB.
  *
  * @returns A promise that resolves with Result: accepted ImageState or rejected with BlobCreateFailed or ImageLoadFailed.
  */
-export async function createImageStateFromImageRecord(
-  imageRecord: ImageRecord,
+export async function createImageStateFromDraftAndFile(
+  draftAndFile: ImageDraftStateAndFile,
 ): Promise<Result<ImageState, CreateImageStateReason>> {
+  const { imageDraft, file } = draftAndFile;
   let blobUrl: string | undefined;
 
   try {
-    blobUrl = URL.createObjectURL(imageRecord.file);
+    blobUrl = URL.createObjectURL(file);
   } catch {
     return reject({ reason: "BlobCreateFailed" });
   }
@@ -33,11 +31,8 @@ export async function createImageStateFromImageRecord(
   }
 
   return accept({
-    name: imageRecord.name,
+    ...imageDraft,
     url: blobUrl,
-    type: imageRecord.type,
-    createdAt: imageRecord.createdAt,
     naturalAspectRatio: ratioResult.accepted,
-    breakpoints: imageRecord.breakpoints,
   });
 }
