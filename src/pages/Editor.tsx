@@ -74,6 +74,7 @@ const noop = () => {};
  *
  * ### Basic functionality
  *
+ * - Implement "singleImage" and "multipleImages" persistence modes instead of "persistent".
  * - Handle errors with toaster.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by not relying on IndexedDB?
  * - Fix aspect ratio being reset on refresh. But on refresh only.
