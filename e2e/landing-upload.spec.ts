@@ -86,13 +86,12 @@ test.describe("Landing upload", () => {
     await uploadButton.click();
     await fileChooserPromise;
     // Don't call setFiles(); simulate dialog closed by triggering window focus.
-    // react-dropzone calls onFileDialogCancel 300ms after window focus when no files were selected.
+    // react-dropzone calls onFileDialogCancel ~300ms after window focus when no files were selected.
     await page.evaluate(() => window.dispatchEvent(new Event("focus")));
-    await page.waitForTimeout(500);
 
     await expect(page).toHaveURL("/");
     await expect(landing).toBeVisible();
-    await expect(uploadButton).toHaveAttribute("aria-pressed", "false", { timeout: 5000 });
+    await expect(uploadButton).toHaveAttribute("aria-pressed", "false");
     await expect(page.locator('[data-component="FocalPointEditor"]')).not.toBeVisible();
   });
 
@@ -121,11 +120,10 @@ test.describe("Landing upload", () => {
     await uploadButton.click();
     await fileChooserPromise;
     await page.evaluate(() => window.dispatchEvent(new Event("focus")));
-    await page.waitForTimeout(500);
 
     await expect(page).toHaveURL("/");
     await expect(landing).toBeVisible();
-    await expect(uploadButton).toHaveAttribute("aria-pressed", "false", { timeout: 5000 });
+    await expect(uploadButton).toHaveAttribute("aria-pressed", "false");
     await expect(page.locator('[data-component="FocalPointEditor"]')).not.toBeVisible();
   });
 });
