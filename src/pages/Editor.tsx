@@ -37,7 +37,7 @@ const DEFAULT_ASPECT_RATIO = 1;
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 
 const INTERACTION_DEBOUNCE_MS = 500;
-const IMAGE_LOAD_DEBOUNCE_MS = 50;
+const IMAGE_LOAD_DEBOUNCE_MS = 200;
 
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
@@ -308,7 +308,7 @@ export default function Editor() {
     return images?.find((image) => image.id === imageId);
   });
 
-  const [imageNotFound, setImageNotFound] = useState(false);
+  const [imageNotFoundConfirmed, setImageNotFoundConfirmed] = useState(false);
 
   /**
    * Loads the image record from the database when the page is loaded or the database is
@@ -339,7 +339,7 @@ export default function Editor() {
         if (imageRecord == null) {
           console.log("image not found in the database");
           safeSetImage(null);
-          setImageNotFound(true);
+          setImageNotFoundConfirmed(true);
           return;
         }
 
@@ -365,11 +365,23 @@ export default function Editor() {
 
   const pageState = usePageState({ persistenceMode, imageId, image });
 
+  const [isLoading, setIsLoading] = useState(pageState === "imageNotFound");
+
+  useDebouncedEffect(
+    () => {
+      setIsLoading(pageState === "imageNotFound" && !imageNotFoundConfirmed);
+    },
+    { timeout: IMAGE_LOAD_DEBOUNCE_MS },
+    [pageState, imageNotFoundConfirmed],
+  );
+
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
       <EditorGrid>
-        {pageState === "landing" ? (
+        {isLoading ? (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Loading...</h3>
+        ) : pageState === "landing" ? (
           <Landing
             uploaderButtonRef={uploaderButtonRef}
             onImageUpload={handleImageUpload}
