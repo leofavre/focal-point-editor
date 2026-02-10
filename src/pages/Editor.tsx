@@ -12,7 +12,13 @@ import { ToggleButton } from "../components/ToggleButton/ToggleButton";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
-import type { ImageDraftStateAndFile, ImageId, ImageState, ObjectPositionString } from "../types";
+import type {
+  ImageDraftStateAndFile,
+  ImageId,
+  ImageState,
+  ObjectPositionString,
+  UIPersistenceMode,
+} from "../types";
 import { EditorGrid } from "./Editor.styled";
 import { createImageStateFromDraftAndFile } from "./helpers/createImageStateFromDraftAndFile";
 import { createImageStateFromRecord } from "./helpers/createImageStateFromRecord";
@@ -31,6 +37,12 @@ const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const INTERACTION_DEBOUNCE_MS = 500;
 const IMAGE_LOAD_DEBOUNCE_MS = 50;
 
+/**
+ * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
+ */
+const PERSISTENCE_MODE: UIPersistenceMode =
+  typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
+
 const noop = () => {};
 
 /**
@@ -41,22 +53,19 @@ const noop = () => {};
  * - Verify accessibility.
  * - Review aria labels.
  * - Think about animations and transitions.
- * - Improve Full Screen Drop Zone.
  * - Improve Landing page.
- * - Improve Focal Point draggable icon.
- * - Is there a way to make it invert the colors of the underlying image?
+ * - Improve Full Screen Drop Zone.
+ * - Improve Focal Point draggable icon. Is there a way to make it invert the colors of the underlying image?
+ * - Improve loading state.
  * - Improve Code snippet.
- * - Slider: use polygon instead of SVG.
+ * - Slider: use polygon instead of SVG. Can I use it in the background-image?
  *
  * ### Basic functionality
  *
- * - Fix loading state saying "not found...".
- * - Fix image not resetting to original aspect ratio after upload.
+ * - Handle errors with toaster.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by no relying on IndexedDB?
- * - Fix bug where uploading a new image show the aspect ratio from the previous image before changing it.
- * - Fix bug where using the browser arrow to go back to the landing page does not work.
+ * - Fix aspect ratio being reset on refresh. But on refresh only.
  * - Remove all deprecated and dead code.
- * - For study, use an opaque type for the image id.
  *
  * ### DevOps
  *
@@ -74,24 +83,19 @@ const noop = () => {};
  * - Maybe make a native custom element?
  */
 export default function Editor() {
+  const persistenceMode = PERSISTENCE_MODE;
   const uploaderButtonRef = useRef<HTMLButtonElement>(null);
-  const isFirstImageLoadInSessionRef = useRef(true);
+
+  /**
+   * @todo Handle onRefreshImagesError.
+   */
+  const { images, addImage, updateImage } = usePersistedImages({
+    enabled: persistenceMode === "persistent",
+    onRefreshImagesError: noop,
+  });
 
   const { imageId } = useParams<{ imageId: ImageId }>();
   const [image, setImage] = useState<ImageState | null>(null);
-  const { images, addImage, updateImage } = usePersistedImages();
-
-  /**
-   * @todo To rethink the loading state, consider the following:
-   * - `imageId` always come from the URL.
-   * - `imageId` can be undefined if:
-   *    - the user is on the landing page.
-   *    - an image was not saved to the database on purpose in ephemeral mode.
-   * - I guess I need to set which mode the app is running in: ephemeral or persistent.
-   * - If the app is in persistent mode, has an `imageId` and still the image was not
-   * loaded, then we have a "not found..." error.
-   */
-  const [isLoading] = useState(false);
 
   /**
    * Safely sets the image state revoking the previous blob URL if the new one is different.
@@ -161,6 +165,9 @@ export default function Editor() {
        * refresh and losing the image and the current object position.
        */
       safeSetImage(imageStateResult.accepted);
+      setAspectRatio(imageStateResult.accepted.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+
+      if (persistenceMode === "ephemeral") return;
 
       const addResult = await addImage({ imageDraft, file });
 
@@ -170,7 +177,7 @@ export default function Editor() {
         console.log("navigated to", `/${addResult.accepted}`);
       }
     },
-    [addImage, navigate],
+    [persistenceMode, addImage, navigate, setAspectRatio],
   );
 
   const handleImageError = useCallback(() => {
@@ -256,6 +263,8 @@ export default function Editor() {
 
   /**
    * Injects `overflow: hidden` to the body element when the editor is rendered.
+   *
+   * @todo Review this logic.
    */
   useEffect(() => {
     document.body.style.overflow = image && imageId ? "hidden" : "auto";
@@ -293,11 +302,13 @@ export default function Editor() {
     [imageId, currentObjectPosition, updateImage],
   );
 
-  const imageCount = images?.length ?? 0;
+  const imageCount = images?.length;
 
   const stableImageRecordGetter = useEffectEvent((imageId: ImageId) => {
     return images?.find((image) => image.id === imageId);
   });
+
+  const [imageNotFound, setImageNotFound] = useState(false);
 
   /**
    * Loads the image record from the database when the page is loaded or the database is
@@ -309,128 +320,62 @@ export default function Editor() {
   useDebouncedEffect(
     () => {
       async function asyncSetImageState() {
-        /**
-         * Landing page or ephemeral mode.
-         */
-        if (imageId == null) return;
+        if (imageId == null || persistenceMode === "ephemeral") return;
 
-        /**
-         * @todo
-         *
-         * Either there are no images in the database or the database is still loading:
-         * - If it has loaded, then the image record will not be found in the database.
-         *   Show error to the user and the spinner stops.
-         * - If it hasn't loaded yet. Show spinner.
-         */
+        if (imageCount == null) {
+          console.log("database is loading");
+          safeSetImage(null);
+          return;
+        }
+
         if (imageCount === 0) {
+          console.log("database is empty");
           safeSetImage(null);
           return;
         }
 
         const imageRecord = stableImageRecordGetter(imageId);
 
-        /**
-         * @todo
-         *
-         * Image record not found in the database.
-         * Show error to the user and the spinner stops.
-         */
         if (imageRecord == null) {
+          console.log("image not found in the database");
           safeSetImage(null);
+          setImageNotFound(true);
           return;
         }
 
         const result = await createImageStateFromRecord(imageRecord);
 
-        /**
-         * @todo
-         *
-         * Image could not be loaded from the database.
-         * Show error to the user and the spinner stops.
-         */
         if (result.rejected != null) {
           safeSetImage(null);
           console.error("Error loading saved image:", result.rejected.reason);
           return;
         }
 
-        /**
-         * @todo
-         *
-         * All went fine. Spinner stops.
-         */
         const nextImageState = result.accepted;
         safeSetImage(nextImageState);
-        console.log("loaded image from record", imageRecord);
-
-        /**
-         * @todo
-         *
-         * Fix the bug where the spinner is not reset after an upload.
-         */
-        if (isFirstImageLoadInSessionRef.current) {
-          isFirstImageLoadInSessionRef.current = false;
-          return;
-        }
-
         setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+        console.log("loaded image from record", imageRecord);
       }
 
       asyncSetImageState();
     },
     { timeout: IMAGE_LOAD_DEBOUNCE_MS },
-    [imageId, imageCount],
+    [imageId, imageCount, persistenceMode, setAspectRatio],
   );
 
-  /**
-   * @todo Handle all onImageUploadErrors.
-   */
-  if (!imageId && !image) {
-    return (
-      <>
-        <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
-        <EditorGrid>
-          <Landing
-            uploaderButtonRef={uploaderButtonRef}
-            onImageUpload={handleImageUpload}
-            onImageUploadError={noop}
-          />
-        </EditorGrid>
-      </>
-    );
-  }
+  const isOnLandingPage = imageId == null || (persistenceMode === "ephemeral" && image == null);
 
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
       <EditorGrid>
-        {showFocalPoint != null && (
-          <ToggleButton
-            type="button"
-            data-component="FocalPointButton"
-            toggled={showFocalPoint}
-            onToggle={(toggled) => setShowFocalPoint(!toggled)}
-            titleOn="Focal point"
-            titleOff="Focal point"
-            icon={<IconReference />}
+        {isOnLandingPage ? (
+          <Landing
+            uploaderButtonRef={uploaderButtonRef}
+            onImageUpload={handleImageUpload}
+            onImageUploadError={noop}
           />
-        )}
-        {showImageOverflow != null && (
-          <ToggleButton
-            type="button"
-            data-component="ImageOverflowButton"
-            toggled={showImageOverflow}
-            onToggle={(toggled) => setShowImageOverflow(!toggled)}
-            titleOn="Overflow"
-            titleOff="Overflow"
-            icon={<IconMask />}
-          />
-        )}
-        {isLoading ? (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Loading...</h3>
-        ) : !image ? (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Not found...</h3>
-        ) : (
+        ) : image != null ? (
           <>
             {aspectRatio != null && image.naturalAspectRatio != null && (
               <FocalPointEditor
@@ -455,28 +400,63 @@ export default function Editor() {
               />
             </Dialog>
           </>
+        ) : imageNotFound ? (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
+            Image not found
+          </h3>
+        ) : (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
+            Loading image...
+          </h3>
         )}
-        <AspectRatioSlider
-          aspectRatio={aspectRatio}
-          aspectRatioList={aspectRatioList}
-          onAspectRatioChange={setAspectRatio}
-        />
-        {showCodeSnippet != null && (
-          <ToggleButton
-            type="button"
-            data-component="CodeSnippetButton"
-            toggled={showCodeSnippet}
-            onToggle={(toggled) => setShowCodeSnippet(!toggled)}
-            titleOn="Code"
-            titleOff="Code"
-            icon={<IconCode />}
-          />
+        {isOnLandingPage ? null : (
+          <>
+            {showFocalPoint != null && (
+              <ToggleButton
+                type="button"
+                data-component="FocalPointButton"
+                toggled={showFocalPoint}
+                onToggle={(toggled) => setShowFocalPoint(!toggled)}
+                titleOn="Focal point"
+                titleOff="Focal point"
+                icon={<IconReference />}
+              />
+            )}
+            {showImageOverflow != null && (
+              <ToggleButton
+                type="button"
+                data-component="ImageOverflowButton"
+                toggled={showImageOverflow}
+                onToggle={(toggled) => setShowImageOverflow(!toggled)}
+                titleOn="Overflow"
+                titleOff="Overflow"
+                icon={<IconMask />}
+              />
+            )}
+
+            <AspectRatioSlider
+              aspectRatio={aspectRatio}
+              aspectRatioList={aspectRatioList}
+              onAspectRatioChange={setAspectRatio}
+            />
+            {showCodeSnippet != null && (
+              <ToggleButton
+                type="button"
+                data-component="CodeSnippetButton"
+                toggled={showCodeSnippet}
+                onToggle={(toggled) => setShowCodeSnippet(!toggled)}
+                titleOn="Code"
+                titleOff="Code"
+                icon={<IconCode />}
+              />
+            )}
+            <ImageUploaderButton
+              ref={uploaderButtonRef}
+              onImageUpload={handleImageUpload}
+              onImageUploadError={noop}
+            />
+          </>
         )}
-        <ImageUploaderButton
-          ref={uploaderButtonRef}
-          onImageUpload={handleImageUpload}
-          onImageUploadError={noop}
-        />
       </EditorGrid>
     </>
   );
