@@ -1,7 +1,16 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import styled from "@emotion/styled";
+import {
+  type PropsWithChildren,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
+import { useDelayedState } from "use-delay-follow-state";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { useAspectRatioList } from "../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
@@ -37,12 +46,13 @@ const DEFAULT_ASPECT_RATIO = 1;
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 
 const INTERACTION_DEBOUNCE_MS = 500;
-const IMAGE_LOAD_DEBOUNCE_MS = 200;
+const MINIMAL_LOADING_DURATION_MS = 250;
 
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
  */
-const PERSISTENCE_MODE: UIPersistenceMode = "persistent"; // typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
+const PERSISTENCE_MODE: UIPersistenceMode =
+  typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
 
 const noop = () => {};
 
@@ -146,9 +156,13 @@ export default function Editor() {
 
   const navigate = useNavigate();
 
+  const [isProcessingImageUpload, setIsProcessingImageUpload] = useState(false);
+
   const handleImageUpload = useCallback(
     async (draftAndFile: ImageDraftStateAndFile | undefined) => {
       if (draftAndFile == null) return;
+
+      setIsProcessingImageUpload(true);
 
       const { imageDraft, file } = draftAndFile;
 
@@ -159,6 +173,7 @@ export default function Editor() {
        */
       if (imageStateResult.rejected != null) {
         toast.error(`Error creating image state: ${String(imageStateResult.rejected.reason)}`);
+        setIsProcessingImageUpload(false);
         return;
       }
 
@@ -170,7 +185,10 @@ export default function Editor() {
       safeSetImage(imageStateResult.accepted);
       setAspectRatio(imageStateResult.accepted.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
 
-      if (persistenceMode === "ephemeral") return;
+      if (persistenceMode === "ephemeral") {
+        setIsProcessingImageUpload(false);
+        return;
+      }
 
       const addResult = await addImage({ imageDraft, file });
 
@@ -179,6 +197,8 @@ export default function Editor() {
         await navigate(`/${addResult.accepted}`);
         console.log("navigated to", `/${addResult.accepted}`);
       }
+
+      setIsProcessingImageUpload(false);
     },
     [persistenceMode, addImage, navigate, setAspectRatio],
   );
@@ -317,90 +337,84 @@ export default function Editor() {
    * After the image record is loaded, the image state is created with a new blob URL and
    * the calculated natural aspect ratio.
    */
-  useDebouncedEffect(
-    () => {
-      async function asyncSetImageState() {
-        if (imageId == null || persistenceMode === "ephemeral") return;
+  useEffect(() => {
+    async function asyncSetImageState() {
+      if (imageId == null || persistenceMode === "ephemeral") return;
 
-        if (imageCount == null) {
-          console.log("database is loading");
-          safeSetImage(null);
-          return;
-        }
-
-        if (imageCount === 0) {
-          console.log("database is empty");
-          safeSetImage(null);
-          return;
-        }
-
-        const imageRecord = stableImageRecordGetter(imageId);
-
-        if (imageRecord == null) {
-          console.log("image not found in the database");
-          safeSetImage(null);
-          setImageNotFoundConfirmed(true);
-          return;
-        }
-
-        const result = await createImageStateFromRecord(imageRecord);
-
-        if (result.rejected != null) {
-          safeSetImage(null);
-          toast.error(`Error loading saved image: ${String(result.rejected.reason)}`);
-          return;
-        }
-
-        const nextImageState = result.accepted;
-        safeSetImage(nextImageState);
-        setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
-        console.log("loaded image from record", imageRecord);
+      if (imageCount == null) {
+        console.log("database is loading");
+        safeSetImage(null);
+        return;
       }
 
-      asyncSetImageState();
-    },
-    { timeout: IMAGE_LOAD_DEBOUNCE_MS },
-    [imageId, imageCount, persistenceMode, setAspectRatio],
-  );
+      if (imageCount === 0) {
+        console.log("database is empty");
+        safeSetImage(null);
+        return;
+      }
+
+      const imageRecord = stableImageRecordGetter(imageId);
+
+      if (imageRecord == null) {
+        console.log("image not found in the database");
+        safeSetImage(null);
+        setImageNotFoundConfirmed(true);
+        return;
+      }
+
+      const result = await createImageStateFromRecord(imageRecord);
+
+      if (result.rejected != null) {
+        safeSetImage(null);
+        toast.error(`Error loading saved image: ${String(result.rejected.reason)}`);
+        return;
+      }
+
+      const nextImageState = result.accepted;
+      safeSetImage(nextImageState);
+      setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+      console.log("loaded image from record", imageRecord);
+    }
+
+    asyncSetImageState();
+  }, [imageId, imageCount, persistenceMode, setAspectRatio]);
 
   const pageState = usePageState({ persistenceMode, imageId, image });
 
-  const [isLoading, setIsLoading] = useState(pageState === "imageNotFound");
+  const [isLoading, setIsLoading] = useDelayedState(pageState === "imageNotFound");
 
-  useDebouncedEffect(
-    () => {
-      setIsLoading(pageState === "imageNotFound" && !imageNotFoundConfirmed);
-    },
-    { timeout: IMAGE_LOAD_DEBOUNCE_MS },
-    [pageState, imageNotFoundConfirmed],
-  );
+  useEffect(() => {
+    const isLoading =
+      isProcessingImageUpload ||
+      (pageState === "imageNotFound" && imageNotFoundConfirmed === false);
+
+    setIsLoading(isLoading, !isLoading ? MINIMAL_LOADING_DURATION_MS : 0);
+  }, [setIsLoading, pageState, imageNotFoundConfirmed, isProcessingImageUpload]);
 
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
       <EditorGrid>
         {isLoading ? (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>Loading...</h3>
+          <Message>Loading...</Message>
         ) : pageState === "landing" ? (
           <Landing
             uploaderButtonRef={uploaderButtonRef}
             onImageUpload={handleImageUpload}
             onImageUploadError={noop}
           />
-        ) : pageState === "editing" && image != null ? (
+        ) : pageState === "editing" && image != null && aspectRatio != null ? (
           <>
-            {aspectRatio != null && (
-              <FocalPointEditor
-                imageUrl={image.url}
-                aspectRatio={aspectRatio}
-                initialAspectRatio={image.naturalAspectRatio}
-                objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
-                showFocalPoint={showFocalPoint ?? false}
-                showImageOverflow={showImageOverflow ?? false}
-                onObjectPositionChange={handleObjectPositionChange}
-                onImageError={handleImageError}
-              />
-            )}
+            <FocalPointEditor
+              imageUrl={image.url}
+              aspectRatio={aspectRatio}
+              initialAspectRatio={image.naturalAspectRatio}
+              objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
+              showFocalPoint={showFocalPoint ?? false}
+              showImageOverflow={showImageOverflow ?? false}
+              onObjectPositionChange={handleObjectPositionChange}
+              onImageError={handleImageError}
+            />
             <Dialog transparent open={showCodeSnippet} onOpenChange={setShowCodeSnippet}>
               <CodeSnippet
                 src={image.name}
@@ -413,67 +427,64 @@ export default function Editor() {
             </Dialog>
           </>
         ) : pageState === "pageNotFound" ? (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
-            Page not found...
-          </h3>
+          <Message>Page not found...</Message>
         ) : pageState === "imageNotFound" ? (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
-            Image not found...
-          </h3>
+          <Message>Image not found...</Message>
         ) : (
-          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
-            Critical error...
-          </h3>
+          <Message>Critical error...</Message>
         )}
         {pageState === "editing" || pageState === "imageNotFound" ? (
           <>
-            {showFocalPoint != null && (
-              <ToggleButton
-                type="button"
-                data-component="FocalPointButton"
-                toggled={showFocalPoint}
-                onToggle={(toggled) => setShowFocalPoint(!toggled)}
-                titleOn="Focal point"
-                titleOff="Focal point"
-                icon={<IconReference />}
-              />
-            )}
-            {showImageOverflow != null && (
-              <ToggleButton
-                type="button"
-                data-component="ImageOverflowButton"
-                toggled={showImageOverflow}
-                onToggle={(toggled) => setShowImageOverflow(!toggled)}
-                titleOn="Overflow"
-                titleOff="Overflow"
-                icon={<IconMask />}
-              />
-            )}
-
-            <AspectRatioSlider
-              aspectRatio={aspectRatio}
-              aspectRatioList={aspectRatioList}
-              onAspectRatioChange={setAspectRatio}
+            <ToggleButton
+              type="button"
+              data-component="FocalPointButton"
+              toggled={showFocalPoint ?? false}
+              onToggle={(toggled) => setShowFocalPoint(!toggled)}
+              titleOn="Focal point"
+              titleOff="Focal point"
+              icon={<IconReference />}
             />
-            {showCodeSnippet != null && (
-              <ToggleButton
-                type="button"
-                data-component="CodeSnippetButton"
-                toggled={showCodeSnippet}
-                onToggle={(toggled) => setShowCodeSnippet(!toggled)}
-                titleOn="Code"
-                titleOff="Code"
-                icon={<IconCode />}
-              />
-            )}
+            <ToggleButton
+              type="button"
+              data-component="ImageOverflowButton"
+              toggled={showImageOverflow ?? false}
+              onToggle={(toggled) => setShowImageOverflow(!toggled)}
+              titleOn="Overflow"
+              titleOff="Overflow"
+              icon={<IconMask />}
+            />
+            <ToggleButton
+              type="button"
+              data-component="CodeSnippetButton"
+              toggled={showCodeSnippet ?? false}
+              onToggle={(toggled) => setShowCodeSnippet(!toggled)}
+              titleOn="Code"
+              titleOff="Code"
+              icon={<IconCode />}
+            />
             <ImageUploaderButton
               ref={uploaderButtonRef}
               onImageUpload={handleImageUpload}
               onImageUploadError={noop}
+            />
+            <AspectRatioSlider
+              aspectRatio={aspectRatio}
+              aspectRatioList={aspectRatioList}
+              onAspectRatioChange={setAspectRatio}
             />
           </>
         ) : null}
       </EditorGrid>
     </>
   );
+}
+
+const MessageStyled = styled.h3`
+  grid-column: 1 / -1;
+  grid-row: 1 / -2;
+  margin: auto;
+`;
+
+function Message({ children, ...rest }: PropsWithChildren) {
+  return <MessageStyled {...rest}>{children}</MessageStyled>;
 }

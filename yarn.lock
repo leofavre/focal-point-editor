@@ -3423,6 +3423,7 @@ __metadata:
     type-fest: "npm:^5.4.3"
     typescript: "npm:^5.9.3"
     use-debounced-effect: "npm:^2.0.1"
+    use-delay-follow-state: "npm:^1.2.3"
     vite: "npm:^7.3.1"
     vite-plugin-pwa: "npm:^1.2.0"
     vitest: "npm:^4.0.18"
@@ -5842,6 +5843,15 @@ __metadata:
   version: 2.0.1
   resolution: "use-debounced-effect@npm:2.0.1"
   checksum: 10c0/a60834661658e98eb6cdad7e3ff51b747d661a05fb8d6f8fad769100ab43c8f7999bc6aaa7c0d722d95fe938494f01c4cba4c187e7c4529be97b1880c03e5c26
+  languageName: node
+  linkType: hard
+
+"use-delay-follow-state@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "use-delay-follow-state@npm:1.2.3"
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 10c0/fd959e0863d2ce9dbf1097b1c8be469cb62bbf91bd2a1d8a3f373b1a275ef301af0484520e41c9fae19e1328cab4f26920680d33a80074b6237436f427ff11d7
   languageName: node
   linkType: hard
 
