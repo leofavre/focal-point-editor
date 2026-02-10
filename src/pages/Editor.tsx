@@ -31,6 +31,7 @@ import type {
 } from "../types";
 import { EditorGrid } from "./Editor.styled";
 import { createImageStateFromDraftAndFile } from "./helpers/createImageStateFromDraftAndFile";
+import { isIndexedDBAvailable } from "../helpers/indexedDBAvailability";
 import { createImageStateFromRecord } from "./helpers/createImageStateFromRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePageState } from "./hooks/usePageState";
@@ -52,8 +53,7 @@ const SINGLE_IMAGE_MODE_ID = "edit" as ImageId;
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
  */
-const PERSISTENCE_MODE: UIPersistenceMode =
-  typeof window.indexedDB !== "undefined" ? "singleImage" : "ephemeral";
+const PERSISTENCE_MODE: UIPersistenceMode = isIndexedDBAvailable() ? "singleImage" : "ephemeral";
 
 const noop = () => {};
 

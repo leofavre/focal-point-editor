@@ -10,4 +10,25 @@ test.describe("Landing page", () => {
 
     await expect(landing.getByRole("button", { name: "Upload" })).toBeVisible();
   });
+
+  test("shows project description and upload button when visiting / with IndexedDB disabled", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      try {
+        Object.defineProperty(window, "indexedDB", {
+          get: () => undefined,
+          configurable: true,
+          enumerable: true,
+        });
+      } catch {
+        // ignore if not configurable
+      }
+    });
+    await page.goto("/");
+
+    const landing = page.locator('[data-component="Landing"]');
+    await expect(landing.locator('[data-component="HowToUse"]')).toBeVisible();
+    await expect(landing.getByRole("button", { name: "Upload" })).toBeVisible();
+  });
 });
