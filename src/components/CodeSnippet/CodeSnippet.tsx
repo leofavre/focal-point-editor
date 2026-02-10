@@ -77,7 +77,6 @@ function getCodeSnippet(
       return getCodeSnippetReact(src, objectPosition);
     case "react-tailwind":
       return getCodeSnippetReactTailwind(src, objectPosition);
-    case "html":
     default:
       return getCodeSnippetHtml(src, objectPosition);
   }

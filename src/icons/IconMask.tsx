@@ -2,6 +2,7 @@ import type { SVGProps } from "react";
 
 export const IconMask = (props: SVGProps<SVGSVGElement>) => {
   return (
+    /** biome-ignore lint/a11y/noSvgWithoutTitle: Decorative icon, hidden from screen readers */
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -10,7 +11,6 @@ export const IconMask = (props: SVGProps<SVGSVGElement>) => {
       aria-hidden
       {...props}
     >
-      <title>Mask</title>
       <defs>
         <clipPath id="a" clipPathUnits="userSpaceOnUse">
           <path d="M0 16.5h16.5V0H0Z" />

@@ -11,6 +11,12 @@ export const EditorGrid = styled.main`
   width: 100dvw;
   height: 100dvh;
 
+  [data-component="Landing"] {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    margin: auto;
+  }
+
   [data-component="FocalPointEditor"] {
     grid-row: 1 / 3;
     grid-column: 1 / -1;
@@ -35,22 +41,22 @@ export const EditorGrid = styled.main`
     z-index: 1;
   }
 
-  [data-component="FocalPointButton"] {
+  > [data-component="FocalPointButton"] {
     grid-row: 3;
     grid-column: 2;
   }
 
-  [data-component="ImageOverflowButton"] {
+  > [data-component="ImageOverflowButton"] {
     grid-row: 3;
     grid-column: 3;
   }
 
-  [data-component="CodeSnippetButton"] {
+  > [data-component="CodeSnippetButton"] {
     grid-row: 3;
     grid-column: 5;
   }
 
-  [data-component="ImageUploaderButton"] {
+  > [data-component="ImageUploaderButton"] {
     grid-row: 3;
     grid-column: 6;
   }

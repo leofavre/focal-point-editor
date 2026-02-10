@@ -1,0 +1,12 @@
+---
+description: Keep JSDoc and block comments to at most 100 characters per line
+globs: "**/*.{ts,tsx,js,jsx}"
+alwaysApply: false
+---
+
+# JSDoc line length
+
+When writing or editing JSDoc (and other block comments), keep **each line to at most 100 characters**.
+
+- Wrap long lines onto the next line with the same comment prefix (e.g. ` * `).
+- This applies to `/** ... */` blocks and to inline `/** ... */` on types/functions.

@@ -22,5 +22,7 @@ export default defineConfig(({ mode }) => ({
   test: {
     environment: "jsdom",
     mockReset: true,
+    // Prevents running e2e tests like they were unit tests.
+    exclude: ["**/node_modules/**", "**/dist/**", "e2e/**"],
   },
 }));

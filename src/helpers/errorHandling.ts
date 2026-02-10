@@ -45,4 +45,3 @@ export async function resultFromPromise<A, R extends string>(
     return reject({ reason });
   }
 }
-

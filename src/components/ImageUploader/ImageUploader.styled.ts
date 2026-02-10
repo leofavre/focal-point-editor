@@ -9,10 +9,12 @@ export const InvisibleControl = styled.input`
   clip: rect(0, 0, 0, 0);
 `;
 
-export const InvisibleForm = styled.form`
-  display: contents;
-`;
+export const InvisibleForm = styled.form``;
 
 export const InvisibleLabel = styled.label`
   display: contents;
+
+  button {
+    width: 100%;
+  }
 `;

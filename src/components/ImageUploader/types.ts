@@ -1,14 +1,19 @@
 import type { Ref } from "react";
+import type { Err } from "../../helpers/errorHandling";
 import type { ImageDraftStateAndFile } from "../../types";
 
-type SingleImageUploaderProps = {
+export type SingleImageUploaderProps = {
   onImagesUpload?: never;
-  onImageUpload: (draftAndFile: ImageDraftStateAndFile | undefined) => void;
+  onImagesUploadError?: never;
+  onImageUpload: (draftAndFile: ImageDraftStateAndFile) => void;
+  onImageUploadError?: (error: Err<string>) => void;
 };
 
-type MultipleImagesUploaderProps = {
+export type MultipleImagesUploaderProps = {
   onImageUpload?: never;
+  onImageUploadError?: never;
   onImagesUpload: (draftsAndFiles: ImageDraftStateAndFile[]) => void;
+  onImagesUploadError?: (errors: Err<string>[]) => void;
 };
 
 export type ImageUploaderProps = SingleImageUploaderProps | MultipleImagesUploaderProps;
@@ -18,4 +23,7 @@ export type ImageUploaderButtonProps = ImageUploaderProps & {
   size?: "small" | "medium" | "large";
 };
 
-export type FullScreenDropZoneProps = Pick<ImageUploaderProps, "onImageUpload" | "onImagesUpload">;
+export type FullScreenDropZoneProps = Pick<
+  ImageUploaderProps,
+  "onImageUpload" | "onImagesUpload" | "onImageUploadError" | "onImagesUploadError"
+>;

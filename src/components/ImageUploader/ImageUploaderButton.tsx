@@ -1,9 +1,8 @@
-import type { ChangeEvent } from "react";
-import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffectEvent, useRef, useState } from "react";
 import { useMergeRefs } from "react-merge-refs";
 import { IconUpload } from "../../icons/IconUpload";
 import { ToggleButton } from "../ToggleButton/ToggleButton";
-import { useImageUploadHandlers } from "./hooks/useImageUploadHandlers";
+import { useImageDropzone } from "./hooks/useImageDropzone";
 import { InvisibleControl, InvisibleForm, InvisibleLabel } from "./ImageUploader.styled";
 import type { ImageUploaderButtonProps } from "./types";
 
@@ -12,68 +11,44 @@ export function ImageUploaderButton({
   size = "small",
   onImageUpload,
   onImagesUpload,
+  onImageUploadError,
+  onImagesUploadError,
   ...rest
 }: ImageUploaderButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const mergedRefs = useMergeRefs([ref, buttonRef]);
 
   const [isOpened, setIsOpened] = useState(false);
 
-  const { handleFileChange, handleFormSubmit } = useImageUploadHandlers({
-    onImageUpload,
-    onImagesUpload,
-  });
-
-  const stableInputRefGetter = useEffectEvent(() => inputRef.current);
-  const stableHandleFileChange = useEffectEvent(handleFileChange);
   const setClosed = useEffectEvent(() => setIsOpened(false));
 
-  /**
-   * When a file is selected, upload it and close the file manager.
-   */
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    stableHandleFileChange(event);
-    setClosed();
-  }, []);
+  const { getRootProps, getInputProps, open } = useImageDropzone({
+    onImageUpload,
+    onImagesUpload,
+    onImageUploadError,
+    onImagesUploadError,
+    noClick: true,
+    noDrag: true,
+    multiple: onImagesUpload != null,
+    onFileDialogCancel: setClosed,
+    onDropAccepted: setClosed,
+  });
 
-  /**
-   * When the button is clicked, open the file manager by clicking the hidden input element.
-   */
-  const handleButtonClick = useCallback(() => {
-    inputRef?.current?.click();
+  const handleButtonClick = () => {
+    open();
     setIsOpened(true);
-  }, []);
-
-  /**
-   * If the user cancels the file upload, close the file manager.
-   */
-  useEffect(() => {
-    const node = stableInputRefGetter();
-
-    if (node == null) return;
-    node.addEventListener("cancel", setClosed);
-
-    return () => {
-      if (node == null) return;
-      node.removeEventListener("cancel", setClosed);
-    };
-  }, []);
+  };
 
   return (
-    <InvisibleForm onSubmit={handleFormSubmit}>
+    <InvisibleForm
+      data-component="ImageUploaderButton"
+      {...getRootProps({ onSubmit: (e) => e.preventDefault() })}
+      {...rest}
+    >
       <InvisibleLabel>
-        <InvisibleControl
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          multiple={onImagesUpload != null}
-          onChange={handleChange}
-          tabIndex={-1}
-        />
+        <InvisibleControl {...getInputProps()} tabIndex={-1} aria-hidden />
         <ToggleButton
           ref={mergedRefs}
-          data-component="ImageUploaderButton"
           type="button"
           toggled={isOpened}
           onClick={handleButtonClick}
@@ -81,7 +56,6 @@ export function ImageUploaderButton({
           titleOff="Upload"
           icon={<IconUpload />}
           scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
-          {...rest}
         />
       </InvisibleLabel>
     </InvisibleForm>

@@ -25,6 +25,9 @@ export async function createImageStateFromDraftAndFile(
 
   const ratioResult = await getNaturalAspectRatioFromImageSrc(blobUrl);
 
+  /**
+   * @todo Maybe show error to the user in the UI.
+   */
   if (ratioResult.rejected != null) {
     URL.revokeObjectURL(blobUrl);
     return reject({ reason: ratioResult.rejected.reason });

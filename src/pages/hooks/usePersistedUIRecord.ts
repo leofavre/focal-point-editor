@@ -37,6 +37,9 @@ export function usePersistedUIRecord<K extends keyof UIState>(
   const indexedDBResult = getIndexedDBService<UIRecord<K>>("ui");
   const sessionStorageResult = getSessionStorageService<UIRecord<K>>("ui");
 
+  /**
+   * @todo Maybe show error to the user in the UI.
+   */
   const { getRecord, updateRecord } =
     service === "indexedDB"
       ? indexedDBResult.rejected != null

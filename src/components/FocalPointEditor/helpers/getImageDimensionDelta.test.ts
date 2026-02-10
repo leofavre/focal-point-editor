@@ -36,7 +36,12 @@ describe("getImageDimensionDelta", () => {
 
   it("returns width/height deltas and changedDimension 'width' when image is constrained by width", () => {
     // 800×600 natural, 400×400 rect → contain scales to ~533×400; width delta > height delta
-    const img = createMockImage({ naturalWidth: 800, naturalHeight: 600, rectWidth: 400, rectHeight: 400 });
+    const img = createMockImage({
+      naturalWidth: 800,
+      naturalHeight: 600,
+      rectWidth: 400,
+      rectHeight: 400,
+    });
     const result = getImageDimensionDelta(img);
 
     expect(result).not.toBeNull();
@@ -50,7 +55,12 @@ describe("getImageDimensionDelta", () => {
 
   it("returns changedDimension 'height' when image is constrained by height", () => {
     // 400×400 natural, 800×600 rect → contain scales to 800×800; height delta > width delta
-    const img = createMockImage({ naturalWidth: 400, naturalHeight: 400, rectWidth: 800, rectHeight: 600 });
+    const img = createMockImage({
+      naturalWidth: 400,
+      naturalHeight: 400,
+      rectWidth: 800,
+      rectHeight: 600,
+    });
     const result = getImageDimensionDelta(img);
 
     expect(result).not.toBeNull();
@@ -64,7 +74,12 @@ describe("getImageDimensionDelta", () => {
 
   it("returns changedDimension undefined when both deltas are within threshold", () => {
     // Natural and rect same aspect and size → contain matches rect, deltas ~0
-    const img = createMockImage({ naturalWidth: 100, naturalHeight: 100, rectWidth: 100, rectHeight: 100 });
+    const img = createMockImage({
+      naturalWidth: 100,
+      naturalHeight: 100,
+      rectWidth: 100,
+      rectHeight: 100,
+    });
     const result = getImageDimensionDelta(img);
 
     expect(result).not.toBeNull();
@@ -77,7 +92,12 @@ describe("getImageDimensionDelta", () => {
   it("computes percent deltas relative to scaled dimensions", () => {
     // 800×600 → contain in 400×400 gives scaled 533.33×400; deltaWidth = 133.33
     // percent = (133.33 / 533.33) * 100 ≈ 25
-    const img = createMockImage({ naturalWidth: 800, naturalHeight: 600, rectWidth: 400, rectHeight: 400 });
+    const img = createMockImage({
+      naturalWidth: 800,
+      naturalHeight: 600,
+      rectWidth: 400,
+      rectHeight: 400,
+    });
     const result = getImageDimensionDelta(img);
 
     expect(result).not.toBeNull();

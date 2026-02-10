@@ -10,7 +10,9 @@ describe("createImageStateFromDraftAndFile", () => {
   const mockCreateObjectURL = vi.fn();
   const mockRevokeObjectURL = vi.fn();
 
-  function createDraftAndFile(overrides: { file?: Blob; imageDraft?: ReturnType<typeof createMockImageDraftState> } = {}) {
+  function createDraftAndFile(
+    overrides: { file?: Blob; imageDraft?: ReturnType<typeof createMockImageDraftState> } = {},
+  ) {
     const file = overrides.file ?? new Blob(["mock"], { type: "image/png" });
     const imageDraft = overrides.imageDraft ?? createMockImageDraftState();
     return { imageDraft, file };

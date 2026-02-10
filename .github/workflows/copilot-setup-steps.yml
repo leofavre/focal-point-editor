@@ -1,0 +1,40 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    name: Setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract versions from package.json
+        id: versions
+        run: |
+          NODE_VERSION=$(jq -r '.volta.node' package.json)
+          YARN_VERSION=$(jq -r '.volta.yarn' package.json)
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+          echo "yarn-version=$YARN_VERSION" >> $GITHUB_OUTPUT
+      - uses: volta-cli/action@v4
+        with:
+          node-version: ${{ steps.versions.outputs.node-version }}
+          yarn-version: ${{ steps.versions.outputs.yarn-version }}
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: yarn-deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Build application
+        run: yarn build

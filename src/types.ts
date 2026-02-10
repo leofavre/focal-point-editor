@@ -1,4 +1,7 @@
-import type { Simplify } from "type-fest";
+import type { Simplify, Tagged } from "type-fest";
+
+export type ImageId = Tagged<string, "ImageId">;
+
 export type ObjectPositionString = `${string}% ${string}%`;
 
 export type ObjectPositionObject = { x: number; y: number };
@@ -8,7 +11,7 @@ export type Breakpoint = {
 };
 
 export type AdvancedBreakpoint = {
-  aspectRatio: number;
+  contentQuery: number;
   objectPosition: ObjectPositionString;
 };
 
@@ -33,8 +36,9 @@ export type ImageState = Simplify<
 
 export type ImageRecord = Simplify<
   ImageDraftState & {
-    id: string;
+    id: ImageId;
     file: Blob;
+    lastKnownAspectRatio?: number;
   }
 >;
 
@@ -49,3 +53,7 @@ export type UIState = {
 };
 
 export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
+
+export type UIPersistenceMode = "ephemeral" | "singleImage" | "multipleImages";
+
+export type UIPageState = "landing" | "editing" | "pageNotFound" | "imageNotFound";

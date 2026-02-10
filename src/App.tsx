@@ -1,9 +1,11 @@
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Editor from "./pages/Editor";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-center" />
       <Routes>
         <Route path="/" element={<Editor />} />
         <Route path="/:imageId" element={<Editor />} />

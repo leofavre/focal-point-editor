@@ -1,4 +1,5 @@
 import { initDB, useIndexedDB } from "react-indexed-db-hook";
+import { isIndexedDBAvailable } from "../helpers/indexedDBAvailability";
 import type { Result } from "../helpers/errorHandling";
 import { accept, reject } from "../helpers/errorHandling";
 import { DBConfig } from "./databaseConfig";
@@ -14,16 +15,16 @@ let databaseInitialized = false;
 export function getIndexedDBService<T, K extends DatabaseKey = string>(
   tableName: string,
 ): Result<DatabaseService<T, K>, "IndexedDBUnavailable"> {
+  if (!isIndexedDBAvailable()) {
+    return reject({ reason: "IndexedDBUnavailable" });
+  }
+
   if (databaseInitialized === false) {
     initDB(DBConfig);
     databaseInitialized = true;
   }
 
   const indexedDB = useIndexedDB(tableName);
-
-  if (typeof window === "undefined" || !window.indexedDB) {
-    return reject({ reason: "IndexedDBUnavailable" });
-  }
 
   return accept({
     async addRecord(value: T, key?: K) {

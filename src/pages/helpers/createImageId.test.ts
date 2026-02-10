@@ -50,4 +50,9 @@ describe("createImageId", () => {
     expect(createImageId("....", new Set())).toBe("image");
     expect(createImageId("", new Set())).toBe("image");
   });
+
+  it("returns base ID only when usedIds is omitted (for overwrite use)", () => {
+    expect(createImageId("My Photo.jpg")).toBe("my-photo");
+    expect(createImageId("My Photo.jpg")).toBe("my-photo"); // same id, no collision suffix
+  });
 });

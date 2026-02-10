@@ -42,9 +42,14 @@ export function getSessionStorageService<T, K extends DatabaseKey = string>(
   tableName: string,
 ): Result<DatabaseService<T, K>, "SessionStorageUnavailable"> {
   const storageResult = getStorageResult();
+
   if (storageResult.rejected != null) {
+    /**
+     * @todo Maybe show error to the user in the UI.
+     */
     return reject(storageResult.rejected);
   }
+
   const storage = storageResult.accepted;
   const prefix = `${SESSION_PREFIX}${tableName}_`;
 
