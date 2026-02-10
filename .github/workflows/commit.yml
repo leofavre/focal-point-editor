@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - main
 
+permissions:
+  contents: write
+  deployments: write
+
 jobs:
   setup:
     name: Setup
@@ -64,9 +68,6 @@ jobs:
     name: Deploy Preview
     runs-on: ubuntu-latest
     needs: [setup, typecheck, test]
-    permissions:
-      contents: write
-      deployments: write
     steps:
       - uses: actions/checkout@v4
       - uses: volta-cli/action@v4
