@@ -21,11 +21,20 @@ const noopIndexedDBService: DatabaseService<ImageRecord> = {
   deleteRecord: async () => {},
 };
 
+export type AddImagesOptions = {
+  /** When true, use the base ID from the filename (no collision suffix). If a record with that ID exists, it is overwritten. */
+  overwrite?: boolean;
+};
+
 export type UsePersistedImagesReturn = {
   images: ImageRecord[] | undefined;
-  addImage: (draftAndFile: ImageDraftStateAndFile) => Promise<Result<ImageId, "AddImageFailed">>;
+  addImage: (
+    draftAndFile: ImageDraftStateAndFile,
+    options?: AddImagesOptions,
+  ) => Promise<Result<ImageId, "AddImageFailed">>;
   addImages: (
     draftsAndFiles: ImageDraftStateAndFile[],
+    options?: AddImagesOptions,
   ) => Promise<{ accepted: ImageId[]; rejected: Err<"AddImageFailed">[] }>;
   getImage: (id: ImageId) => Promise<ImageRecord | undefined>;
   updateImage: (
@@ -51,8 +60,8 @@ export type UsePersistedImagesReturn = {
  *
  * @returns Object with:
  * - `images`: all persisted image records (undefined until loaded).
- * - `addImage`: saves a single image via addImages; returns Result with id or AddImageFailed.
- * - `addImages`: saves multiple image records, then refreshes once; returns accepted ids and rejected reasons.
+ * - `addImage(draftAndFile, options?)`: saves a single image via addImages; returns Result with id or AddImageFailed. Pass `{ overwrite: true }` to use the base ID from the filename and overwrite an existing record with that id.
+ * - `addImages(draftsAndFiles, options?)`: saves multiple image records, then refreshes once; returns accepted ids and rejected reasons. Pass `{ overwrite: true }` to use base IDs and overwrite existing records with the same id.
  * - `getImage`: fetches one image record by id.
  * - `updateImage`: merges partial image record into an existing record; returns Result.
  * - `deleteImage`: removes an image record by id.
@@ -95,23 +104,36 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
   }, [refreshImages]);
 
   const addImages: UsePersistedImagesReturn["addImages"] = useCallback(
-    async (draftsAndFiles) => {
-      let existing: ImageRecord[];
-      try {
-        const all = await getAllRecords();
-        existing = all ?? [];
-      } catch {
-        return processResults(draftsAndFiles.map(() => reject({ reason: "AddImageFailed" })));
+    async (draftsAndFiles, options) => {
+      const overwrite = options?.overwrite ?? false;
+
+      let usedIds: Set<string> | undefined;
+      if (!overwrite) {
+        try {
+          const all = await getAllRecords();
+          const existing = all ?? [];
+          usedIds = new Set(existing.map((r) => r.id));
+        } catch {
+          return processResults(draftsAndFiles.map(() => reject({ reason: "AddImageFailed" })));
+        }
       }
-      const usedIds = new Set(existing.map((r) => r.id));
 
       const results: Result<ImageId, "AddImageFailed">[] = [];
       for (const { imageDraft, file } of draftsAndFiles) {
         try {
           const id = createImageId(imageDraft.name, usedIds);
           const record: ImageRecord = { id, ...imageDraft, file };
-          await addRecord(record);
-          usedIds.add(id);
+          if (overwrite) {
+            const existingRecord = await getRecord(id);
+            if (existingRecord != null) {
+              await updateRecord(record);
+            } else {
+              await addRecord(record);
+            }
+          } else {
+            await addRecord(record);
+            if (usedIds != null) usedIds.add(id);
+          }
           results.push(accept(id));
         } catch {
           results.push(reject({ reason: "AddImageFailed" }));
@@ -133,12 +155,12 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
       }
       return processResults(results);
     },
-    [addRecord, getAllRecords, refreshImages],
+    [addRecord, getRecord, getAllRecords, updateRecord, refreshImages],
   );
 
   const addImage: UsePersistedImagesReturn["addImage"] = useCallback(
-    async (draftAndFile) => {
-      const { accepted: ids } = await addImages([draftAndFile]);
+    async (draftAndFile, options) => {
+      const { accepted: ids } = await addImages([draftAndFile], options);
       const id = ids[0];
       if (id != null) return accept(id);
       return reject({ reason: "AddImageFailed" });

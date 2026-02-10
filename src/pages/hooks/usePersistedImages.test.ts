@@ -130,6 +130,118 @@ describe("usePersistedImages", () => {
     );
   });
 
+  it("addImage with overwrite: true uses base id and overwrites existing record via updateRecord", async () => {
+    const existingRecord = createMockImageRecord({
+      id: "my-photo",
+      ...createMockImageDraftState({ name: "My Photo.jpg", createdAt: 1000 }),
+      file: testFile,
+    });
+    mockGetAllRecords.mockResolvedValue([existingRecord]);
+    mockGetRecord.mockResolvedValue(existingRecord);
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toHaveLength(1);
+    });
+
+    const imageDraft = createMockImageDraftState({
+      name: "My Photo.jpg",
+      createdAt: 2000,
+      breakpoints: [{ objectPosition: "50% 50%" }],
+    });
+    let addResult: Awaited<ReturnType<typeof result.current.addImage>> | undefined;
+    await act(async () => {
+      addResult = await result.current.addImage(
+        { imageDraft, file: testFile },
+        { overwrite: true },
+      );
+    });
+
+    expect(addResult?.accepted).toBe("my-photo");
+    expect(mockGetRecord).toHaveBeenCalledWith("my-photo");
+    expect(mockUpdateRecord).toHaveBeenCalledWith({
+      id: "my-photo",
+      ...imageDraft,
+      file: testFile,
+    });
+    expect(mockAddRecord).not.toHaveBeenCalled();
+  });
+
+  it("addImage with overwrite: true when no existing record calls addRecord", async () => {
+    mockGetAllRecords.mockResolvedValue([]);
+    mockGetRecord.mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toEqual([]);
+    });
+
+    const imageDraft = createMockImageDraftState({ name: "New.png" });
+    let addResult: Awaited<ReturnType<typeof result.current.addImage>> | undefined;
+    await act(async () => {
+      addResult = await result.current.addImage(
+        { imageDraft, file: testFile },
+        { overwrite: true },
+      );
+    });
+
+    expect(addResult?.accepted).toBe("new");
+    expect(mockGetRecord).toHaveBeenCalledWith("new");
+    expect(mockAddRecord).toHaveBeenCalledWith({
+      id: "new",
+      ...imageDraft,
+      file: testFile,
+    });
+    expect(mockUpdateRecord).not.toHaveBeenCalled();
+  });
+
+  it("addImages with overwrite: true overwrites existing and adds new", async () => {
+    const existingRecord = createMockImageRecord({
+      id: "photo",
+      ...createMockImageDraftState({ name: "photo.jpg" }),
+      file: testFile,
+    });
+    mockGetAllRecords.mockResolvedValue([existingRecord]);
+    mockGetRecord
+      .mockResolvedValueOnce(existingRecord) // first draft overwrites "photo"
+      .mockResolvedValueOnce(undefined); // second draft is new
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toHaveLength(1);
+    });
+
+    const draft1 = createMockImageDraftState({ name: "photo.jpg", createdAt: 2 });
+    const draft2 = createMockImageDraftState({ name: "other.png" });
+    let addResults: Awaited<ReturnType<typeof result.current.addImages>> | undefined;
+    await act(async () => {
+      addResults = await result.current.addImages(
+        [
+          { imageDraft: draft1, file: testFile },
+          { imageDraft: draft2, file: testFile },
+        ],
+        { overwrite: true },
+      );
+    });
+
+    expect(addResults?.accepted).toEqual(["photo", "other"]);
+    expect(mockUpdateRecord).toHaveBeenCalledTimes(1);
+    expect(mockUpdateRecord).toHaveBeenCalledWith({
+      id: "photo",
+      ...draft1,
+      file: testFile,
+    });
+    expect(mockAddRecord).toHaveBeenCalledTimes(1);
+    expect(mockAddRecord).toHaveBeenCalledWith({
+      id: "other",
+      ...draft2,
+      file: testFile,
+    });
+  });
+
   it("getImage returns record when getByID resolves", async () => {
     const id = "lookup-id" as ImageId;
 
