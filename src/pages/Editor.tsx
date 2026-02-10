@@ -87,6 +87,10 @@ const noop = () => {};
  * - Add integration tests (which tool to use?).
  * - Add Storybook tests (to see how it works?).
  *
+ * ### Testing
+ *
+ * - Integration tests with Playwright or something like that.
+ *
  * ### Advanced functionality
  *
  * - Support external image sources.
