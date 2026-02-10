@@ -1,19 +1,11 @@
 import fs from "node:fs";
-import path from "node:path";
 import { test, expect } from "@playwright/test";
-
-const SAMPLE_IMAGE_PATH = path.join(process.cwd(), "e2e", "fixtures", "sample.png");
-
-function expectEditorWithControlsVisible(page: import("@playwright/test").Page) {
-  const focalPointEditor = page.locator('[data-component="FocalPointEditor"]');
-  const aspectRatioSlider = page.locator('[data-component="AspectRatioSlider"]');
-  const uploadButton = page.getByRole("button", { name: "Upload" });
-  return Promise.all([
-    expect(focalPointEditor).toBeVisible(),
-    expect(aspectRatioSlider).toBeVisible(),
-    expect(uploadButton).toBeVisible(),
-  ]);
-}
+import {
+  SAMPLE_IMAGE_PATH,
+  expectEditorWithControlsVisible,
+  expectLandingVisible,
+} from "./helpers";
+import { test as testWithFixtures } from "./fixtures";
 
 /**
  * Simulate a file drop. react-dropzone's onDrop runs only when the drop event targets
@@ -81,29 +73,12 @@ async function dragImageThenDropOutside(page: import("@playwright/test").Page) {
   );
 }
 
-async function disableIndexedDB(page: import("@playwright/test").Page) {
-  await page.addInitScript(() => {
-    try {
-      Object.defineProperty(window, "indexedDB", {
-        get: () => undefined,
-        configurable: true,
-        enumerable: true,
-      });
-    } catch {
-      // ignore if not configurable
-    }
-  });
-}
-
 test.describe("Drag-drop", () => {
   test("drop file on app then image uploaded and redirect to /edit", async ({
     page,
   }) => {
     await page.goto("/");
-
-    const landing = page.locator('[data-component="Landing"]');
-    await expect(landing).toBeVisible();
-    await expect(landing.getByRole("button", { name: "Upload" })).toBeVisible();
+    await expectLandingVisible(page);
 
     await dropImageFileOnPage(page);
 
@@ -111,28 +86,25 @@ test.describe("Drag-drop", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  test("IndexedDB disabled: drop file on app then image uploaded and no redirect", async ({
-    page,
-  }) => {
-    await disableIndexedDB(page);
-    await page.goto("/");
+  testWithFixtures(
+    "IndexedDB disabled: drop file on app then image uploaded and no redirect",
+    async ({ pageWithoutIndexedDB: page }) => {
+      await page.goto("/");
+      await expectLandingVisible(page);
 
-    const landing = page.locator('[data-component="Landing"]');
-    await expect(landing).toBeVisible();
+      await dropImageFileOnPage(page);
 
-    await dropImageFileOnPage(page);
-
-    await expect(page).toHaveURL("/");
-    await expectEditorWithControlsVisible(page);
-  });
+      await expect(page).toHaveURL("/");
+      await expectEditorWithControlsVisible(page);
+    },
+  );
 
   test("file dragged but dropped outside browser then app stays responsive and no redirect", async ({
     page,
   }) => {
     await page.goto("/");
-
     const landing = page.locator('[data-component="Landing"]');
-    await expect(landing).toBeVisible();
+    await expectLandingVisible(page);
 
     await dragImageThenDropOutside(page);
 
@@ -144,22 +116,21 @@ test.describe("Drag-drop", () => {
     await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
   });
 
-  test("IndexedDB disabled: file dragged but dropped outside then app stays responsive and no redirect", async ({
-    page,
-  }) => {
-    await disableIndexedDB(page);
-    await page.goto("/");
+  testWithFixtures(
+    "IndexedDB disabled: file dragged but dropped outside then app stays responsive and no redirect",
+    async ({ pageWithoutIndexedDB: page }) => {
+      await page.goto("/");
+      const landing = page.locator('[data-component="Landing"]');
+      await expectLandingVisible(page);
 
-    const landing = page.locator('[data-component="Landing"]');
-    await expect(landing).toBeVisible();
+      await dragImageThenDropOutside(page);
 
-    await dragImageThenDropOutside(page);
-
-    await expect(page).toHaveURL("/");
-    await expect(landing).toBeVisible();
-    const uploadButton = landing.getByRole("button", { name: "Upload" });
-    await expect(uploadButton).toBeVisible();
-    await expect(uploadButton).toBeEnabled();
-    await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
-  });
+      await expect(page).toHaveURL("/");
+      await expect(landing).toBeVisible();
+      const uploadButton = landing.getByRole("button", { name: "Upload" });
+      await expect(uploadButton).toBeVisible();
+      await expect(uploadButton).toBeEnabled();
+      await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
+    },
+  );
 });

@@ -74,6 +74,23 @@ The Generator uses `generator_setup_page`, runs each step with browser tools, th
 
 **Summary:** Natural language → **Planner** → `specs/*.md` → **Generator** → `e2e/*.spec.ts` → `yarn test:e2e`.
 
+## Shared helpers and fixtures
+
+E2E tests share logic via **helpers** and **fixtures** so we consistently test both “IndexedDB available” and “IndexedDB unavailable” without duplicating code.
+
+- **`e2e/helpers.ts`** — Shared helpers:
+  - `SAMPLE_IMAGE_PATH` — path to the test image
+  - `disableIndexedDB(page)` — disables IndexedDB for a page (call before any navigation)
+  - `disableIndexedDBOnContext(context)` — disables IndexedDB for a context (for use when creating contexts)
+  - `expectEditorWithControlsVisible(page)` — asserts editor + all controls are visible
+  - `expectLandingVisible(page)` — asserts Landing page and Upload button are visible
+
+- **`e2e/fixtures.ts`** — Extended test with a **IndexedDB-unavailable** scenario:
+  - Import `test as testWithFixtures` and `expect` from `./fixtures` (or keep `expect` from `@playwright/test`).
+  - Use the **`pageWithoutIndexedDB`** fixture for tests that must run with IndexedDB disabled. The fixture provides a page whose context already has IndexedDB disabled (no need to call `disableIndexedDB` or `addInitScript` before `goto`).
+
+**Pattern:** For “IndexedDB available” use the default `test` and `page`. For “IndexedDB unavailable” use `testWithFixtures` and request `pageWithoutIndexedDB`. Playwright isolates storage (including IndexedDB) per test, so the default `page` already has an empty DB.
+
 ## Commands
 
 | Command            | Description                  |
