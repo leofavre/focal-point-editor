@@ -35,7 +35,7 @@ type AddImagesIdOptions = {
    * used instead of generating one from the filename, and any existing record
    * with that id is overwritten.
    */
-  id: ImageId;
+  id?: ImageId;
 };
 
 type AddImageOptions = AddImagesOverwriteOptions | AddImagesIdOptions;

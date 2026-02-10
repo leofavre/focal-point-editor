@@ -53,9 +53,6 @@ export type UIState = {
 
 export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
 
-/**
- * @todo Implement "singleImage" and "multipleImages" persistence modes instead of "persistent".
- */
-export type UIPersistenceMode = "ephemeral" | "persistent";
+export type UIPersistenceMode = "ephemeral" | "singleImage" | "multipleImages";
 
 export type UIPageState = "landing" | "editing" | "pageNotFound" | "imageNotFound";

@@ -47,12 +47,13 @@ const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 
 const INTERACTION_DEBOUNCE_MS = 500;
 const MINIMAL_LOADING_DURATION_MS = 250;
+const SINGLE_IMAGE_MODE_ID = "edit" as ImageId;
 
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
  */
 const PERSISTENCE_MODE: UIPersistenceMode =
-  typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
+  typeof window.indexedDB !== "undefined" ? "singleImage" : "ephemeral";
 
 const noop = () => {};
 
@@ -74,7 +75,6 @@ const noop = () => {};
  *
  * ### Basic functionality
  *
- * - Implement "singleImage" and "multipleImages" persistence modes instead of "persistent".
  * - Handle errors with toaster.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by not relying on IndexedDB?
  * - Fix aspect ratio being reset on refresh. But on refresh only.
@@ -104,7 +104,7 @@ export default function Editor() {
    * @todo Handle onRefreshImagesError.
    */
   const { images, addImage, updateImage } = usePersistedImages({
-    enabled: persistenceMode === "persistent",
+    enabled: persistenceMode !== "ephemeral",
     onRefreshImagesError: noop,
   });
 
@@ -191,7 +191,14 @@ export default function Editor() {
         return;
       }
 
-      const addResult = await addImage({ imageDraft, file }, { id: "edit" as ImageId });
+      /**
+       * When in single image mode, the image is added with the explicit id "edit".
+       * This will cause the database to store a single image and the editor url will be "/edit".
+       */
+      const addResult = await addImage(
+        { imageDraft, file },
+        { id: persistenceMode === "singleImage" ? SINGLE_IMAGE_MODE_ID : undefined },
+      );
 
       if (addResult.accepted != null) {
         console.log("saved image with id", addResult.accepted);
@@ -351,6 +358,7 @@ export default function Editor() {
       if (imageCount === 0) {
         console.log("database is empty");
         safeSetImage(null);
+        setImageNotFoundConfirmed(true);
         return;
       }
 
@@ -430,7 +438,9 @@ export default function Editor() {
         ) : pageState === "pageNotFound" ? (
           <Message>Page not found...</Message>
         ) : pageState === "imageNotFound" ? (
-          <Message>Image not found...</Message>
+          <Message>
+            {imageCount === 0 ? "Start by uploading an image..." : "Image not found..."}
+          </Message>
         ) : (
           <Message>Critical error...</Message>
         )}
