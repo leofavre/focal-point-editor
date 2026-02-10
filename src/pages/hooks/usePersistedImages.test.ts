@@ -242,6 +242,102 @@ describe("usePersistedImages", () => {
     });
   });
 
+  it("addImage with options.id uses explicit id instead of generating from filename", async () => {
+    mockGetAllRecords.mockResolvedValue([]);
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toEqual([]);
+    });
+
+    const imageDraft = createMockImageDraftState({ name: "any-name.png" });
+    const explicitId = "my-custom-id" as ImageId;
+    let addResult: Awaited<ReturnType<typeof result.current.addImage>> | undefined;
+    await act(async () => {
+      addResult = await result.current.addImage(
+        { imageDraft, file: testFile },
+        { id: explicitId },
+      );
+    });
+
+    expect(addResult?.accepted).toBe("my-custom-id");
+    expect(mockAddRecord).toHaveBeenCalledWith({
+      id: "my-custom-id",
+      ...imageDraft,
+      file: testFile,
+    });
+  });
+
+  it("addImage with options.id overwrites existing record", async () => {
+    const existingRecord = createMockImageRecord({
+      id: "custom-id",
+      ...createMockImageDraftState({ name: "old.png" }),
+      file: testFile,
+    });
+    mockGetAllRecords.mockResolvedValue([existingRecord]);
+    mockGetRecord.mockResolvedValue(existingRecord);
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toHaveLength(1);
+    });
+
+    const imageDraft = createMockImageDraftState({
+      name: "new.png",
+      breakpoints: [{ objectPosition: "100% 0%" }],
+    });
+    const explicitId = "custom-id" as ImageId;
+    let addResult: Awaited<ReturnType<typeof result.current.addImage>> | undefined;
+    await act(async () => {
+      addResult = await result.current.addImage(
+        { imageDraft, file: testFile },
+        { id: explicitId },
+      );
+    });
+
+    expect(addResult?.accepted).toBe("custom-id");
+    expect(mockUpdateRecord).toHaveBeenCalledWith({
+      id: "custom-id",
+      ...imageDraft,
+      file: testFile,
+    });
+    expect(mockAddRecord).not.toHaveBeenCalled();
+  });
+
+  it("addImages generates ids for all items and adds records", async () => {
+    mockGetAllRecords.mockResolvedValue([]);
+
+    const { result } = renderHook(() => usePersistedImages());
+
+    await waitFor(() => {
+      expect(result.current.images).toEqual([]);
+    });
+
+    const draft1 = createMockImageDraftState({ name: "first.png" });
+    const draft2 = createMockImageDraftState({ name: "second.png" });
+    let addResults: Awaited<ReturnType<typeof result.current.addImages>> | undefined;
+    await act(async () => {
+      addResults = await result.current.addImages([
+        { imageDraft: draft1, file: testFile },
+        { imageDraft: draft2, file: testFile },
+      ]);
+    });
+
+    expect(addResults?.accepted).toEqual(["first", "second"]);
+    expect(mockAddRecord).toHaveBeenCalledWith({
+      id: "first",
+      ...draft1,
+      file: testFile,
+    });
+    expect(mockAddRecord).toHaveBeenCalledWith({
+      id: "second",
+      ...draft2,
+      file: testFile,
+    });
+  });
+
   it("getImage returns record when getByID resolves", async () => {
     const id = "lookup-id" as ImageId;
 

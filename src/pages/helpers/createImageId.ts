@@ -11,9 +11,11 @@ import type { ImageId } from "../../types";
  * (e.g. when adding multiple images in a batch) produce unique IDs.
  *
  * When `usedIds` is omitted: returns the base ID only (no collision avoidance).
- * Use this when you want to intentionally overwrite an existing record with the same id.
+ * Use this when you want to intentionally overwrite an existing record with
+ * the same id.
  *
- * @returns An ID (e.g. "my-photo", or "my-photo-2" when usedIds is passed and "my-photo" is taken)
+ * @returns An ID (e.g. "my-photo", or "my-photo-2" when usedIds is passed and
+ * "my-photo" is taken)
  */
 export function createImageId(name: string, usedIds?: Set<string>): ImageId {
   const baseName = name.split(/[/\\]/).pop() ?? "";

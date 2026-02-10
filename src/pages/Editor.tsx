@@ -191,7 +191,7 @@ export default function Editor() {
         return;
       }
 
-      const addResult = await addImage({ imageDraft, file });
+      const addResult = await addImage({ imageDraft, file }, { id: "edit" as ImageId });
 
       if (addResult.accepted != null) {
         console.log("saved image with id", addResult.accepted);
