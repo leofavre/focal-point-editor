@@ -40,7 +40,6 @@ export function ToggleButton({
       ref={ref}
       as="button"
       type={type}
-      title={label}
       aria-pressed={toggled}
       onClick={handleClick}
       onFocus={onFocus}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
@@ -24,6 +24,7 @@ import { EditorGrid } from "./Editor.styled";
 import { createImageStateFromDraftAndFile } from "./helpers/createImageStateFromDraftAndFile";
 import { createImageStateFromRecord } from "./helpers/createImageStateFromRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
+import { usePageState } from "./hooks/usePageState";
 import { usePersistedImages } from "./hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./hooks/usePersistedUIRecord";
 import { Landing } from "./Landing/Landing";
@@ -41,8 +42,7 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
  */
-const PERSISTENCE_MODE: UIPersistenceMode =
-  typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
+const PERSISTENCE_MODE: UIPersistenceMode = "persistent"; // typeof window.indexedDB !== "undefined" ? "persistent" : "ephemeral";
 
 const noop = () => {};
 
@@ -363,21 +363,21 @@ export default function Editor() {
     [imageId, imageCount, persistenceMode, setAspectRatio],
   );
 
-  const isOnLandingPage = imageId == null || (persistenceMode === "ephemeral" && image == null);
+  const pageState = usePageState({ persistenceMode, imageId, image });
 
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
       <EditorGrid>
-        {isOnLandingPage ? (
+        {pageState === "landing" ? (
           <Landing
             uploaderButtonRef={uploaderButtonRef}
             onImageUpload={handleImageUpload}
             onImageUploadError={noop}
           />
-        ) : image != null ? (
+        ) : pageState === "editing" && image != null ? (
           <>
-            {aspectRatio != null && image.naturalAspectRatio != null && (
+            {aspectRatio != null && (
               <FocalPointEditor
                 imageUrl={image.url}
                 aspectRatio={aspectRatio}
@@ -400,16 +400,20 @@ export default function Editor() {
               />
             </Dialog>
           </>
-        ) : imageNotFound ? (
+        ) : pageState === "pageNotFound" ? (
           <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
-            Image not found
+            Page not found...
+          </h3>
+        ) : pageState === "imageNotFound" ? (
+          <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
+            Image not found...
           </h3>
         ) : (
           <h3 style={{ gridColumn: "1 / -1", gridRow: "1 / -2", margin: "auto" }}>
-            Loading image...
+            Critical error...
           </h3>
         )}
-        {isOnLandingPage ? null : (
+        {pageState === "editing" || pageState === "imageNotFound" ? (
           <>
             {showFocalPoint != null && (
               <ToggleButton
@@ -456,7 +460,7 @@ export default function Editor() {
               onImageUploadError={noop}
             />
           </>
-        )}
+        ) : null}
       </EditorGrid>
     </>
   );
