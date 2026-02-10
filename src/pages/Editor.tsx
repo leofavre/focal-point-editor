@@ -31,6 +31,8 @@ const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const INTERACTION_DEBOUNCE_MS = 500;
 const IMAGE_LOAD_DEBOUNCE_MS = 50;
 
+const noop = () => {};
+
 /**
  * @todo
  *
@@ -51,6 +53,8 @@ const IMAGE_LOAD_DEBOUNCE_MS = 50;
  * - Fix loading state saying "not found...".
  * - Fix image not resetting to original aspect ratio after upload.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by no relying on IndexedDB?
+ * - Fix bug where uploading a new image show the aspect ratio from the previous image before changing it.
+ * - Fix bug where using the browser arrow to go back to the landing page does not work.
  * - Remove all deprecated and dead code.
  * - For study, use an opaque type for the image id.
  *
@@ -378,12 +382,19 @@ export default function Editor() {
     [imageId, imageCount],
   );
 
+  /**
+   * @todo Handle all onImageUploadErrors.
+   */
   if (!imageId && !image) {
     return (
       <>
-        <FullScreenDropZone onImageUpload={handleImageUpload} />
+        <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
         <EditorGrid>
-          <Landing uploaderButtonRef={uploaderButtonRef} onImageUpload={handleImageUpload} />
+          <Landing
+            uploaderButtonRef={uploaderButtonRef}
+            onImageUpload={handleImageUpload}
+            onImageUploadError={noop}
+          />
         </EditorGrid>
       </>
     );
@@ -391,7 +402,7 @@ export default function Editor() {
 
   return (
     <>
-      <FullScreenDropZone onImageUpload={handleImageUpload} />
+      <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
       <EditorGrid>
         {showFocalPoint != null && (
           <ToggleButton
@@ -461,7 +472,11 @@ export default function Editor() {
             icon={<IconCode />}
           />
         )}
-        <ImageUploaderButton ref={uploaderButtonRef} onImageUpload={handleImageUpload} />
+        <ImageUploaderButton
+          ref={uploaderButtonRef}
+          onImageUpload={handleImageUpload}
+          onImageUploadError={noop}
+        />
       </EditorGrid>
     </>
   );

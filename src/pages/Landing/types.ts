@@ -1,8 +1,10 @@
 import type { Ref } from "react";
-import type { ImageDraftStateAndFile } from "../../types";
+import type { Simplify } from "type-fest";
+import type { SingleImageUploaderProps } from "../../components/ImageUploader/types";
 
-export type LandingProps = {
-  ref?: Ref<HTMLDivElement>;
-  uploaderButtonRef?: Ref<HTMLButtonElement>;
-  onImageUpload: (draftAndFile: ImageDraftStateAndFile | undefined) => void;
-};
+export type LandingProps = Simplify<
+  {
+    ref?: Ref<HTMLDivElement>;
+    uploaderButtonRef?: Ref<HTMLButtonElement>;
+  } & Pick<SingleImageUploaderProps, "onImageUpload" | "onImageUploadError">
+>;
