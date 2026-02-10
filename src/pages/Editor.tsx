@@ -77,7 +77,6 @@ const noop = () => {};
  *
  * - Handle errors with toaster.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by not relying on IndexedDB?
- * - Fix aspect ratio being reset on refresh. But on refresh only.
  * - Fix weird shadow in buttons.
  * - Remove all deprecated and dead code.
  *
@@ -330,6 +329,28 @@ export default function Editor() {
     [imageId, currentObjectPosition, updateImage],
   );
 
+  /**
+   * Persists the current aspect ratio to the image record when the user changes the slider,
+   * so it can be restored when reloading the same image.
+   */
+  useDebouncedEffect(
+    () => {
+      if (imageId == null || aspectRatio == null || persistenceMode === "ephemeral") return;
+
+      updateImage(imageId, { lastKnownAspectRatio: aspectRatio }).then((result) => {
+        if (result.rejected != null) {
+          toast.error(`Error saving aspect ratio to database: ${String(result.rejected.reason)}`);
+          return;
+        }
+        if (result.accepted != null) {
+          console.log("updated image", imageId, "with lastKnownAspectRatio", aspectRatio);
+        }
+      });
+    },
+    { timeout: INTERACTION_DEBOUNCE_MS },
+    [imageId, aspectRatio, persistenceMode, updateImage],
+  );
+
   const imageCount = images?.length;
 
   const stableImageRecordGetter = useEffectEvent((imageId: ImageId) => {
@@ -381,7 +402,11 @@ export default function Editor() {
 
       const nextImageState = result.accepted;
       safeSetImage(nextImageState);
-      setAspectRatio(nextImageState.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
+      setAspectRatio(
+        imageRecord.lastKnownAspectRatio ??
+          nextImageState.naturalAspectRatio ??
+          DEFAULT_ASPECT_RATIO,
+      );
       console.log("loaded image from record", imageRecord);
     }
 

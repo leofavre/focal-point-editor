@@ -11,7 +11,7 @@ export type Breakpoint = {
 };
 
 export type AdvancedBreakpoint = {
-  aspectRatio: number;
+  contentQuery: number;
   objectPosition: ObjectPositionString;
 };
 
@@ -38,6 +38,7 @@ export type ImageRecord = Simplify<
   ImageDraftState & {
     id: ImageId;
     file: Blob;
+    lastKnownAspectRatio?: number;
   }
 >;
 
