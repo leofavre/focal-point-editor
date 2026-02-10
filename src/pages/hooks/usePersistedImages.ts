@@ -1,5 +1,6 @@
 import { isEqual } from "lodash";
 import { useCallback, useEffect, useEffectEvent, useState } from "react";
+import toast from "react-hot-toast";
 import type { Err, Result } from "../../helpers/errorHandling";
 import { accept, processResults, reject } from "../../helpers/errorHandling";
 import { getIndexedDBService } from "../../services/indexedDBService";
@@ -125,7 +126,9 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
          * @todo Maybe show error to the user in the UI.
          */
         if (refreshResult.rejected != null) {
-          console.error("Error refreshing images after add:", refreshResult.rejected.reason);
+          toast.error(
+            `Error refreshing images after add: ${String(refreshResult.rejected.reason)}`,
+          );
         }
       }
       return processResults(results);
@@ -170,7 +173,9 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
          * @todo Maybe show error to the user in the UI.
          */
         if (refreshResult.rejected != null) {
-          console.error("Error refreshing images after update:", refreshResult.rejected.reason);
+          toast.error(
+            `Error refreshing images after update: ${String(refreshResult.rejected.reason)}`,
+          );
         }
         return accept(id);
       } catch {

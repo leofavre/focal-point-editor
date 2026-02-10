@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
@@ -65,6 +66,7 @@ const noop = () => {};
  * - Handle errors with toaster.
  * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by no relying on IndexedDB?
  * - Fix aspect ratio being reset on refresh. But on refresh only.
+ * - Fix weird shadow in buttons.
  * - Remove all deprecated and dead code.
  *
  * ### DevOps
@@ -155,7 +157,7 @@ export default function Editor() {
        * @todo Maybe show error to the user in the UI.
        */
       if (imageStateResult.rejected != null) {
-        console.error("Error creating image state:", imageStateResult.rejected.reason);
+        toast.error(`Error creating image state: ${String(imageStateResult.rejected.reason)}`);
         return;
       }
 
@@ -181,10 +183,7 @@ export default function Editor() {
   );
 
   const handleImageError = useCallback(() => {
-    /**
-     * @todo Maybe show error to the user in the UI.
-     */
-    console.error("Error uploading image");
+    toast.error("Error uploading image");
     safeSetImage(null);
   }, []);
 
@@ -290,7 +289,7 @@ export default function Editor() {
          * @todo Maybe show error to the user in the UI.
          */
         if (result.rejected != null) {
-          console.error("Error saving position to database:", result.rejected.reason);
+          toast.error(`Error saving position to database: ${String(result.rejected.reason)}`);
           return;
         }
         if (result.accepted != null) {
@@ -347,7 +346,7 @@ export default function Editor() {
 
         if (result.rejected != null) {
           safeSetImage(null);
-          console.error("Error loading saved image:", result.rejected.reason);
+          toast.error(`Error loading saved image: ${String(result.rejected.reason)}`);
           return;
         }
 
