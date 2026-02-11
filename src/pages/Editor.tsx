@@ -67,17 +67,19 @@ const noop = () => {};
  * - Think about animations and transitions.
  * - Improve Landing page.
  * - Improve Full Screen Drop Zone.
- * - Improve Focal Point draggable icon. Is there a way to make it invert the colors of the underlying image?
  * - Improve loading state.
  * - Improve Code snippet.
  * - Improve toasters.
- * - Slider: use polygon instead of SVG. Can I use it in the background-image?
- *
- * ### Basic functionality
- *
- * - Handle errors with toaster.
- * - Fix app not working in Incognito mode on mobile Chrome. Maybe fixed by not relying on IndexedDB?
  * - Fix weird shadow in buttons.
+ * - Mobile: fix text overflowing buttons on mobile Chrome. Maybe related to container queries?
+ * - Mobile: fix mobile functionality again. Review scroll event being activated sometimes.
+ * - Mobile: remove glow from iOS when clicking on buttons.
+ * - Mobile: always use &:active instead of &:hover for touch devices.
+*
+* ### Basic functionality
+*
+ * - Handle code splitting.
+ * - Handle errors with toaster.
  * - Remove all deprecated and dead code.
  *
  * ### DevOps
@@ -295,11 +297,9 @@ export default function Editor() {
 
   /**
    * Injects `overflow: hidden` to the body element when the editor is rendered.
-   *
-   * @todo Review this logic.
    */
   useEffect(() => {
-    document.body.style.overflow = image && imageId ? "hidden" : "auto";
+    document.body.style.overflow = pageState !== 'landing' ? "hidden" : "auto";
 
     return () => {
       document.body.style.overflow = "auto";
