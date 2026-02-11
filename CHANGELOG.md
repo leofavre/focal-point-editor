@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.6.1...focal-point-editor-v0.7.0) (2026-02-11)
+
+
+### Features
+
+* implement loading and page states and add e2e tests (that run locally) ([7944594](https://github.com/leofavre/focal-point-editor/commit/7944594ed8d8c7ec6d608c105b53389f48445a1a))
+* improve UI and make sure app works without a database ([3f2cb62](https://github.com/leofavre/focal-point-editor/commit/3f2cb62987ae7bd5175d78dbb10e79acce819f3a))
+
+
+### Bug Fixes
+
+* maybe CI? ([6e9ac93](https://github.com/leofavre/focal-point-editor/commit/6e9ac93e5211cf3536362a38c49f82e6002327dd))
+* maybe fix auto-release flow ([b2b67ba](https://github.com/leofavre/focal-point-editor/commit/b2b67bae28cc878345552a44c5c2d1a7dcfc66d6))
+* maybe fix CI ([65a2a3b](https://github.com/leofavre/focal-point-editor/commit/65a2a3b8f50b36ce1d5dd30a46776ffe1a0a39cc))
+* maybe fix CI (one day) ([3e69baf](https://github.com/leofavre/focal-point-editor/commit/3e69baf86f10795120969dc539f75f91b1f552dc))
+
 ## [0.6.1](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.6.0...focal-point-editor-v0.6.1) (2026-02-06)
 
 
