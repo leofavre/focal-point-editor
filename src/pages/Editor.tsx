@@ -78,7 +78,11 @@ const noop = () => {};
 *
 * ### Basic functionality
 *
- * - Handle code splitting.
+*  - Refactor storage services so that each method uses Result-based handling.
+*  - Create a third storage service based on React useState for the ephemeral mode.
+*  - Use the useState service as a fallback for the other services. This way the app will use the same routing for every mode.
+*  - With an unique routing logic, it will be possible to split Editor.tsx in two files and take advantage of BrowserRouter's routes '/' and '/:imageId'.
+*  - Then next step will be code splitting.
  * - Handle errors with toaster.
  * - Remove all deprecated and dead code.
  *

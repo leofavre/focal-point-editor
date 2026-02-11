@@ -5,6 +5,7 @@
  */
 import type { Result } from "../helpers/errorHandling";
 import { accept, reject } from "../helpers/errorHandling";
+import { isSessionStorageAvailable } from "../helpers/sessionStorageAvailability";
 import type { DatabaseKey, DatabaseService } from "./types";
 
 const SESSION_PREFIX = "fpe_session_";
@@ -26,7 +27,7 @@ function getRecordKeyFromValue<T>(value: T, key?: DatabaseKey): string {
  * Returns sessionStorage as a Result. Use this for Result-based handling.
  */
 export function getStorageResult(): Result<Storage, "SessionStorageUnavailable"> {
-  if (typeof window === "undefined" || !window.sessionStorage) {
+  if (!isSessionStorageAvailable()) {
     return reject({ reason: "SessionStorageUnavailable" });
   }
   return accept(window.sessionStorage);
