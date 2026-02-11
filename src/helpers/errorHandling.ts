@@ -1,4 +1,4 @@
-export type Err<R extends string> = { reason: R };
+export type Err<R extends string> = { reason: R; error?: unknown };
 
 export type Result<A, R extends string> =
   | { accepted: A; rejected?: never }
@@ -41,7 +41,7 @@ export async function resultFromPromise<A, R extends string>(
   try {
     const value = await promise;
     return accept(value);
-  } catch {
-    return reject({ reason });
+  } catch (error) {
+    return reject({ reason, error });
   }
 }
