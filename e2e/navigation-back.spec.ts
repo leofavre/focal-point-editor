@@ -7,7 +7,7 @@ import {
 import { test as testWithFixtures } from "./fixtures";
 
 test.describe("Navigation and back button", () => {
-  test("IndexedDB available: upload redirects to /edit, back returns to / with Landing visible", async ({
+  test("with IndexedDB: upload redirects to /edit, back returns to / with Landing visible", async ({
     page,
   }) => {
     await page.goto("/");
@@ -29,8 +29,8 @@ test.describe("Navigation and back button", () => {
     await expectLandingVisible(page);
   });
 
-  testWithFixtures.skip(
-    "IndexedDB not available: upload stays on /, back leaves app",
+  testWithFixtures(
+    "without IndexedDB: upload redirects to /edit, back returns to / with Landing visible",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("about:blank");
       await page.goto("/");
@@ -43,11 +43,13 @@ test.describe("Navigation and back button", () => {
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL(/\/$/);
+      await expect(page).toHaveURL(/\/edit$/);
       await expectEditorWithControlsVisible(page);
 
       await page.goBack();
-      await expect(page).toHaveURL("about:blank");
+
+      await expect(page).toHaveURL("/");
+      await expectLandingVisible(page);
     },
   );
 });

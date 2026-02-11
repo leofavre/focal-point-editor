@@ -74,7 +74,7 @@ async function dragImageThenDropOutside(page: import("@playwright/test").Page) {
 }
 
 test.describe("Drag-drop", () => {
-  test("drop file on app then image uploaded and redirect to /edit", async ({
+  test("with IndexedDB: drop file on app then image uploaded and redirect to /edit", async ({
     page,
   }) => {
     await page.goto("/");
@@ -86,20 +86,20 @@ test.describe("Drag-drop", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  testWithFixtures.skip(
-    "IndexedDB disabled: drop file on app then image uploaded and no redirect",
+  testWithFixtures(
+    "without IndexedDB: drop file on app then image uploaded and redirect to /edit",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);
 
       await dropImageFileOnPage(page);
 
-      await expect(page).toHaveURL("/");
+      await expect(page).toHaveURL(/\/edit$/);
       await expectEditorWithControlsVisible(page);
     },
   );
 
-  test("file dragged but dropped outside browser then app stays responsive and no redirect", async ({
+  test("with IndexedDB: file dragged but dropped outside browser then app stays responsive and no redirect", async ({
     page,
   }) => {
     await page.goto("/");
@@ -116,8 +116,8 @@ test.describe("Drag-drop", () => {
     await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
   });
 
-  testWithFixtures.skip(
-    "IndexedDB disabled: file dragged but dropped outside then app stays responsive and no redirect",
+  testWithFixtures(
+    "without IndexedDB: file dragged but dropped outside browser then app stays responsive and no redirect",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       const landing = page.locator('[data-component="Landing"]');

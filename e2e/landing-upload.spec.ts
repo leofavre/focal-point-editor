@@ -7,7 +7,7 @@ import {
 import { test as testWithFixtures } from "./fixtures";
 
 test.describe("Landing upload", () => {
-  test("image upload with IndexedDB available redirects to /edit and shows editor", async ({
+  test("with IndexedDB: image upload redirects to /edit and shows editor", async ({
     page,
   }) => {
     await page.goto("/");
@@ -24,8 +24,8 @@ test.describe("Landing upload", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  testWithFixtures.skip(
-    "image upload with IndexedDB disabled stays on / and shows editor",
+  testWithFixtures(
+    "without IndexedDB: image upload redirects to /edit and shows editor",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);
@@ -37,12 +37,12 @@ test.describe("Landing upload", () => {
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL("/");
+      await expect(page).toHaveURL(/\/edit$/);
       await expectEditorWithControlsVisible(page);
     },
   );
 
-  test("user starts upload via button then cancels file dialog – UI responsive and button not pressed", async ({
+  test("with IndexedDB: user starts upload via button then cancels file dialog – UI responsive and button not pressed", async ({
     page,
   }) => {
     await page.goto("/");
@@ -61,8 +61,8 @@ test.describe("Landing upload", () => {
     await expect(page.locator('[data-component="FocalPointEditor"]')).not.toBeVisible();
   });
 
-  testWithFixtures.skip(
-    "IndexedDB disabled: user starts upload via button then cancels – UI responsive and button not pressed",
+  testWithFixtures(
+    "without IndexedDB: user starts upload via button then cancels file dialog – UI responsive and button not pressed",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       const landing = page.locator('[data-component="Landing"]');
