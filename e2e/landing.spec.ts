@@ -12,7 +12,7 @@ test.describe("Landing page", () => {
     await expect(landing.locator('[data-component="HowToUse"]')).toBeVisible();
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "shows project description and upload button when visiting / with IndexedDB disabled",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");

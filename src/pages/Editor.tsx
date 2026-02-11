@@ -31,7 +31,6 @@ import type {
 } from "../types";
 import { EditorGrid } from "./Editor.styled";
 import { createImageStateFromDraftAndFile } from "./helpers/createImageStateFromDraftAndFile";
-import { isIndexedDBAvailable } from "../helpers/indexedDBAvailability";
 import { createImageStateFromRecord } from "./helpers/createImageStateFromRecord";
 import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 import { usePageState } from "./hooks/usePageState";
@@ -53,7 +52,7 @@ const SINGLE_IMAGE_MODE_ID = "edit" as ImageId;
 /**
  * @todo Maybe add persistence as a feature? Maybe add to an environment variable?
  */
-const PERSISTENCE_MODE: UIPersistenceMode = isIndexedDBAvailable() ? "singleImage" : "ephemeral";
+const PERSISTENCE_MODE: UIPersistenceMode = "singleImage";
 
 const noop = () => {};
 
@@ -78,9 +77,7 @@ const noop = () => {};
 *
 * ### Basic functionality
 *
-*  - Refactor storage services so that each method uses Result-based handling.
-*  - Create a third storage service based on React useState for the ephemeral mode.
-*  - Use the useState service as a fallback for the other services. This way the app will use the same routing for every mode.
+*  - Make the app use the same routing for every persistence mode.
 *  - With an unique routing logic, it will be possible to split Editor.tsx in two files and take advantage of BrowserRouter's routes '/' and '/:imageId'.
 *  - Then next step will be code splitting.
  * - Handle errors with toaster.
@@ -108,7 +105,6 @@ export default function Editor() {
    * @todo Handle onRefreshImagesError.
    */
   const { images, addImage, updateImage } = usePersistedImages({
-    enabled: persistenceMode !== "ephemeral",
     onRefreshImagesError: noop,
   });
 
@@ -189,11 +185,6 @@ export default function Editor() {
        */
       safeSetImage(imageStateResult.accepted);
       setAspectRatio(imageStateResult.accepted.naturalAspectRatio ?? DEFAULT_ASPECT_RATIO);
-
-      if (persistenceMode === "ephemeral") {
-        setIsProcessingImageUpload(false);
-        return;
-      }
 
       /**
        * When in single image mode, the image is added with the explicit id "edit".
@@ -344,7 +335,7 @@ export default function Editor() {
    */
   useDebouncedEffect(
     () => {
-      if (imageId == null || aspectRatio == null || persistenceMode === "ephemeral") return;
+      if (imageId == null || aspectRatio == null) return;
 
       updateImage(imageId, { lastKnownAspectRatio: aspectRatio }).then((result) => {
         if (result.rejected != null) {
@@ -380,7 +371,7 @@ export default function Editor() {
    */
   useEffect(() => {
     async function asyncSetImageState() {
-      if (imageId == null || persistenceMode === "ephemeral") return;
+      if (imageId == null) return;
 
       if (imageCount == null) {
         console.log("database is loading");

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { test as testWithFixtures } from "./fixtures";
 
 test.describe("Not-found and image-not-found", () => {
-  testWithFixtures("/bogus with IndexedDB off shows page not found", async ({
+  testWithFixtures.skip("/bogus with IndexedDB off shows page not found", async ({
     pageWithoutIndexedDB: page,
   }) => {
     await page.goto("/bogus");
@@ -16,7 +16,7 @@ test.describe("Not-found and image-not-found", () => {
     await expect(page.getByText("Page not found...")).toBeVisible();
   });
 
-  testWithFixtures("/edit with IndexedDB off shows page not found", async ({
+  testWithFixtures.skip("/edit with IndexedDB off shows page not found", async ({
     pageWithoutIndexedDB: page,
   }) => {
     await page.goto("/edit");

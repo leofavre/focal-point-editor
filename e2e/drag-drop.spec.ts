@@ -86,7 +86,7 @@ test.describe("Drag-drop", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "IndexedDB disabled: drop file on app then image uploaded and no redirect",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
@@ -116,7 +116,7 @@ test.describe("Drag-drop", () => {
     await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "IndexedDB disabled: file dragged but dropped outside then app stays responsive and no redirect",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");

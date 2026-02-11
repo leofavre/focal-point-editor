@@ -29,7 +29,7 @@ test.describe("Navigation and back button", () => {
     await expectLandingVisible(page);
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "IndexedDB not available: upload stays on /, back leaves app",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("about:blank");

@@ -54,6 +54,6 @@ export type UIState = {
 
 export type UIRecord<T extends keyof UIState> = { id: T; value: UIState[T] };
 
-export type UIPersistenceMode = "ephemeral" | "singleImage" | "multipleImages";
+export type UIPersistenceMode = "singleImage" | "multipleImages";
 
 export type UIPageState = "landing" | "editing" | "pageNotFound" | "imageNotFound";

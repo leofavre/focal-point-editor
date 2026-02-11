@@ -24,7 +24,7 @@ test.describe("Landing upload", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "image upload with IndexedDB disabled stays on / and shows editor",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
@@ -61,7 +61,7 @@ test.describe("Landing upload", () => {
     await expect(page.locator('[data-component="FocalPointEditor"]')).not.toBeVisible();
   });
 
-  testWithFixtures(
+  testWithFixtures.skip(
     "IndexedDB disabled: user starts upload via button then cancels – UI responsive and button not pressed",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
