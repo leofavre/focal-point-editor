@@ -79,5 +79,5 @@ jobs:
       - name: Run release please
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTO_RELEASE_TOKEN }}
           config-file: .release-please-config.json
