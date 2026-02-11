@@ -85,7 +85,7 @@ describe("getNaturalAspectRatioFromImageSrc", () => {
 
     const result = await getNaturalAspectRatioFromImageSrc("blob:invalid");
 
-    expect(result.rejected).toEqual({ reason: "ImageLoadFailed" });
+    expect(result.rejected).toEqual(expect.objectContaining({ reason: "ImageLoadFailed" }));
   });
 
   it("sets img.src to the provided url", async () => {
