@@ -61,31 +61,6 @@ export function FocalPoint({ onObjectPositionChange, ...rest }: FocalPointProps)
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
       {...rest}
-    >
-      <FocalPointIcon />
-      <FocalPointIcon />
-    </Wrapper>
-  );
-}
-
-function FocalPointIcon() {
-  return (
-    /** biome-ignore lint/a11y/noSvgWithoutTitle: Image hidden from screen readers */
-    <svg viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-      <g fill="none" stroke="currentColor">
-        <circle
-          cx="50"
-          cy="50"
-          r="38"
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <line x1="50" y1="6" x2="50" y2="26" strokeWidth="6" strokeLinecap="round" />
-        <line x1="50" y1="74" x2="50" y2="94" strokeWidth="6" strokeLinecap="round" />
-        <line x1="6" y1="50" x2="26" y2="50" strokeWidth="6" strokeLinecap="round" />
-        <line x1="74" y1="50" x2="94" y2="50" strokeWidth="6" strokeLinecap="round" />
-      </g>
-    </svg>
+    />
   );
 }

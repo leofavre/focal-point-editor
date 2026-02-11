@@ -1,35 +1,57 @@
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
+  --pointer-size: 4rem;
+
   position: absolute;
   top: 0;
   left: 0;
-  width: 2rem;
-  height: 2rem;
-  margin: -1rem 0 0 -1rem;
+  width: var(--pointer-size);
+  height: var(--pointer-size);
+  margin: calc(var(--pointer-size) * -0.5) 0 0 calc(var(--pointer-size) * -0.5);
   pointer-events: auto;
   touch-action: none;
   user-select: none;
   transition: opacity 0.25s ease;
   z-index: 2;
   cursor: grab;
+  z-index: 10;
 
-  svg {
+  &::before,
+  &::after {
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 2rem;
-    height: 2rem;
+    background: gray;
     pointer-events: none;
   }
 
-  svg:nth-of-type(1) {
-    transform: translate(-1px, -1px);
-    opacity: 0.65;
-    color: #fff;
+  &::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    margin-top: -0.5px;
   }
 
-  svg:nth-of-type(2) {
-    color: #111827;
+  &::after {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    margin-left: -0.5px;
+  }
+
+  @supports (backdrop-filter: invert(100%)) and (mask-image: url("/pointer-mask.svg")) {
+    backdrop-filter: invert(100%);
+    background-color: transparent;
+    mask-image: url("/pointer-mask.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+
+    &::before,
+    &::after {
+      display: none;
+    }
   }
 `;
