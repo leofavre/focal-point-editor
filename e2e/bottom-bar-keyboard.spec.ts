@@ -7,11 +7,12 @@ import {
 
 /**
  * E2E tests for bottom bar keyboard navigation.
- * Spec: e2e/specs/bottom-bar-keyboard.md
+ * Plan: specs/bottom-bar-keyboard.plan.md
  *
  * When the bottom bar is visible (after uploading an image), Tab key must move
  * focus between the controls in visual order: Focal point → Overflow → Aspect
- * ratio slider → Code → Upload.
+ * ratio slider → Code → Upload. When the slider is focused, Arrow Left/Right
+ * move between aspect ratios.
  */
 test.describe("Bottom bar keyboard navigation", () => {
   test.beforeEach(async ({ page }) => {
@@ -79,5 +80,55 @@ test.describe("Bottom bar keyboard navigation", () => {
 
     await page.keyboard.press("Shift+Tab");
     await expect(focalPoint).toBeFocused();
+  });
+
+  test("when slider is focused, Arrow Left/Right navigate between aspect ratios", async ({
+    page,
+  }) => {
+    const aspectRatioSlider = page.getByRole("slider");
+    await aspectRatioSlider.focus();
+    await expect(aspectRatioSlider).toBeFocused();
+
+    const getSliderValue = () => aspectRatioSlider.inputValue();
+
+    let prev = await getSliderValue();
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press("ArrowLeft");
+      const v = await getSliderValue();
+      if (v === prev) break;
+      prev = v;
+    }
+    const valueAfterGoingLeft = await getSliderValue();
+
+    await page.keyboard.press("ArrowRight");
+    const valueAfterRight = await getSliderValue();
+    expect(valueAfterRight).not.toBe(valueAfterGoingLeft);
+
+    await page.keyboard.press("ArrowLeft");
+    const valueAfterLeft = await getSliderValue();
+    expect(valueAfterLeft).not.toBe(valueAfterRight);
+  });
+
+  test("when slider is focused, Arrow Right to right end then Arrow Left navigates back", async ({
+    page,
+  }) => {
+    const aspectRatioSlider = page.getByRole("slider");
+    await aspectRatioSlider.focus();
+    await expect(aspectRatioSlider).toBeFocused();
+
+    const getSliderValue = () => aspectRatioSlider.inputValue();
+
+    let prev = await getSliderValue();
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press("ArrowRight");
+      const v = await getSliderValue();
+      if (v === prev) break;
+      prev = v;
+    }
+    const valueAfterGoingRight = await getSliderValue();
+
+    await page.keyboard.press("ArrowLeft");
+    const valueAfterLeft = await getSliderValue();
+    expect(valueAfterLeft).not.toBe(valueAfterGoingRight);
   });
 });

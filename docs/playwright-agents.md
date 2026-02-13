@@ -2,6 +2,8 @@
 
 This project uses [Playwright Test Agents](https://playwright.dev/docs/test-agents): **Planner**, **Generator**, and **Healer**. They work with an AI assistant (e.g. in Cursor/VS Code) to create and maintain E2E tests from natural language.
 
+> **Memo:** Always use Playwright dedicated models (Planner, Generator, Healer) when planning, adding, and reviewing e2e / integration tests.
+
 ## Setup
 
 - **Playwright** and browsers: run `yarn playwright install` (or `npx playwright install`) if you see an "Executable doesn't exist" error.
