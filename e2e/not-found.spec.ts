@@ -1,35 +1,36 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { test as testWithFixtures } from "./fixtures";
 
 test.describe("Not-found and image-not-found", () => {
-  testWithFixtures("/bogus with IndexedDB off shows page not found", async ({
-    pageWithoutIndexedDB: page,
-  }) => {
+  test("with IndexedDB: /bogus shows page not found", async ({ page }) => {
     await page.goto("/bogus");
     await expect(page.getByText("Page not found...")).toBeVisible();
   });
 
-  test("/bogus with IndexedDB on (empty DB) shows page not found", async ({
-    page,
-  }) => {
-    await page.goto("/bogus");
-    await expect(page.getByText("Page not found...")).toBeVisible();
-  });
+  testWithFixtures(
+    "without IndexedDB: /bogus shows page not found",
+    async ({ pageWithoutIndexedDB: page }) => {
+      await page.goto("/bogus");
+      await expect(page.getByText("Page not found...")).toBeVisible();
+    },
+  );
 
-  testWithFixtures("/edit with IndexedDB off shows page not found", async ({
-    pageWithoutIndexedDB: page,
-  }) => {
-    await page.goto("/edit");
-    await expect(page.getByText("Page not found...")).toBeVisible();
-  });
-
-  test("/edit with IndexedDB on (empty DB) shows image not found", async ({
-    page,
-  }) => {
+  test("with IndexedDB: /edit with empty DB shows image not found", async ({ page }) => {
     await page.goto("/edit");
     await expect(
       page.getByText(/Start by uploading an image\.\.\.|Image not found\.\.\./),
     ).toBeVisible();
     await expect(page.getByText("Page not found...")).not.toBeVisible();
   });
+
+  testWithFixtures(
+    "without IndexedDB: /edit with empty DB shows image not found",
+    async ({ pageWithoutIndexedDB: page }) => {
+      await page.goto("/edit");
+      await expect(
+        page.getByText(/Start by uploading an image\.\.\.|Image not found\.\.\./),
+      ).toBeVisible();
+      await expect(page.getByText("Page not found...")).not.toBeVisible();
+    },
+  );
 });

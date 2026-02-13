@@ -6,5 +6,5 @@ export const Overlay = styled.div`
   z-index: 9999;
   pointer-events: none;
   background-color: rgb(from var(--color-neutral) r g b / 10%);
-  transition: background-color 0.15s ease;
+  transition: background-color 66ms ease;
 `;

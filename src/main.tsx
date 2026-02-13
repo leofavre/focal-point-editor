@@ -3,14 +3,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-const rootElement = document.getElementById("app");
+if (typeof document !== "undefined") {
+  const rootElement = document.getElementById("app");
+  registerSW({ immediate: true });
 
-registerSW({ immediate: true });
-
-if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
+  if (rootElement) {
+    ReactDOM.createRoot(rootElement).render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>,
+    );
+  }
 }

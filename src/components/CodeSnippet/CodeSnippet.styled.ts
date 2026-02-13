@@ -24,6 +24,7 @@ export const TabButton = styled.button`
   border-radius: 0.375rem 0.375rem 0 0;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 
   &[aria-selected="true"] {
     color: #e5e7eb;
@@ -31,9 +32,17 @@ export const TabButton = styled.button`
     border: 1px solid #111827;
   }
 
-  &:hover:not(:disabled) {
-    color: #e5e7eb;
-    background-color: #111827;
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: #e5e7eb;
+      background-color: #111827;
+    }
+  }
+  @media (hover: none) {
+    &:active:not(:disabled) {
+      color: #e5e7eb;
+      background-color: #111827;
+    }
   }
 
   &:focus-visible {
@@ -83,12 +92,22 @@ export const CopyButton = styled.button`
   border-radius: 0.375rem;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 
-  &:hover {
-    color: #e5e7eb;
-    background-color: #374151;
-    border-color: #4b5563;
+  @media (hover: hover) {
+    &:hover {
+      color: #e5e7eb;
+      background-color: #374151;
+      border-color: #4b5563;
+    }
+  }
+  @media (hover: none) {
+    &:active {
+      color: #e5e7eb;
+      background-color: #374151;
+      border-color: #4b5563;
+    }
   }
 
   &:focus-visible {

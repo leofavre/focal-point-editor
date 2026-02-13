@@ -2,9 +2,11 @@
 
 ## Application Overview
 
-Focal Point Editor uses react-dropzone; full-screen overlay when dragging. Drop image on page → upload (IndexedDB: redirect to /edit; no IndexedDB: stay on /). Drop outside → no redirect, app responsive, no persistent overlay.
+Focal Point Editor uses react-dropzone; full-screen overlay when dragging. Drop image on page → upload and redirect to /edit (same behavior whether IndexedDB is available or not). Drop outside → no redirect, app responsive, no persistent overlay.
 
 ## Test Scenarios
+
+Each scenario is run **twice**: once with IndexedDB available, once with IndexedDB disabled. Expectations are identical in both runs.
 
 ### 1. Drag-drop
 
@@ -14,7 +16,7 @@ Focal Point Editor uses react-dropzone; full-screen overlay when dragging. Drop 
 
 **File:** `e2e/drag-drop.spec.ts`
 
-**Steps:**
+**Steps (same with or without IndexedDB):**
   1. Visit root path '/'
     - expect: Landing visible
   2. Simulate file drop (dispatchEvent dragenter, dragover, drop) with test image
@@ -22,40 +24,14 @@ Focal Point Editor uses react-dropzone; full-screen overlay when dragging. Drop 
     - expect: App redirects to /edit
     - expect: Editor view visible
 
-#### 1.2. IndexedDB disabled: drop file on app then image uploaded and no redirect
+#### 1.2. File dragged but dropped outside browser then app stays responsive and no redirect
 
 **File:** `e2e/drag-drop.spec.ts`
 
-**Steps:**
-  1. Disable IndexedDB via addInitScript
-  2. Visit root path '/'
-    - expect: Landing visible
-  3. Simulate file drop on page
-    - expect: Image uploaded
-    - expect: URL remains /
-    - expect: Editor view visible
-
-#### 1.3. File dragged but dropped outside browser then app stays responsive and no redirect
-
-**File:** `e2e/drag-drop.spec.ts`
-
-**Steps:**
+**Steps (same with or without IndexedDB):**
   1. Visit root path '/'
     - expect: Landing visible
   2. Dispatch dragenter, dragover, dragleave (no drop)
     - expect: URL remains /
     - expect: No persistent overlay
     - expect: Upload button visible and interactive
-
-#### 1.4. IndexedDB disabled: file dragged but dropped outside then app stays responsive and no redirect
-
-**File:** `e2e/drag-drop.spec.ts`
-
-**Steps:**
-  1. Disable IndexedDB via addInitScript
-  2. Visit root path '/'
-    - expect: Landing visible
-  3. Drag then drop outside (dragleave, no drop)
-    - expect: No redirect
-    - expect: App responsive
-    - expect: Landing UI visible and interactive

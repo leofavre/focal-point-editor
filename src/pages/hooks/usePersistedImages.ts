@@ -3,22 +3,17 @@ import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import toast from "react-hot-toast";
 import type { Err, Result } from "../../helpers/errorHandling";
 import { accept, processResults, reject } from "../../helpers/errorHandling";
+import { isIndexedDBAvailable } from "../../helpers/indexedDBAvailability";
+import { DBConfig } from "../../services/databaseConfig";
 import { getIndexedDBService } from "../../services/indexedDBService";
-import type { DatabaseService } from "../../services/types";
+import { getInMemoryStorageService } from "../../services/inMemoryStorageService";
 import type { ImageDraftStateAndFile, ImageId, ImageRecord } from "../../types";
 import { createImageId } from "../helpers/createImageId";
 
 export type UsePersistedImagesOptions = {
-  enabled?: boolean;
+  /** When true, use in-memory storage instead of IndexedDB (e.g. for ephemeral mode). */
+  forceInMemoryStorage?: boolean;
   onRefreshImagesError?: (error: Err<"RefreshFailed">) => void;
-};
-
-const noopIndexedDBService: DatabaseService<ImageRecord> = {
-  addRecord: async () => {},
-  getRecord: async () => undefined,
-  getAllRecords: async () => [],
-  updateRecord: async () => {},
-  deleteRecord: async () => {},
 };
 
 type AddImagesOverwriteOptions = {
@@ -60,18 +55,14 @@ export type UsePersistedImagesReturn = {
 };
 
 /**
- * Custom React hook for persisting image records in IndexedDB.
+ * Custom React hook for persisting image records in IndexedDB or in-memory storage.
+ *
+ * Storage: IndexedDB when available (unless forceInMemoryStorage is true), else in-memory.
  *
  * Unlike usePersistedUIRecord (one entry per id), this store holds many images
  * each identified by a human-friendly ID derived from the filename (with collision suffix).
  *
- * `enabled` (default `true`) can be set to `false` to disable persistence; when disabled,
- * no IndexedDB reads or writes occur, `images` is always `undefined` (never loaded), and
- * mutating methods (addImage, updateImage, deleteImage) no-op without touching
- * the database.
- *
- * `onRefreshImagesError` can be passed as an option to be called when the
- * initial refresh fails (e.g. IndexedDB unavailable).
+ * `onRefreshImagesError` can be passed to be called when the initial refresh fails.
  *
  * @returns Object with:
  * - `images`: all persisted image records (undefined until loaded).
@@ -88,40 +79,34 @@ export type UsePersistedImagesReturn = {
  * - `refreshImages`: reloads the list from the database; returns Result.
  */
 export function usePersistedImages(options?: UsePersistedImagesOptions): UsePersistedImagesReturn {
-  const { enabled = true, onRefreshImagesError } = options ?? {};
-  const indexedDBResult = getIndexedDBService<ImageRecord>("images");
-  const isEnabled = indexedDBResult.rejected == null && enabled;
+  const { forceInMemoryStorage = false, onRefreshImagesError } = options ?? {};
 
-  const { addRecord, getRecord, getAllRecords, updateRecord, deleteRecord } = isEnabled
-    ? indexedDBResult.accepted
-    : noopIndexedDBService;
+  const indexedDBService = getIndexedDBService<ImageRecord>(DBConfig, "images");
+  const inMemoryService = getInMemoryStorageService<ImageRecord>("images");
+  const useIndexedDB = !forceInMemoryStorage && isIndexedDBAvailable();
+  const service = useIndexedDB ? indexedDBService : inMemoryService;
 
   const [images, setImages] = useState<ImageRecord[] | undefined>(undefined);
 
-  const refreshImages: UsePersistedImagesReturn["refreshImages"] = useCallback(async () => {
-    if (!isEnabled) {
-      return accept(undefined);
+  const stableRefreshImages = useEffectEvent(async (): Promise<Result<void, "RefreshFailed">> => {
+    const result = await service.getAllRecords();
+    if (result.rejected != null) {
+      return reject({ reason: "RefreshFailed", error: result.rejected.error });
     }
-
-    try {
-      const all = await getAllRecords();
-      setImages(all ?? []);
-      return accept(undefined);
-    } catch {
-      return reject({ reason: "RefreshFailed" });
-    }
-  }, [isEnabled, getAllRecords]);
+    setImages(result.accepted ?? []);
+    return accept(undefined);
+  });
 
   const stableOnRefreshImagesError = useEffectEvent((err: Err<"RefreshFailed">) =>
     onRefreshImagesError?.(err),
   );
 
   useEffect(() => {
-    refreshImages().then((result) => {
-      if (result.rejected == null) return;
-      stableOnRefreshImagesError(result.rejected);
+    stableRefreshImages().then((res) => {
+      if (res.rejected == null) return;
+      stableOnRefreshImagesError(res.rejected);
     });
-  }, [refreshImages]);
+  }, []);
 
   const addImages: UsePersistedImagesReturn["addImages"] = useCallback(
     async (draftsAndFiles, options) => {
@@ -129,44 +114,39 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
 
       let usedIds: Set<string> | undefined;
       if (!overwrite) {
-        try {
-          const all = await getAllRecords();
-          const existing = all ?? [];
-          usedIds = new Set(existing.map((r) => r.id));
-        } catch {
+        const allResult = await service.getAllRecords();
+        if (allResult.rejected != null) {
           return processResults(draftsAndFiles.map(() => reject({ reason: "AddImageFailed" })));
         }
+        const existing = allResult.accepted ?? [];
+        usedIds = new Set(existing.map((r) => r.id));
       }
 
       const results: Result<ImageId, "AddImageFailed">[] = [];
       for (const { imageDraft, file } of draftsAndFiles) {
-        try {
-          const id = createImageId(imageDraft.name, usedIds);
-          const record: ImageRecord = { id, ...imageDraft, file };
-          if (overwrite) {
-            const existingRecord = await getRecord(id);
-            if (existingRecord != null) {
-              await updateRecord(record);
-            } else {
-              await addRecord(record);
-            }
+        const id = createImageId(imageDraft.name, usedIds);
+        const record: ImageRecord = { id, ...imageDraft, file };
+        if (overwrite) {
+          const upsertResult = await service.upsertRecord(record);
+          if (upsertResult.rejected != null) {
+            results.push(reject({ reason: "AddImageFailed", error: upsertResult.rejected.error }));
           } else {
-            await addRecord(record);
+            results.push(accept(id));
+          }
+        } else {
+          const addResult = await service.addRecord(record);
+          if (addResult.rejected != null) {
+            results.push(reject({ reason: "AddImageFailed", error: addResult.rejected.error }));
+          } else {
+            results.push(accept(id));
             if (usedIds != null) usedIds.add(id);
           }
-          results.push(accept(id));
-        } catch {
-          results.push(reject({ reason: "AddImageFailed" }));
         }
       }
 
       const { accepted: ids } = processResults(results);
-
       if (ids.length > 0) {
-        const refreshResult = await refreshImages();
-        /**
-         * @todo Maybe show error to the user in the UI.
-         */
+        const refreshResult = await stableRefreshImages();
         if (refreshResult.rejected != null) {
           toast.error(
             `Error refreshing images after add: ${String(refreshResult.rejected.reason)}`,
@@ -175,32 +155,26 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
       }
       return processResults(results);
     },
-    [addRecord, getRecord, getAllRecords, updateRecord, refreshImages],
+    [service],
   );
 
   const addImage: UsePersistedImagesReturn["addImage"] = useCallback(
     async (draftAndFile, options) => {
       if (options != null && "id" in options && options.id != null) {
-        // Explicit id (addImage only): overwrite implied; do not delegate to addImages.
+        // Explicit id (addImage only): overwrite implied; use upsertRecord.
         const id = options.id;
         const record: ImageRecord = { id, ...draftAndFile.imageDraft, file: draftAndFile.file };
-        try {
-          const existing = await getRecord(id);
-          if (existing != null) {
-            await updateRecord(record);
-          } else {
-            await addRecord(record);
-          }
-          const refreshResult = await refreshImages();
-          if (refreshResult.rejected != null) {
-            toast.error(
-              `Error refreshing images after add: ${String(refreshResult.rejected.reason)}`,
-            );
-          }
-          return accept(id);
-        } catch {
-          return reject({ reason: "AddImageFailed" });
+        const upsertResult = await service.upsertRecord(record);
+        if (upsertResult.rejected != null) {
+          return reject({ reason: "AddImageFailed", error: upsertResult.rejected.error });
         }
+        const refreshResult = await stableRefreshImages();
+        if (refreshResult.rejected != null) {
+          toast.error(
+            `Error refreshing images after add: ${String(refreshResult.rejected.reason)}`,
+          );
+        }
+        return accept(id);
       }
 
       const overwrite =
@@ -213,55 +187,55 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
       if (id != null) return accept(id);
       return reject({ reason: "AddImageFailed" });
     },
-    [addRecord, getRecord, updateRecord, addImages, refreshImages],
+    [service, addImages],
   );
 
   const getImage: UsePersistedImagesReturn["getImage"] = useCallback(
     async (id) => {
-      return await getRecord(id);
+      const result = await service.getRecord(id);
+      return result.rejected != null ? undefined : result.accepted;
     },
-    [getRecord],
+    [service],
   );
 
   const updateImage: UsePersistedImagesReturn["updateImage"] = useCallback(
     async (id, updates) => {
-      try {
-        const current = await getRecord(id);
-        if (current == null) return accept(undefined);
+      const getResult = await service.getRecord(id);
+      if (getResult.rejected != null) return reject({ reason: "UpdateImageFailed" });
+      const current = getResult.accepted;
+      if (current == null) return accept(undefined);
 
-        const updated: ImageRecord = {
-          ...current,
-          ...updates,
-          id,
-          file: current.file,
-        };
-        if (isEqual(current, updated)) return accept(id);
+      const updated: ImageRecord = {
+        ...current,
+        ...updates,
+        id,
+        file: current.file,
+      };
+      if (isEqual(current, updated)) return accept(id);
 
-        await updateRecord(updated);
-        const refreshResult = await refreshImages();
-        /**
-         * @todo Maybe show error to the user in the UI.
-         */
-        if (refreshResult.rejected != null) {
-          toast.error(
-            `Error refreshing images after update: ${String(refreshResult.rejected.reason)}`,
-          );
-        }
-        return accept(id);
-      } catch {
-        return reject({ reason: "UpdateImageFailed" });
+      const updateResult = await service.updateRecord(updated);
+      if (updateResult.rejected != null) {
+        return reject({ reason: "UpdateImageFailed", error: updateResult.rejected.error });
       }
+      const refreshResult = await stableRefreshImages();
+      if (refreshResult.rejected != null) {
+        toast.error(
+          `Error refreshing images after update: ${String(refreshResult.rejected.reason)}`,
+        );
+      }
+      return accept(id);
     },
-    [getRecord, updateRecord, refreshImages],
+    [service],
   );
 
   const deleteImage: UsePersistedImagesReturn["deleteImage"] = useCallback(
     async (id) => {
-      await deleteRecord(id);
-      await refreshImages();
+      const result = await service.deleteRecord(id);
+      if (result.rejected != null) return undefined;
+      await stableRefreshImages();
       return id;
     },
-    [deleteRecord, refreshImages],
+    [service],
   );
 
   return {
@@ -271,6 +245,6 @@ export function usePersistedImages(options?: UsePersistedImagesOptions): UsePers
     getImage,
     updateImage,
     deleteImage,
-    refreshImages,
+    refreshImages: stableRefreshImages,
   };
 }

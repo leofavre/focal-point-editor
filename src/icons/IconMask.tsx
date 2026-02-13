@@ -2,7 +2,7 @@ import type { SVGProps } from "react";
 
 export const IconMask = (props: SVGProps<SVGSVGElement>) => {
   return (
-    /** biome-ignore lint/a11y/noSvgWithoutTitle: Decorative icon, hidden from screen readers */
+    /* biome-ignore lint/a11y/noSvgWithoutTitle: Decorative icon, hidden from screen readers */
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"

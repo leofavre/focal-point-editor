@@ -1,20 +1,22 @@
-# Navigation and back button (IndexedDB)
+# Navigation and back button
 
 ## Application Overview
 
-Focal Point Editor uses dynamic persistence based on IndexedDB availability. When IndexedDB is available, upload redirects to `/edit` and the browser back button returns to `/` with the Landing page visible. When IndexedDB is not available, upload stays on `/` and the back button leaves the app (since `/` was the first page loaded).
+Focal Point Editor: upload redirects to `/edit` and the browser back button returns to `/` with the Landing page visible. The app behaves the same whether IndexedDB is available or not.
 
 ## Test Scenarios
+
+Each scenario is run **twice**: once with IndexedDB available, once with IndexedDB disabled. Expectations are identical in both runs.
 
 ### 1. Navigation and back button
 
 **Seed:** `e2e/seed.spec.ts`
 
-#### 1.1. IndexedDB available: upload redirects to /edit, back returns to / with Landing visible
+#### 1.1. Upload redirects to /edit, back returns to / with Landing visible
 
 **File:** `e2e/navigation-back.spec.ts`
 
-**Steps:**
+**Steps (same with or without IndexedDB):**
   1. Visit root path '/'
     - expect: Landing visible
     - expect: Upload button visible
@@ -25,18 +27,3 @@ Focal Point Editor uses dynamic persistence based on IndexedDB availability. Whe
     - expect: URL is /
     - expect: Landing visible
     - expect: Upload button visible
-
-#### 1.2. IndexedDB not available: upload stays on /, back leaves app
-
-**File:** `e2e/navigation-back.spec.ts`
-
-**Steps:**
-  1. Disable IndexedDB via addInitScript
-  2. Navigate to about:blank (so back has a non-app target)
-  3. Navigate to app root '/'
-    - expect: Landing visible
-  4. Upload image via Upload button
-    - expect: Image appears
-    - expect: URL remains /
-  5. Click browser back button
-    - expect: URL is about:blank (previous page, not the app)

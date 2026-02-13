@@ -8,8 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!src/global.d.ts"],
-    "ignore": ["playwright-report", "test-results"]
+    "includes": ["**", "!src/global.d.ts"]
   },
   "formatter": {
     "enabled": true,

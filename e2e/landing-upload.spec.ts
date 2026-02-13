@@ -1,15 +1,13 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { test as testWithFixtures } from "./fixtures";
 import {
-  SAMPLE_IMAGE_PATH,
   expectEditorWithControlsVisible,
   expectLandingVisible,
+  SAMPLE_IMAGE_PATH,
 } from "./helpers";
-import { test as testWithFixtures } from "./fixtures";
 
 test.describe("Landing upload", () => {
-  test("image upload with IndexedDB available redirects to /edit and shows editor", async ({
-    page,
-  }) => {
+  test("with IndexedDB: image upload redirects to /edit and shows editor", async ({ page }) => {
     await page.goto("/");
     await expectLandingVisible(page);
 
@@ -25,7 +23,7 @@ test.describe("Landing upload", () => {
   });
 
   testWithFixtures(
-    "image upload with IndexedDB disabled stays on / and shows editor",
+    "without IndexedDB: image upload redirects to /edit and shows editor",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);
@@ -37,12 +35,12 @@ test.describe("Landing upload", () => {
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL("/");
+      await expect(page).toHaveURL(/\/edit$/);
       await expectEditorWithControlsVisible(page);
     },
   );
 
-  test("user starts upload via button then cancels file dialog – UI responsive and button not pressed", async ({
+  test("with IndexedDB: user starts upload via button then cancels file dialog – UI responsive and button not pressed", async ({
     page,
   }) => {
     await page.goto("/");
@@ -62,7 +60,7 @@ test.describe("Landing upload", () => {
   });
 
   testWithFixtures(
-    "IndexedDB disabled: user starts upload via button then cancels – UI responsive and button not pressed",
+    "without IndexedDB: user starts upload via button then cancels file dialog – UI responsive and button not pressed",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       const landing = page.locator('[data-component="Landing"]');

@@ -2,9 +2,18 @@ import styled from "@emotion/styled";
 
 export const Button = styled.button`
   --scale: 1;
+  &[data-scale="2"] { --scale: 2; }
   --shadow-offset: calc(0.25rem * var(--scale));
 
+  --transition-prop:
+    color 66ms ease-in-out,
+    background-color 66ms ease-in-out,
+    border-color 66ms ease-in-out,
+    box-shadow 66ms ease-in-out,
+    transform 66ms ease-in-out;
+
   container-type: inline-size;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -12,27 +21,36 @@ export const Button = styled.button`
   min-width: calc((var(--base-line) + var(--base-line-05x)) * var(--scale));
   height: calc(2rem * var(--scale));
   padding: 0 calc(var(--base-line-025x) * var(--scale));
-  border: calc(1px * var(--scale)) solid rgb(from var(--color-neutral) r g b);
-  background-color: #fff;
   box-sizing: border-box;
+  background-color: white;
+  border: calc(1px * var(--scale)) solid rgb(from var(--color-neutral) r g b);
   color: rgb(from var(--color-neutral) r g b);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   font: inherit;
   font-size: calc(14 / 16 * 1rem * var(--scale));
   white-space: nowrap;
-  box-shadow:
-    var(--shadow-offset) var(--shadow-offset) 0 0 rgb(from var(--color-neutral) r g b / 100%);
-  transition:
-    background-color 30ms ease-in-out,
-    border-color 30ms ease-in-out,
-    color 30ms ease-in-out,
-    box-shadow 30ms ease-in-out,
-    transform 30ms ease-in-out;
+  width: 100%;
+  transition: var(--transition-prop);
 
-  &:hover {
-    background-color: rgb(from var(--color-neutral) r g b / 10%);
-    border-color: rgb(from var(--color-neutral) r g b);
-    color: rgb(from var(--color-neutral) r g b);
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgb(from var(--color-neutral) r g b / 10%);
+      border-color: rgb(from var(--color-neutral) r g b);
+      color: rgb(from var(--color-neutral) r g b);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
+      transition: var(--transition-prop);
+    }
+  }
+  @media (hover: none) {
+    &:active {
+      background-color: rgb(from var(--color-neutral) r g b / 10%);
+      border-color: rgb(from var(--color-neutral) r g b);
+      color: rgb(from var(--color-neutral) r g b);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
+      transition: var(--transition-prop);
+    }
   }
 
   &:focus-visible {
@@ -45,13 +63,27 @@ export const Button = styled.button`
     background-color: rgb(from var(--color-loud) r g b / 10%);
     border-color: rgb(from var(--color-loud) r g b);
     color: rgb(from var(--color-loud) r g b);
-    box-shadow: none;
+    box-shadow: 0px 0px 0px 0px var(--color-neutral);
     transform: translate(var(--shadow-offset), var(--shadow-offset));
+    transition: var(--transition-prop);
 
-    &:hover {
-      background-color: rgb(from var(--color-loud) r g b / 20%);
-      border-color: rgb(from var(--color-loud) r g b);
-      color: rgb(from var(--color-loud) r g b);
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgb(from var(--color-loud) r g b / 20%);
+        border-color: rgb(from var(--color-loud) r g b);
+        color: rgb(from var(--color-loud) r g b);
+        box-shadow: 0px 0px 0px 0px var(--color-neutral);
+        transition: var(--transition-prop);
+      }
+    }
+    @media (hover: none) {
+      &:active {
+        background-color: rgb(from var(--color-loud) r g b / 20%);
+        border-color: rgb(from var(--color-loud) r g b);
+        color: rgb(from var(--color-loud) r g b);
+        box-shadow: 0px 0px 0px 0px var(--color-neutral);
+        transition: var(--transition-prop);
+      }
     }
   }
 
@@ -61,13 +93,17 @@ export const Button = styled.button`
     flex-shrink: 0;
   }
 
-  @container (max-width: calc(6rem * var(--scale))) {
-    & > svg {
-      margin: auto;
-    }
+  /* calc won't work in the container query */
+  @container (max-width: 6rem) {
+    & > svg { margin: auto; }
+    & > span { display: none; }
+  }
 
-    & > span {
-      display: none;
+  /* calc won't work in the container query */
+  &[data-scale=2] {
+    @container (max-width: 12rem) {
+      & > svg { margin: auto; }
+      & > span { display: none; }
     }
   }
 `;

@@ -1,6 +1,6 @@
 import path from "node:path";
-import { expect } from "@playwright/test";
 import type { BrowserContext, Page } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 const INDEXED_DB_DISABLE_SCRIPT = () => {
   try {

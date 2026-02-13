@@ -1,91 +1,118 @@
 /**
- * SessionStorage-backed DatabaseService. Values are stored as JSON; only
- * JSON-serializable data is supported. For stores that contain Blob/File
- * (e.g. "images"), use getIndexedDBService instead.
+ * SessionStorage-backed DatabaseService. Each method returns a Result.
+ * Values are stored as JSON; only JSON-serializable data is supported.
+ * For Blob/File data (e.g. images), use an IndexedDB- or in-memory-backed service instead.
  */
 import type { Result } from "../helpers/errorHandling";
 import { accept, reject } from "../helpers/errorHandling";
+import { getRecordKeyFromValue } from "../helpers/recordKey";
+import { isSessionStorageAvailable } from "../helpers/sessionStorageAvailability";
 import type { DatabaseKey, DatabaseService } from "./types";
 
 const SESSION_PREFIX = "fpe_session_";
+const UNAVAILABLE = "SessionStorageUnavailable" as const;
 
 function keyFor(tableName: string, recordKey: string | number): string {
   return `${SESSION_PREFIX}${tableName}_${String(recordKey)}`;
 }
 
-function hasId(obj: unknown): obj is { id: unknown } {
-  return typeof obj === "object" && obj != null && "id" in obj;
-}
-
-function getRecordKeyFromValue<T>(value: T, key?: DatabaseKey): string {
-  const id = hasId(value) ? value.id : key;
-  return String(id);
-}
-
-/**
- * Returns sessionStorage as a Result. Use this for Result-based handling.
- */
-export function getStorageResult(): Result<Storage, "SessionStorageUnavailable"> {
-  if (typeof window === "undefined" || !window.sessionStorage) {
-    return reject({ reason: "SessionStorageUnavailable" });
-  }
-  return accept(window.sessionStorage);
+function createUnavailableStub<T, K extends DatabaseKey>(): DatabaseService<
+  T,
+  K,
+  typeof UNAVAILABLE
+> {
+  const rejected = reject({ reason: UNAVAILABLE });
+  return {
+    addRecord: async () => rejected,
+    getRecord: async () => rejected,
+    getAllRecords: async () => rejected,
+    updateRecord: async () => rejected,
+    upsertRecord: async () => rejected,
+    deleteRecord: async () => rejected,
+  };
 }
 
 /**
- * Implements a DatabaseService backed by sessionStorage.
- * Returns a Result so callers can handle SessionStorageUnavailable without try/catch.
- * Suitable for JSON-serializable stores only (e.g. "ui"). Stores that contain
- * Blob/File (e.g. "images") should use getIndexedDBService instead.
+ * Returns a DatabaseService backed by sessionStorage.
+ * Each method returns Result<..., "SessionStorageUnavailable">.
+ * When sessionStorage is unavailable, the returned service's methods all return rejected.
  */
 export function getSessionStorageService<T, K extends DatabaseKey = string>(
   tableName: string,
-): Result<DatabaseService<T, K>, "SessionStorageUnavailable"> {
-  const storageResult = getStorageResult();
-
-  if (storageResult.rejected != null) {
-    /**
-     * @todo Maybe show error to the user in the UI.
-     */
-    return reject(storageResult.rejected);
+): DatabaseService<T, K, typeof UNAVAILABLE> {
+  if (!isSessionStorageAvailable()) {
+    return createUnavailableStub<T, K>();
   }
 
-  const storage = storageResult.accepted;
+  const storage = window.sessionStorage;
   const prefix = `${SESSION_PREFIX}${tableName}_`;
 
-  return accept({
-    async addRecord(value: T, key?: K): Promise<void> {
-      const recordKey = getRecordKeyFromValue(value, key);
-      storage.setItem(keyFor(tableName, recordKey), JSON.stringify(value));
+  return {
+    async addRecord(value: T, key?: K): Promise<Result<void, typeof UNAVAILABLE>> {
+      try {
+        const recordKey = getRecordKeyFromValue(value, key);
+        storage.setItem(keyFor(tableName, recordKey), JSON.stringify(value));
+        return accept(undefined);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
+      }
     },
 
-    async getRecord(id: number | string): Promise<T | undefined> {
-      const raw = storage.getItem(keyFor(tableName, String(id)));
-      if (raw === null) return undefined;
-      return JSON.parse(raw) as T;
+    async getRecord(id: number | string): Promise<Result<T | undefined, typeof UNAVAILABLE>> {
+      try {
+        const raw = storage.getItem(keyFor(tableName, String(id)));
+        if (raw === null) return accept(undefined);
+        return accept(JSON.parse(raw) as T);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
+      }
     },
 
-    async getAllRecords(): Promise<T[]> {
-      const result: T[] = [];
-      for (let i = 0; i < storage.length; i++) {
-        const k = storage.key(i);
-        if (k?.startsWith(prefix)) {
-          const raw = storage.getItem(k);
-          if (raw !== null) {
-            result.push(JSON.parse(raw) as T);
+    async getAllRecords(): Promise<Result<T[], typeof UNAVAILABLE>> {
+      try {
+        const result: T[] = [];
+        for (let i = 0; i < storage.length; i++) {
+          const k = storage.key(i);
+          if (k?.startsWith(prefix)) {
+            const raw = storage.getItem(k);
+            if (raw !== null) {
+              result.push(JSON.parse(raw) as T);
+            }
           }
         }
+        return accept(result);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
       }
-      return result;
     },
 
-    async updateRecord(value: T, key?: K): Promise<void> {
-      const recordKey = getRecordKeyFromValue(value, key);
-      storage.setItem(keyFor(tableName, recordKey), JSON.stringify(value));
+    async updateRecord(value: T, key?: K): Promise<Result<void, typeof UNAVAILABLE>> {
+      try {
+        const recordKey = getRecordKeyFromValue(value, key);
+        storage.setItem(keyFor(tableName, recordKey), JSON.stringify(value));
+        return accept(undefined);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
+      }
     },
 
-    async deleteRecord(key: K): Promise<void> {
-      storage.removeItem(keyFor(tableName, String(key)));
+    async upsertRecord(value: T, key?: K): Promise<Result<void, typeof UNAVAILABLE>> {
+      try {
+        const recordKey = getRecordKeyFromValue(value, key);
+        storage.setItem(keyFor(tableName, recordKey), JSON.stringify(value));
+        return accept(undefined);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
+      }
     },
-  } satisfies DatabaseService<T, K>);
+
+    async deleteRecord(key: K): Promise<Result<void, typeof UNAVAILABLE>> {
+      try {
+        storage.removeItem(keyFor(tableName, String(key)));
+        return accept(undefined);
+      } catch (error) {
+        return reject({ reason: UNAVAILABLE, error });
+      }
+    },
+  };
 }

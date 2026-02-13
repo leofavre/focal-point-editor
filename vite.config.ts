@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => ({
   test: {
     environment: "jsdom",
     mockReset: true,
+    setupFiles: ["./vitest.setup.ts"],
     // Prevents running e2e tests like they were unit tests.
     exclude: ["**/node_modules/**", "**/dist/**", "e2e/**"],
   },

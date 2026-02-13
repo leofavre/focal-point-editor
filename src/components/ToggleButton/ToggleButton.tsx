@@ -36,19 +36,20 @@ export function ToggleButton({
   );
 
   return (
-    <Button
-      ref={ref}
-      as="button"
-      type={type}
-      aria-pressed={toggled}
-      onClick={handleClick}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      css={{ "--scale": scale }}
-      {...rest}
-    >
-      {icon}
-      <span>{label}</span>
-    </Button>
+    <div {...rest}>
+      <Button
+        ref={ref}
+        as="button"
+        type={type}
+        aria-pressed={toggled}
+        onClick={handleClick}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        data-scale={scale}
+      >
+        {icon}
+        <span>{label}</span>
+      </Button>
+    </div>
   );
 }

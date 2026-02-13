@@ -1,14 +1,17 @@
 import { AspectRatioControl } from "./AspectRatioControl/AspectRatioControl";
-import type { AspectRatioControlProps } from "./AspectRatioControl/types";
 import { AspectRatioRuler } from "./AspectRatioRuler/AspectRatioRuler";
 import { Wrapper } from "./AspectRatioSlider.styled";
+import { useAspectRatioList } from "./hooks/useAspectRatioList";
+import type { AspectRatioSliderProps } from "./types";
 
 export function AspectRatioSlider({
   aspectRatio,
-  aspectRatioList,
+  defaultAspectRatio,
   onAspectRatioChange,
   ...rest
-}: AspectRatioControlProps) {
+}: AspectRatioSliderProps) {
+  const aspectRatioList = useAspectRatioList(defaultAspectRatio);
+
   return (
     <Wrapper data-component="AspectRatioSlider" {...rest}>
       <AspectRatioControl

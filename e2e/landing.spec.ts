@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test";
-import { expectLandingVisible } from "./helpers";
+import { expect, test } from "@playwright/test";
 import { test as testWithFixtures } from "./fixtures";
+import { expectLandingVisible } from "./helpers";
 
 test.describe("Landing page", () => {
-  test("shows project description and upload button when visiting /", async ({
+  test("with IndexedDB: shows project description and upload button when visiting /", async ({
     page,
   }) => {
     await page.goto("/");
@@ -13,7 +13,7 @@ test.describe("Landing page", () => {
   });
 
   testWithFixtures(
-    "shows project description and upload button when visiting / with IndexedDB disabled",
+    "without IndexedDB: shows project description and upload button when visiting /",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);

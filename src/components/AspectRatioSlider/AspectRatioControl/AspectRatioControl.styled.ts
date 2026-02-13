@@ -21,6 +21,7 @@ export const Slider = styled.div`
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    -webkit-tap-highlight-color: transparent;
     cursor: pointer;
     outline: none;
 

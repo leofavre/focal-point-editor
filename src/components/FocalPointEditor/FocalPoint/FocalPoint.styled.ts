@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
   pointer-events: auto;
   touch-action: none;
   user-select: none;
-  transition: opacity 0.25s ease;
+  transition: opacity 66ms ease;
   z-index: 2;
   cursor: grab;
   z-index: 10;

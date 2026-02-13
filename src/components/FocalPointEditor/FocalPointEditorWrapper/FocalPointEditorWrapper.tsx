@@ -14,9 +14,8 @@ export function FocalPointEditorWrapper({
   ...rest
 }: FocalPointEditorWrapperProps) {
   return (
-    <Container {...rest}>
+    <Container ref={contentRef} {...rest}>
       <Content
-        ref={contentRef}
         css={{
           aspectRatio: aspectRatio ?? "auto",
           height: `${detectProportionalImageHeight({ aspectRatio }) ?? 0}cqmin`,
