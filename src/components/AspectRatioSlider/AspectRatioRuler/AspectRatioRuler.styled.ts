@@ -12,12 +12,19 @@ export const List = styled.ul`
 `;
 
 export const Item = styled.li`
+  direction: ltr;
   width: 1px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: absolute;
   writing-mode: sideways-lr;
+  left: var(--position);
+
+  :dir(rtl) {
+    left: unset;
+    right: calc(var(--position) - 1px);
+  }
 
   &[data-name="original"] {
     top: calc(var(--runner-thickness) * -3);
