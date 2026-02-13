@@ -65,7 +65,6 @@ export type EditorContextValue = {
   isLoading: boolean;
   isEditingSingleImage: boolean;
   showBottomBar: boolean;
-  bottomBarPositioning: { top: string };
   handleImageUpload: (draftAndFile: ImageDraftStateAndFile | undefined) => Promise<void>;
   handleImageError: () => void;
   handleObjectPositionChange: (objectPosition: ObjectPositionString) => void;
@@ -319,11 +318,9 @@ export function EditorContextProvider({ children }: PropsWithChildren) {
     setIsLoading(loading, !loading ? MINIMAL_LOADING_DURATION_MS : 0);
   }, [setIsLoading, pageState, imageNotFoundConfirmed, isProcessingImageUpload]);
 
-  const showBottomBar = pageState === "editing" || pageState === "imageNotFound";
+  const showBottomBar = !isLoading && (pageState === "editing" || pageState === "imageNotFound");
 
-  const bottomBarPositioning = {
-    top: showBottomBar ? "0px" : "8rem",
-  };
+  console.log({ isLoading, pageState, showBottomBar });
 
   const value: EditorContextValue = {
     persistenceMode,
@@ -348,7 +345,6 @@ export function EditorContextProvider({ children }: PropsWithChildren) {
     isLoading,
     isEditingSingleImage,
     showBottomBar,
-    bottomBarPositioning,
     handleImageUpload,
     handleImageError,
     handleObjectPositionChange,

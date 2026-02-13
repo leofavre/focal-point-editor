@@ -5,6 +5,15 @@ export const Button = styled.button`
   &[data-scale="2"] { --scale: 2; }
   --shadow-offset: calc(0.25rem * var(--scale));
 
+  --transition-prop:
+    /* Top is needed for bottom bar animation. Not the component's responsibility, but works. */
+    top 132ms ease-in-out, 
+    color 66ms ease-in-out,
+    background-color 66ms ease-in-out,
+    border-color 66ms ease-in-out,
+    box-shadow 66ms ease-in-out,
+    transform 66ms ease-in-out;
+
   container-type: inline-size;
   position: relative;
   display: flex;
@@ -23,14 +32,14 @@ export const Button = styled.button`
   font: inherit;
   font-size: calc(14 / 16 * 1rem * var(--scale));
   white-space: nowrap;
-  transition: all 66ms ease-in-out;
+  transition: var(--transition-prop);
 
   &:hover {
     background-color: rgb(from var(--color-neutral) r g b / 10%);
     border-color: rgb(from var(--color-neutral) r g b);
     color: rgb(from var(--color-neutral) r g b);
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
-    transition: all 66ms ease-in-out;
+    transition: var(--transition-prop);
   }
 
   &:focus-visible {
@@ -45,14 +54,14 @@ export const Button = styled.button`
     color: rgb(from var(--color-loud) r g b);
     box-shadow: 0px 0px 0px 0px var(--color-neutral);
     transform: translate(var(--shadow-offset), var(--shadow-offset));
-    transition: all 66ms ease-in-out;
+    transition: var(--transition-prop);
 
     &:hover {
       background-color: rgb(from var(--color-loud) r g b / 20%);
       border-color: rgb(from var(--color-loud) r g b);
       color: rgb(from var(--color-loud) r g b);
       box-shadow: 0px 0px 0px 0px var(--color-neutral);
-      transition: all 66ms ease-in-out;
+      transition: var(--transition-prop);
     }
   }
 

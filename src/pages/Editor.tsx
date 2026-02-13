@@ -6,6 +6,7 @@ import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZo
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
 import { useEditorContext } from "../contexts/EditorContext";
+import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
@@ -63,7 +64,7 @@ export default function Editor() {
     setShowImageOverflow,
     showCodeSnippet,
     setShowCodeSnippet,
-    bottomBarPositioning,
+    showBottomBar,
     handleImageUpload,
     uploaderButtonRef,
   } = useEditorContext();
@@ -112,7 +113,7 @@ export default function Editor() {
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
-      <EditorGrid>
+      <EditorGrid data-has-bottom-bar={parseBooleanAttr(showBottomBar)}>
         <Outlet />
         <ToggleButton
           type="button"
@@ -122,7 +123,6 @@ export default function Editor() {
           titleOn="Focal point"
           titleOff="Focal point"
           icon={<IconReference />}
-          css={bottomBarPositioning}
         />
         <ToggleButton
           type="button"
@@ -132,7 +132,6 @@ export default function Editor() {
           titleOn="Overflow"
           titleOff="Overflow"
           icon={<IconMask />}
-          css={bottomBarPositioning}
         />
         <ToggleButton
           type="button"
@@ -142,19 +141,16 @@ export default function Editor() {
           titleOn="Code"
           titleOff="Code"
           icon={<IconCode />}
-          css={bottomBarPositioning}
         />
         <ImageUploaderButton
           ref={uploaderButtonRef}
           onImageUpload={handleImageUpload}
           onImageUploadError={noop}
-          css={bottomBarPositioning}
         />
         <AspectRatioSlider
           aspectRatio={aspectRatio}
           aspectRatioList={aspectRatioList}
           onAspectRatioChange={setAspectRatio}
-          css={bottomBarPositioning}
         />
       </EditorGrid>
     </>

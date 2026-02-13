@@ -32,46 +32,56 @@ export const EditorGrid = styled.main`
     z-index: 2;
   }
 
-  [data-component="AspectRatioSlider"] {
+  > [data-component="AspectRatioSlider"] {
     position: relative;
+    top: 8rem;
     grid-row: 3;
     grid-column: 4;
     margin-left: auto;
     margin-right: auto;
     max-width: 1200px;
     z-index: 1;
-    transition: top 132ms ease-in-out;
   }
 
   > [data-component="FocalPointButton"] {
     position: relative;
+    top: 8rem;
     grid-row: 3;
     grid-column: 2;
     margin-bottom: auto;
-    transition: top 132ms ease-in-out;
   }
 
   > [data-component="ImageOverflowButton"] {
     position: relative;
+    top: 8rem;
     grid-row: 3;
     grid-column: 3;
     margin-bottom: auto;
-    transition: top 132ms ease-in-out;
   }
 
   > [data-component="CodeSnippetButton"] {
     position: relative;
+    top: 8rem;
     grid-row: 3;
     grid-column: 5;
     margin-bottom: auto;
-    transition: top 132ms ease-in-out;
   }
 
   > [data-component="ImageUploaderButton"] {
     position: relative;
+    top: 8rem;
     grid-row: 3;
     grid-column: 6;
     margin-bottom: auto;
-    transition: top 132ms ease-in-out;
+  }
+
+  &[data-has-bottom-bar] {
+    > [data-component="AspectRatioSlider"],
+    > [data-component="FocalPointButton"],
+    > [data-component="ImageOverflowButton"],
+    > [data-component="CodeSnippetButton"],
+    > [data-component="ImageUploaderButton"] {
+      top: 0;
+    }
   }
 `;
