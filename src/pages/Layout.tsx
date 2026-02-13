@@ -26,7 +26,6 @@ const noop = () => {};
  * - Improve loading state.
  * - Improve Code snippet.
  * - Improve toasters.
- * - Mobile: tap highlight removed via -webkit-tap-highlight-color: transparent on buttons/slider.
  *
  * ### Basic functionality
  *
