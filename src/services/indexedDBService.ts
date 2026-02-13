@@ -50,7 +50,7 @@ export function getIndexedDBService<T, K extends DatabaseKey = string>(
     initializedDatabases.add(dbKey);
   }
 
-  // biome-ignore lint/correctness/useHookAtTopLevel: Needed for when IndexedDB is unavailable
+  /* biome-ignore lint/correctness/useHookAtTopLevel: Needed for when IndexedDB is unavailable */
   const indexedDB = useIndexedDB(tableName);
 
   return {
