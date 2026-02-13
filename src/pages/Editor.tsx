@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
-import { useAspectRatioList } from "../components/AspectRatioSlider/hooks/useAspectRatioList";
 import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
@@ -11,7 +9,6 @@ import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
 import { EditorGrid } from "./Editor.styled";
-import { createKeyboardShortcutHandler } from "./helpers/createKeyboardShortcutHandler";
 
 const noop = () => {};
 
@@ -69,47 +66,6 @@ export default function Editor() {
     uploaderButtonRef,
   } = useEditorContext();
 
-  const aspectRatioList = useAspectRatioList(image?.naturalAspectRatio);
-
-  /**
-   * Handles all keyboard shortcuts:
-   * - 'u' opens the file input to upload a new image.
-   * - 'a' or 'f' toggles the focal point.
-   * - 's' or 'o' toggles the image overflow.
-   * - 'd' or 'c' toggles the code snippet.
-   *
-   * The shortcuts are case insensitive and are not triggered
-   * when modified with meta keys like Control or Command.
-   */
-  useEffect(() => {
-    const handleKeyDown = createKeyboardShortcutHandler({
-      u: () => {
-        uploaderButtonRef.current?.click();
-      },
-      a: () => {
-        setShowFocalPoint((prev) => !prev);
-      },
-      f: () => {
-        setShowFocalPoint((prev) => !prev);
-      },
-      s: () => {
-        setShowImageOverflow((prev) => !prev);
-      },
-      o: () => {
-        setShowImageOverflow((prev) => !prev);
-      },
-      d: () => {
-        setShowCodeSnippet((prev) => !prev);
-      },
-      c: () => {
-        setShowCodeSnippet((prev) => !prev);
-      },
-    });
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [uploaderButtonRef, setShowCodeSnippet, setShowFocalPoint, setShowImageOverflow]);
-
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
@@ -149,7 +105,7 @@ export default function Editor() {
         />
         <AspectRatioSlider
           aspectRatio={aspectRatio}
-          aspectRatioList={aspectRatioList}
+          defaultAspectRatio={image?.naturalAspectRatio}
           onAspectRatioChange={setAspectRatio}
         />
       </EditorGrid>

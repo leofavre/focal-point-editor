@@ -14,6 +14,7 @@ import useDebouncedEffect from "use-debounced-effect";
 import { useDelayedState } from "use-delay-follow-state";
 import { createImageStateFromDraftAndFile } from "../pages/helpers/createImageStateFromDraftAndFile";
 import { createImageStateFromRecord } from "../pages/helpers/createImageStateFromRecord";
+import { createKeyboardShortcutHandler } from "../pages/helpers/createKeyboardShortcutHandler";
 import { usePageState } from "../pages/hooks/usePageState";
 import { usePersistedImages } from "../pages/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "../pages/hooks/usePersistedUIRecord";
@@ -224,6 +225,45 @@ export function EditorContextProvider({ children }: PropsWithChildren) {
       document.body.style.overflow = "auto";
     };
   }, [pageState]);
+
+  /**
+   * Handles all keyboard shortcuts:
+   * - 'u' opens the file input to upload a new image.
+   * - 'a' or 'f' toggles the focal point.
+   * - 's' or 'o' toggles the image overflow.
+   * - 'd' or 'c' toggles the code snippet.
+   *
+   * The shortcuts are case insensitive and are not triggered
+   * when modified with meta keys like Control or Command.
+   */
+  useEffect(() => {
+    const handleKeyDown = createKeyboardShortcutHandler({
+      u: () => {
+        uploaderButtonRef.current?.click();
+      },
+      a: () => {
+        setShowFocalPoint((prev) => !prev);
+      },
+      f: () => {
+        setShowFocalPoint((prev) => !prev);
+      },
+      s: () => {
+        setShowImageOverflow((prev) => !prev);
+      },
+      o: () => {
+        setShowImageOverflow((prev) => !prev);
+      },
+      d: () => {
+        setShowCodeSnippet((prev) => !prev);
+      },
+      c: () => {
+        setShowCodeSnippet((prev) => !prev);
+      },
+    });
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setShowCodeSnippet, setShowFocalPoint, setShowImageOverflow]);
 
   useDebouncedEffect(
     () => {
