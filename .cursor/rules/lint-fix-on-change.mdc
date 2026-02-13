@@ -1,0 +1,14 @@
+---
+description: Run lint:fix after making code changes
+alwaysApply: true
+---
+
+# Lint fix on change
+
+After making any code changes in this project, run the project's lint fix script:
+
+```bash
+npm run lint:fix
+```
+
+Do this as part of the same change (e.g. after edits and before considering the task done), so that formatting and auto-fixable lint issues are applied consistently.
