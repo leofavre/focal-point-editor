@@ -12,12 +12,12 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
 import { useDelayedState } from "use-delay-follow-state";
-import { createImageStateFromDraftAndFile } from "../pages/helpers/createImageStateFromDraftAndFile";
-import { createImageStateFromRecord } from "../pages/helpers/createImageStateFromRecord";
-import { createKeyboardShortcutHandler } from "../pages/helpers/createKeyboardShortcutHandler";
-import { usePageState } from "../pages/hooks/usePageState";
-import { usePersistedImages } from "../pages/hooks/usePersistedImages";
-import { usePersistedUIRecord } from "../pages/hooks/usePersistedUIRecord";
+import { createImageStateFromDraftAndFile } from "./pages/helpers/createImageStateFromDraftAndFile";
+import { createImageStateFromRecord } from "./pages/helpers/createImageStateFromRecord";
+import { createKeyboardShortcutHandler } from "./pages/helpers/createKeyboardShortcutHandler";
+import { usePageState } from "./pages/hooks/usePageState";
+import { usePersistedImages } from "./pages/hooks/usePersistedImages";
+import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
 import type {
   ImageDraftStateAndFile,
   ImageId,
@@ -26,7 +26,7 @@ import type {
   ObjectPositionString,
   UIPageState,
   UIPersistenceMode,
-} from "../types";
+} from "./types";
 
 const DEFAULT_SHOW_FOCAL_POINT = false;
 const DEFAULT_SHOW_IMAGE_OVERFLOW = false;
@@ -82,7 +82,7 @@ function getImageIdFromPathname(pathname: string): ImageId | undefined {
   return segment === "" ? undefined : (segment as ImageId);
 }
 
-export function EditorContextProvider({ children }: PropsWithChildren) {
+export function AppContext({ children }: PropsWithChildren) {
   const persistenceMode = PERSISTENCE_MODE;
   const uploaderButtonRef = useRef<HTMLButtonElement>(null);
   const { pathname } = useLocation();

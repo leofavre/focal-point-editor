@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 
 /** Shared full-width message (loading, errors) in the main content area. */
-export const EditorMessage = styled.h3`
+export const LayoutMessage = styled.h3`
   grid-column: 1 / -1;
   grid-row: 1 / -2;
   margin: auto;
 `;
 
-export const EditorGrid = styled.main`
+export const LayoutGrid = styled.main`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 12ch) minmax(0, 12ch) minmax(8rem, 50rem) minmax(0, 12ch) minmax(0, 12ch) minmax(0, 1fr);
   grid-template-rows: 7rem 1fr 7rem;

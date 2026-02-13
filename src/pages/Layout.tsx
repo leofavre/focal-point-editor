@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom";
+import { useEditorContext } from "../AppContext";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
-import { useEditorContext } from "../contexts/EditorContext";
 import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
-import { EditorGrid, EditorMessage } from "./Editor.styled";
+import { LayoutGrid, LayoutMessage } from "./Layout.styled";
 
 const noop = () => {};
 
@@ -48,7 +48,7 @@ const noop = () => {};
  * - Maybe make a React component?
  * - Maybe make a native custom element?
  */
-export default function Editor() {
+export default function Layout() {
   const {
     image,
     aspectRatio,
@@ -68,8 +68,8 @@ export default function Editor() {
   return (
     <>
       <FullScreenDropZone onImageUpload={handleImageUpload} onImageUploadError={noop} />
-      <EditorGrid data-has-bottom-bar={parseBooleanAttr(showBottomBar)}>
-        {isLoading ? <EditorMessage>Loading...</EditorMessage> : <Outlet />}
+      <LayoutGrid data-has-bottom-bar={parseBooleanAttr(showBottomBar)}>
+        {isLoading ? <LayoutMessage>Loading...</LayoutMessage> : <Outlet />}
         <ToggleButton
           type="button"
           data-component="FocalPointButton"
@@ -107,7 +107,7 @@ export default function Editor() {
           defaultAspectRatio={image?.naturalAspectRatio}
           onAspectRatioChange={setAspectRatio}
         />
-      </EditorGrid>
+      </LayoutGrid>
     </>
   );
 }

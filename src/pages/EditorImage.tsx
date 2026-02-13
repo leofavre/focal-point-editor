@@ -1,9 +1,9 @@
+import { useEditorContext } from "../AppContext";
 import { CodeSnippet } from "../components/CodeSnippet/CodeSnippet";
 import { Dialog } from "../components/Dialog/Dialog";
 import { FocalPointEditor } from "../components/FocalPointEditor/FocalPointEditor";
-import { useEditorContext } from "../contexts/EditorContext";
 import type { ObjectPositionString } from "../types";
-import { EditorMessage } from "./Editor.styled";
+import { LayoutMessage } from "./Layout.styled";
 
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
@@ -60,18 +60,18 @@ export function EditorImage() {
   }
 
   if (pageState === "pageNotFound") {
-    return <EditorMessage>Page not found...</EditorMessage>;
+    return <LayoutMessage>Page not found...</LayoutMessage>;
   }
 
   if (pageState === "imageNotFound") {
     return (
-      <EditorMessage>
+      <LayoutMessage>
         {isEditingSingleImage && imageCount === 0
           ? "Start by uploading an image..."
           : "Image not found..."}
-      </EditorMessage>
+      </LayoutMessage>
     );
   }
 
-  return <EditorMessage>Critical error...</EditorMessage>;
+  return <LayoutMessage>Critical error...</LayoutMessage>;
 }
