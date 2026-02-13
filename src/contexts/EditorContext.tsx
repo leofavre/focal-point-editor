@@ -65,7 +65,7 @@ export type EditorContextValue = {
   isLoading: boolean;
   isEditingSingleImage: boolean;
   showBottomBar: boolean;
-  bottomBarPositioning: { transform: string; transition: string };
+  bottomBarPositioning: { top: string };
   handleImageUpload: (draftAndFile: ImageDraftStateAndFile | undefined) => Promise<void>;
   handleImageError: () => void;
   handleObjectPositionChange: (objectPosition: ObjectPositionString) => void;
@@ -322,8 +322,7 @@ export function EditorContextProvider({ children }: PropsWithChildren) {
   const showBottomBar = pageState === "editing" || pageState === "imageNotFound";
 
   const bottomBarPositioning = {
-    transform: showBottomBar ? "translateY(0)" : "translateY(8rem)",
-    transition: "transform 66ms ease-in-out",
+    top: showBottomBar ? "0px" : "8rem",
   };
 
   const value: EditorContextValue = {

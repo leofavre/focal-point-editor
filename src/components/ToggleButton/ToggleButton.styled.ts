@@ -2,11 +2,7 @@ import styled from "@emotion/styled";
 
 export const Button = styled.button`
   --scale: 1;
-
-  &[data-scale=2] {
-    --scale: 2;
-  }
-
+  &[data-scale="2"] { --scale: 2; }
   --shadow-offset: calc(0.25rem * var(--scale));
 
   container-type: inline-size;

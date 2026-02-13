@@ -33,35 +33,45 @@ export const EditorGrid = styled.main`
   }
 
   [data-component="AspectRatioSlider"] {
+    position: relative;
     grid-row: 3;
     grid-column: 4;
     margin-left: auto;
     margin-right: auto;
     max-width: 1200px;
     z-index: 1;
+    transition: top 132ms ease-in-out;
   }
 
   > [data-component="FocalPointButton"] {
+    position: relative;
     grid-row: 3;
     grid-column: 2;
     margin-bottom: auto;
+    transition: top 132ms ease-in-out;
   }
 
   > [data-component="ImageOverflowButton"] {
+    position: relative;
     grid-row: 3;
     grid-column: 3;
     margin-bottom: auto;
+    transition: top 132ms ease-in-out;
   }
 
   > [data-component="CodeSnippetButton"] {
+    position: relative;
     grid-row: 3;
     grid-column: 5;
     margin-bottom: auto;
+    transition: top 132ms ease-in-out;
   }
 
   > [data-component="ImageUploaderButton"] {
+    position: relative;
     grid-row: 3;
     grid-column: 6;
     margin-bottom: auto;
+    transition: top 132ms ease-in-out;
   }
 `;
