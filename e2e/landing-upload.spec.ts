@@ -14,7 +14,7 @@ test.describe("Landing upload", () => {
     const landing = page.locator('[data-component="Landing"]');
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
-      landing.getByRole("button", { name: "Upload" }).click(),
+      landing.getByRole("button", { name: "Upload image", exact: true }).click(),
     ]);
     await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
@@ -31,7 +31,7 @@ test.describe("Landing upload", () => {
       const landing = page.locator('[data-component="Landing"]');
       const [fileChooser] = await Promise.all([
         page.waitForEvent("filechooser"),
-        landing.getByRole("button", { name: "Upload" }).click(),
+        landing.getByRole("button", { name: "Upload image", exact: true }).click(),
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
@@ -46,7 +46,7 @@ test.describe("Landing upload", () => {
     await page.goto("/");
     const landing = page.locator('[data-component="Landing"]');
     await expectLandingVisible(page);
-    const uploadButton = landing.getByRole("button", { name: "Upload" });
+    const uploadButton = landing.getByRole("button", { name: "Upload image", exact: true });
 
     const fileChooserPromise = page.waitForEvent("filechooser");
     await uploadButton.click();
@@ -65,7 +65,7 @@ test.describe("Landing upload", () => {
       await page.goto("/");
       const landing = page.locator('[data-component="Landing"]');
       await expectLandingVisible(page);
-      const uploadButton = landing.getByRole("button", { name: "Upload" });
+      const uploadButton = landing.getByRole("button", { name: "Upload image", exact: true });
 
       const fileChooserPromise = page.waitForEvent("filechooser");
       await uploadButton.click();

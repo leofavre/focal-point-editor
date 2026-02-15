@@ -110,7 +110,7 @@ test.describe("Drag-drop", () => {
 
     await expect(page).toHaveURL("/");
     await expect(landing).toBeVisible();
-    const uploadButton = landing.getByRole("button", { name: "Upload" });
+    const uploadButton = landing.getByRole("button", { name: "Upload image", exact: true });
     await expect(uploadButton).toBeVisible();
     await expect(uploadButton).toBeEnabled();
     await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);
@@ -127,7 +127,7 @@ test.describe("Drag-drop", () => {
 
       await expect(page).toHaveURL("/");
       await expect(landing).toBeVisible();
-      const uploadButton = landing.getByRole("button", { name: "Upload" });
+      const uploadButton = landing.getByRole("button", { name: "Upload image", exact: true });
       await expect(uploadButton).toBeVisible();
       await expect(uploadButton).toBeEnabled();
       await expect(page.locator('[data-component="FullScreenDropZone"]')).toHaveCount(0);

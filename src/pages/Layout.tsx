@@ -97,6 +97,7 @@ export default function Layout() {
         />
         <ImageUploaderButton
           ref={uploaderButtonRef}
+          label="Upload"
           onImageUpload={handleImageUpload}
           onImageUploadError={noop}
         />

@@ -42,7 +42,7 @@ export function expectEditorWithControlsVisible(page: Page) {
   const focalPointButton = page.locator('[data-component="FocalPointButton"]');
   const imageOverflowButton = page.locator('[data-component="ImageOverflowButton"]');
   const codeSnippetButton = page.locator('[data-component="CodeSnippetButton"]');
-  const uploadButton = page.getByRole("button", { name: "Upload" });
+  const uploadButton = page.getByRole("button", { name: "Upload", exact: true });
 
   return Promise.all([
     expect(focalPointEditor).toBeVisible(),
@@ -60,5 +60,5 @@ export function expectEditorWithControlsVisible(page: Page) {
 export async function expectLandingVisible(page: Page) {
   const landing = page.locator('[data-component="Landing"]');
   await expect(landing).toBeVisible();
-  await expect(landing.getByRole("button", { name: "Upload" })).toBeVisible();
+  await expect(landing.getByRole("button", { name: "Upload image", exact: true })).toBeVisible();
 }

@@ -19,7 +19,7 @@ test.describe("Keyboard shortcuts", () => {
     const landing = page.locator('[data-component="Landing"]');
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
-      landing.getByRole("button", { name: "Upload" }).click(),
+      landing.getByRole("button", { name: "Upload image", exact: true }).click(),
     ]);
     await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
     await expect(page).toHaveURL(/\/edit$/);

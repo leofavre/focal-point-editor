@@ -8,6 +8,7 @@ import type { ImageUploaderButtonProps } from "./types";
 
 export function ImageUploaderButton({
   ref,
+  label,
   size = "small",
   onImageUpload,
   onImagesUpload,
@@ -52,8 +53,8 @@ export function ImageUploaderButton({
           type="button"
           toggled={isOpened}
           onClick={handleButtonClick}
-          titleOn="Upload"
-          titleOff="Upload"
+          titleOn={label}
+          titleOff={label}
           icon={<IconUpload />}
           scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
         />
