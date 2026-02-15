@@ -1,6 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
+import { markdownImport } from "./vite-plugin-markdown-import";
 
 /** @see https://vite.dev/config/ */
 export default defineConfig(({ mode }) => ({
@@ -8,6 +9,7 @@ export default defineConfig(({ mode }) => ({
     pure: mode === "production" ? ["console.log"] : [],
   },
   plugins: [
+    markdownImport(),
     react({
       jsxImportSource: "@emotion/react",
       babel: {

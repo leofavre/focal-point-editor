@@ -8,7 +8,7 @@ Crop images in responsive layouts without losing what matters most.
    - Select an image from your device. It’s kept locally, so it can be edited offline. No uploads.
 
 2. **Edit the focal point**
-   - Test how the image adapts to different aspect ratios. Set a focal point to keep important areas visible as the container changes.
+   - Drag slider to test how the image adapts to different aspect ratios. Set a focal point to keep important areas visible as the container changes.
 
 3. **Grab the code**
    - When you’re done, copy the HTML and CSS code to use the image in full-width banners and responsive layouts.
