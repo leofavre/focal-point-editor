@@ -19,8 +19,6 @@ export const Slider = styled.div`
     background: transparent;
     border-radius: 0;
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     -webkit-tap-highlight-color: transparent;
     cursor: pointer;
     outline: none;
