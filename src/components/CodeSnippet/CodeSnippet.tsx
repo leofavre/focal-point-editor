@@ -12,7 +12,7 @@ import {
   Wrapper,
 } from "./CodeSnippet.styled";
 import { codeSnippetTheme } from "./codeSnippetTheme";
-import { copyToClipboard } from "./copyToClipboard";
+import { copyToClipboard } from "./helpers/copyToClipboard";
 import { normalizeWhitespaceInQuotes } from "./helpers/normalizeWhitespaceInQuotes";
 import type { CodeSnippetProps } from "./types";
 

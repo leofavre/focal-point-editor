@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
 import { useCallback, useEffectEvent } from "react";
 import { parseBooleanAttr } from "../../helpers/parseBooleanAttr";
-import { Button, Label, Shadow } from "./ToggleButton.styled";
+import { Button, ButtonWrapper, Shadow } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
 export function ToggleButton({
@@ -35,7 +35,7 @@ export function ToggleButton({
   );
 
   return (
-    <Label data-scale={scale} {...rest}>
+    <ButtonWrapper data-scale={scale} {...rest}>
       <Button
         ref={ref}
         as="button"
@@ -50,6 +50,6 @@ export function ToggleButton({
         {children}
       </Button>
       <Shadow />
-    </Label>
+    </ButtonWrapper>
   );
 }

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const Label = styled.label`
+export const ButtonWrapper = styled.span`
   --scale: 1;
 
   &[data-scale="2"] {
