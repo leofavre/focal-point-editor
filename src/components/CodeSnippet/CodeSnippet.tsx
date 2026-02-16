@@ -1,6 +1,5 @@
-import copy from "copy-to-clipboard";
 import type { ClipboardEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
 import {
   Code,
@@ -13,6 +12,7 @@ import {
   Wrapper,
 } from "./CodeSnippet.styled";
 import { codeSnippetTheme } from "./codeSnippetTheme";
+import { copyToClipboard } from "./copyToClipboard";
 import { normalizeWhitespaceInQuotes } from "./helpers/normalizeWhitespaceInQuotes";
 import type { CodeSnippetProps } from "./types";
 
@@ -105,7 +105,7 @@ export function CodeSnippet({
     setCopied(copiedProp);
   }, [copiedProp]);
 
-  const handleCopyCapture = (event: ClipboardEvent) => {
+  const handleCopyCapture = useCallback((event: ClipboardEvent) => {
     const { clipboardData } = event;
     if (clipboardData == null) return;
 
@@ -116,16 +116,17 @@ export function CodeSnippet({
     event.preventDefault();
     clipboardData.clearData();
     clipboardData.setData("text/plain", normalizeWhitespaceInQuotes(selectedText));
-  };
+  }, []);
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(async () => {
     const textToCopy = normalizeWhitespaceInQuotes(codeSnippet);
-    const success = copy(textToCopy, { format: "text/plain" });
+    const success = await copyToClipboard(textToCopy);
 
     if (success) {
       if (copyResetTimeoutRef.current) {
         clearTimeout(copyResetTimeoutRef.current);
       }
+
       setCopied(true);
       onCopiedChange?.(true);
 
@@ -143,7 +144,7 @@ export function CodeSnippet({
       setCopied(false);
       onCopiedChange?.(false);
     }
-  };
+  }, [codeSnippet, onCopiedChange]);
 
   return (
     <Wrapper data-component="CodeSnippet" onCopy={handleCopyCapture} {...rest}>

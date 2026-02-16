@@ -30,7 +30,6 @@ const noop = () => {};
  *
  * ### Basic functionality
  *
- * - Fix copy button because it's not working anymore.
  * - Handle errors with toaster.
  *
  * ### Advanced functionality
