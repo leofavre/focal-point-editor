@@ -5,6 +5,7 @@ import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSl
 import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
+import { ButtonText } from "../components/ToggleButton/ToggleButton.styled";
 import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
@@ -18,6 +19,7 @@ const noop = () => {};
  *
  * ### MELHORIZE™ UI.
  *
+ * - Fix ToggleButton on mobile devices.
  * - Verify accessibility.
  * - Review aria labels.
  * - Think about animations and transitions.
@@ -66,21 +68,23 @@ export default function Layout() {
         <ToggleButton
           type="button"
           data-component="FocalPointButton"
+          toggleable
           toggled={showFocalPoint ?? false}
           onToggle={(toggled) => setShowFocalPoint(!toggled)}
-          titleOn="Focal point"
-          titleOff="Focal point"
-          icon={<IconReference />}
-        />
+        >
+          <IconReference />
+          <ButtonText>Focal point</ButtonText>
+        </ToggleButton>
         <ToggleButton
           type="button"
           data-component="ImageOverflowButton"
+          toggleable
           toggled={showImageOverflow ?? false}
           onToggle={(toggled) => setShowImageOverflow(!toggled)}
-          titleOn="Overflow"
-          titleOff="Overflow"
-          icon={<IconMask />}
-        />
+        >
+          <IconMask />
+          <ButtonText>Overflow</ButtonText>
+        </ToggleButton>
         <AspectRatioSlider
           aspectRatio={aspectRatio}
           defaultAspectRatio={image?.naturalAspectRatio}
@@ -89,12 +93,13 @@ export default function Layout() {
         <ToggleButton
           type="button"
           data-component="CodeSnippetButton"
+          toggleable
           toggled={showCodeSnippet ?? false}
           onToggle={(toggled) => setShowCodeSnippet(!toggled)}
-          titleOn="Code"
-          titleOff="Code"
-          icon={<IconCode />}
-        />
+        >
+          <IconCode />
+          <ButtonText>Code</ButtonText>
+        </ToggleButton>
         <ImageUploaderButton
           ref={uploaderButtonRef}
           label="Upload"

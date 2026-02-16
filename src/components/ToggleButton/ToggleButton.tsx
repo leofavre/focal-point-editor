@@ -1,6 +1,7 @@
 import type { MouseEvent } from "react";
 import { useCallback, useEffectEvent } from "react";
-import { Button } from "./ToggleButton.styled";
+import { parseBooleanAttr } from "../../helpers/parseBooleanAttr";
+import { Button, Label, Shadow } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
 export function ToggleButton({
@@ -9,16 +10,14 @@ export function ToggleButton({
   onClick,
   onFocus,
   onBlur,
-  titleOn,
-  titleOff,
-  icon,
+  children,
   ref,
   type,
   scale,
+  disabled,
+  toggleable,
   ...rest
 }: ToggleButtonProps) {
-  const label = toggled ? titleOn : titleOff;
-
   const stableOnClick = useEffectEvent((event: MouseEvent<HTMLButtonElement>) => {
     onClick?.(event);
   });
@@ -30,26 +29,28 @@ export function ToggleButton({
   const handleClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       stableOnClick(event);
-      stableOnToggle(toggled);
+      if (toggleable) stableOnToggle(toggled);
     },
-    [toggled],
+    [toggled, toggleable],
   );
 
   return (
-    <div {...rest}>
+    <Label {...rest}>
       <Button
         ref={ref}
         as="button"
         type={type}
+        disabled={disabled}
+        data-toggleable={parseBooleanAttr(toggleable ?? true)}
         aria-pressed={toggled}
-        onClick={handleClick}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onClick={disabled ? undefined : handleClick}
+        onFocus={disabled ? undefined : onFocus}
+        onBlur={disabled ? undefined : onBlur}
         data-scale={scale}
       >
-        {icon}
-        <span>{label}</span>
+        {children}
       </Button>
-    </div>
+      <Shadow />
+    </Label>
   );
 }

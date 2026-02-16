@@ -1,16 +1,19 @@
 import styled from "@emotion/styled";
 
-export const Button = styled.button`
+export const Label = styled.label`
   --scale: 1;
-  &[data-scale="2"] { --scale: 2; }
   --shadow-offset: calc(0.25rem * var(--scale));
+  --transform-in: translate(0, 0);
+  --transform-out: translate(var(--shadow-offset), var(--shadow-offset));
+  
+  position: relative;
+  isolation: isolate;
+`;
 
-  --transition-prop:
-    color 66ms ease-in-out,
-    background-color 66ms ease-in-out,
-    border-color 66ms ease-in-out,
-    box-shadow 66ms ease-in-out,
-    transform 66ms ease-in-out;
+export const Button = styled.button`
+  &[data-scale="2"] {
+    --scale: 2;
+  }
 
   container-type: inline-size;
   position: relative;
@@ -23,68 +26,55 @@ export const Button = styled.button`
   padding: 0 calc(var(--base-line-025x) * var(--scale));
   box-sizing: border-box;
   background-color: white;
-  border: calc(1px * var(--scale)) solid rgb(from var(--color-neutral) r g b);
-  color: rgb(from var(--color-neutral) r g b);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
+  border: calc(1px * var(--scale)) solid var(--color-neutral);
+  color: var(--color-neutral);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   font: inherit;
   font-size: calc(14 / 16 * 1rem * var(--scale));
   white-space: nowrap;
   width: 100%;
-  transition: var(--transition-prop);
+  user-select: none;
+  touch-action: none;
+  transition: background-color 66ms ease-in-out, transform 66ms ease-in-out;
+  transform: var(--transform-in);
+  z-index: 10;
 
   @media (hover: hover) {
-    &:hover {
-      background-color: rgb(from var(--color-neutral) r g b / 10%);
-      border-color: rgb(from var(--color-neutral) r g b);
-      color: rgb(from var(--color-neutral) r g b);
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
-      transition: var(--transition-prop);
+    &:hover:not(:disabled) {
+      background-color: var(--color-neutral-tint-10);
+    }
+  
+    &:active:not(:disabled) {
+      transform: var(--transform-out);
     }
   }
-  @media (hover: none) {
-    &:active {
-      background-color: rgb(from var(--color-neutral) r g b / 10%);
-      border-color: rgb(from var(--color-neutral) r g b);
-      color: rgb(from var(--color-neutral) r g b);
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--color-neutral);
-      transition: var(--transition-prop);
+
+  &:not([data-toggleable]):active {
+    transform: var(--transform-out);
+  }
+
+  &[data-toggleable][aria-pressed="true"] {
+    transform: var(--transform-out);
+
+    @media (hover: hover) {
+      &:active:not(:disabled) {
+        transform: var(--transform-in);
+      }
     }
+  }
+
+  &:disabled {
+    transition: none;
+    border-color: var(--color-neutral-tint-30);
+    color: var(--color-neutral-tint-30);
+    cursor: default;
   }
 
   &:focus-visible {
     outline: calc(0.25rem * var(--scale)) solid var(--color-glow);
     border-radius: 0rem;
     outline-offset: 0;
-  }
-
-  &[aria-pressed="true"] {
-    background-color: rgb(from var(--color-loud) r g b / 10%);
-    border-color: rgb(from var(--color-loud) r g b);
-    color: rgb(from var(--color-loud) r g b);
-    box-shadow: 0px 0px 0px 0px var(--color-neutral);
-    transform: translate(var(--shadow-offset), var(--shadow-offset));
-    transition: var(--transition-prop);
-
-    @media (hover: hover) {
-      &:hover {
-        background-color: rgb(from var(--color-loud) r g b / 20%);
-        border-color: rgb(from var(--color-loud) r g b);
-        color: rgb(from var(--color-loud) r g b);
-        box-shadow: 0px 0px 0px 0px var(--color-neutral);
-        transition: var(--transition-prop);
-      }
-    }
-    @media (hover: none) {
-      &:active {
-        background-color: rgb(from var(--color-loud) r g b / 20%);
-        border-color: rgb(from var(--color-loud) r g b);
-        color: rgb(from var(--color-loud) r g b);
-        box-shadow: 0px 0px 0px 0px var(--color-neutral);
-        transition: var(--transition-prop);
-      }
-    }
   }
 
   svg {
@@ -107,3 +97,18 @@ export const Button = styled.button`
     }
   }
 `;
+
+export const Shadow = styled.span`
+  display: block;
+  position: absolute;
+  inset: 0;
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  background-color: var(--color-neutral);
+  z-index: 0;
+
+  *:disabled + & {
+    background-color: var(--color-neutral-tint-30);
+  }
+`;
+
+export const ButtonText = styled.span``;

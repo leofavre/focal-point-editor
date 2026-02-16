@@ -5,8 +5,8 @@ export type ToggleButtonProps = {
   type: "button" | "submit";
   toggled: boolean;
   onToggle?: (toggled: boolean) => void;
-  titleOn: string;
-  titleOff: string;
-  icon: ReactNode;
   scale?: number;
+  disabled?: boolean;
+  toggleable?: boolean;
+  children?: ReactNode;
 } & Pick<HTMLProps<HTMLButtonElement>, "onClick" | "onFocus" | "onBlur">;

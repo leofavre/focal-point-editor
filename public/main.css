@@ -6,7 +6,7 @@
   --color-body: #2a2828;
   --color-glow: rgb(from var(--color-loud) r g b / 40%);
   --color-background: color-mix(in srgb, var(--color-body) 4%, white);
-  --color-dialog-backdrop: color-mix(in srgb, var(--color-zero) 75%, white);
+  --color-dialog-backdrop: rgb(from white r g b / 75%);
   --color-neutral-tint-10: color-mix(in srgb, var(--color-neutral) 10%, white);
   --color-neutral-tint-30: color-mix(in srgb, var(--color-neutral) 30%, white);
   --color-zero: #fff;
