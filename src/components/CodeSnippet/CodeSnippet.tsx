@@ -1,20 +1,29 @@
 import type { ClipboardEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CodeBlock } from "react-code-block";
+import type { CodeSnippetLanguage } from "../../types";
+import { ToggleButton } from "../ToggleButton/ToggleButton";
+import { ButtonText } from "../ToggleButton/ToggleButton.styled";
 import {
+  CheckboxGroup,
   Code,
-  CopyButton,
   Line,
   LineContent,
   LineNumber,
-  TabBar,
-  TabButton,
+  OptionsRow,
   Wrapper,
 } from "./CodeSnippet.styled";
 import { codeSnippetTheme } from "./codeSnippetTheme";
 import { copyToClipboard } from "./helpers/copyToClipboard";
 import { normalizeWhitespaceInQuotes } from "./helpers/normalizeWhitespaceInQuotes";
 import type { CodeSnippetProps } from "./types";
+
+function getLanguageFromOptions(useReact: boolean, useTailwind: boolean): CodeSnippetLanguage {
+  if (useReact && useTailwind) return "react-tailwind";
+  if (useReact) return "react";
+  if (useTailwind) return "tailwind";
+  return "html";
+}
 
 function getCodeSnippetHtml(src: string, objectPosition: string): string {
   return `<img
@@ -95,6 +104,9 @@ export function CodeSnippet({
   onCopiedChange,
   ...rest
 }: CodeSnippetProps) {
+  const useReact = language === "react" || language === "react-tailwind";
+  const useTailwind = language === "tailwind" || language === "react-tailwind";
+
   const codeSnippet = getCodeSnippet(language, src, objectPosition);
   const codeBlockLanguage = language === "react" || language === "react-tailwind" ? "jsx" : "html";
 
@@ -104,6 +116,22 @@ export function CodeSnippet({
   useEffect(() => {
     setCopied(copiedProp);
   }, [copiedProp]);
+
+  const handleUseReactChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = event.target.checked;
+      onLanguageChange?.(getLanguageFromOptions(checked, useTailwind));
+    },
+    [onLanguageChange, useTailwind],
+  );
+
+  const handleUseTailwindChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = event.target.checked;
+      onLanguageChange?.(getLanguageFromOptions(useReact, checked));
+    },
+    [onLanguageChange, useReact],
+  );
 
   const handleCopyCapture = useCallback((event: ClipboardEvent) => {
     const { clipboardData } = event;
@@ -148,47 +176,31 @@ export function CodeSnippet({
 
   return (
     <Wrapper data-component="CodeSnippet" onCopy={handleCopyCapture} {...rest}>
-      <TabBar role="tablist" aria-label="Code snippet format">
-        <TabButton
-          type="button"
-          role="tab"
-          aria-selected={language === "html"}
-          onClick={() => onLanguageChange?.("html")}
-          className="notranslate"
-        >
-          HTML
-        </TabButton>
-        <TabButton
-          type="button"
-          role="tab"
-          aria-selected={language === "tailwind"}
-          onClick={() => onLanguageChange?.("tailwind")}
-          className="notranslate"
-        >
-          Tailwind
-        </TabButton>
-        <TabButton
-          type="button"
-          role="tab"
-          aria-selected={language === "react"}
-          onClick={() => onLanguageChange?.("react")}
-          className="notranslate"
-        >
-          React
-        </TabButton>
-        <TabButton
-          type="button"
-          role="tab"
-          aria-selected={language === "react-tailwind"}
-          onClick={() => onLanguageChange?.("react-tailwind")}
-          className="notranslate"
-        >
-          React + Tailwind
-        </TabButton>
-      </TabBar>
-      <CopyButton type="button" onClick={handleCopy}>
-        {copied ? "Copied!" : "Copy"}
-      </CopyButton>
+      <OptionsRow>
+        <CheckboxGroup>
+          <label>
+            <input
+              type="checkbox"
+              checked={useReact}
+              onChange={handleUseReactChange}
+              aria-label="use React"
+            />
+            {" use React"}
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={useTailwind}
+              onChange={handleUseTailwindChange}
+              aria-label="use Tailwind"
+            />
+            {" use Tailwind"}
+          </label>
+        </CheckboxGroup>
+        <ToggleButton type="button" toggleable={false} toggled={copied} onClick={handleCopy}>
+          <ButtonText>{copied ? "Copied!" : "Copy"}</ButtonText>
+        </ToggleButton>
+      </OptionsRow>
       <CodeBlock code={codeSnippet} language={codeBlockLanguage} theme={codeSnippetTheme}>
         <Code ref={ref} className="notranslate">
           <Line>
