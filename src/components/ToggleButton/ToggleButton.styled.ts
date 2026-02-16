@@ -2,18 +2,20 @@ import styled from "@emotion/styled";
 
 export const Label = styled.label`
   --scale: 1;
+
+  &[data-scale="2"] {
+    --scale: 2;
+  }
+
   --shadow-offset: calc(0.25rem * var(--scale));
   --transform-in: translate(0, 0);
   --transform-out: translate(var(--shadow-offset), var(--shadow-offset));
   
   position: relative;
-  isolation: isolate;
+  display: block;
 `;
 
 export const Button = styled.button`
-  &[data-scale="2"] {
-    --scale: 2;
-  }
 
   container-type: inline-size;
   position: relative;
@@ -34,11 +36,12 @@ export const Button = styled.button`
   font-size: calc(14 / 16 * 1rem * var(--scale));
   white-space: nowrap;
   width: 100%;
+  appearance: none;
   user-select: none;
   touch-action: none;
   transition: background-color 66ms ease-in-out, transform 66ms ease-in-out;
   transform: var(--transform-in);
-  z-index: 10;
+  z-index: 1;
 
   @media (hover: hover) {
     &:hover:not(:disabled) {
@@ -102,7 +105,7 @@ export const Shadow = styled.span`
   display: block;
   position: absolute;
   inset: 0;
-  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  transform: var(--transform-out);
   background-color: var(--color-neutral);
   z-index: 0;
 

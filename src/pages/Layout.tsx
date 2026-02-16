@@ -19,7 +19,6 @@ const noop = () => {};
  *
  * ### MELHORIZE™ UI.
  *
- * - Fix ToggleButton on mobile devices.
  * - Verify accessibility.
  * - Review aria labels.
  * - Think about animations and transitions.
@@ -31,6 +30,7 @@ const noop = () => {};
  *
  * ### Basic functionality
  *
+ * - Fix copy button because it's not working anymore.
  * - Handle errors with toaster.
  *
  * ### Advanced functionality

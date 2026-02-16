@@ -35,7 +35,7 @@ export function ToggleButton({
   );
 
   return (
-    <Label {...rest}>
+    <Label data-scale={scale} {...rest}>
       <Button
         ref={ref}
         as="button"
@@ -46,7 +46,6 @@ export function ToggleButton({
         onClick={disabled ? undefined : handleClick}
         onFocus={disabled ? undefined : onFocus}
         onBlur={disabled ? undefined : onBlur}
-        data-scale={scale}
       >
         {children}
       </Button>

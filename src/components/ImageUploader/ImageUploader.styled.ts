@@ -13,8 +13,4 @@ export const InvisibleForm = styled.form``;
 
 export const InvisibleLabel = styled.label`
   display: contents;
-
-  button {
-    width: 100%;
-  }
 `;
