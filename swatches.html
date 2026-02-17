@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color swatches</title>
+    <link rel="stylesheet" href="public/main.css">
+    <style>
+    body {
+      padding: 2rem;
+      max-width: 60rem;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+      gap: 1rem;
+    }
+    .swatch {
+      border: 1px solid var(--color-neutral-tint-30);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+    }
+    .swatch__patch {
+      height: 4rem;
+      width: 100%;
+    }
+    .swatch__name {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8125rem;
+      font-family: "Sono", monospace;
+      word-break: break-all;
+      background: var(--color-background);
+      color: var(--color-body);
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      color: var(--color-body);
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Color swatches</h1>
+
+    <p class="section-title">Base</p>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-zero)"></div>
+        <div class="swatch__name">--color-zero</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-loud)"></div>
+        <div class="swatch__name">--color-loud</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-neutral)"></div>
+        <div class="swatch__name">--color-neutral</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-cool)"></div>
+        <div class="swatch__name">--color-cool</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-body)"></div>
+        <div class="swatch__name">--color-body</div>
+      </div>
+    </div>
+
+    <p class="section-title">Derived</p>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-neutral-tint-10)"></div>
+        <div class="swatch__name">--color-neutral-tint-10</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-neutral-tint-30)"></div>
+        <div class="swatch__name">--color-neutral-tint-30</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-glow)"></div>
+        <div class="swatch__name">--color-glow</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-background)"></div>
+        <div class="swatch__name">--color-background</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-dialog-backdrop)"></div>
+        <div class="swatch__name">--color-dialog-backdrop</div>
+      </div>
+    </div>
+
+    <p class="section-title">CodeSnippet</p>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-codesnippet-comment)"></div>
+        <div class="swatch__name">--color-codesnippet-comment</div>
+      </div>
+      <div class="swatch">
+        <div
+          class="swatch__patch"
+          style="background-color: var(--color-codesnippet-punctuation)"
+        ></div>
+        <div class="swatch__name">--color-codesnippet-punctuation</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-codesnippet-tag)"></div>
+        <div class="swatch__name">--color-codesnippet-tag</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-codesnippet-string)"></div>
+        <div class="swatch__name">--color-codesnippet-string</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__patch" style="background-color: var(--color-codesnippet-keyword)"></div>
+        <div class="swatch__name">--color-codesnippet-keyword</div>
+      </div>
+    </div>
+  </body>
+</html>

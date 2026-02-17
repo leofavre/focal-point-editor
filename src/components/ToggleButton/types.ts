@@ -9,4 +9,5 @@ export type ToggleButtonProps = {
   disabled?: boolean;
   toggleable?: boolean;
   children?: ReactNode;
+  colorScheme?: "foreground" | "background";
 } & Pick<HTMLProps<HTMLButtonElement>, "onClick" | "onFocus" | "onBlur">;

@@ -2,7 +2,6 @@ import { useEffectEvent, useRef, useState } from "react";
 import { useMergeRefs } from "react-merge-refs";
 import { IconUpload } from "../../icons/IconUpload";
 import { ToggleButton } from "../ToggleButton/ToggleButton";
-import { ButtonText } from "../ToggleButton/ToggleButton.styled";
 import { useImageDropzone } from "./hooks/useImageDropzone";
 import { InvisibleControl, InvisibleForm, InvisibleLabel } from "./ImageUploader.styled";
 import type { ImageUploaderButtonProps } from "./types";
@@ -58,7 +57,7 @@ export function ImageUploaderButton({
           scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
         >
           <IconUpload />
-          <ButtonText>{label}</ButtonText>
+          <ToggleButton.ButtonText>{label}</ToggleButton.ButtonText>
         </ToggleButton>
       </InvisibleLabel>
     </InvisibleForm>

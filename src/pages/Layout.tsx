@@ -5,7 +5,6 @@ import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSl
 import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { ToggleButton } from "../components/ToggleButton/ToggleButton";
-import { ButtonText } from "../components/ToggleButton/ToggleButton.styled";
 import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
@@ -72,7 +71,7 @@ export default function Layout() {
           onToggle={(toggled) => setShowFocalPoint(!toggled)}
         >
           <IconReference />
-          <ButtonText>Focal point</ButtonText>
+          <ToggleButton.ButtonText>Focal point</ToggleButton.ButtonText>
         </ToggleButton>
         <ToggleButton
           type="button"
@@ -82,7 +81,7 @@ export default function Layout() {
           onToggle={(toggled) => setShowImageOverflow(!toggled)}
         >
           <IconMask />
-          <ButtonText>Overflow</ButtonText>
+          <ToggleButton.ButtonText>Overflow</ToggleButton.ButtonText>
         </ToggleButton>
         <AspectRatioSlider
           aspectRatio={aspectRatio}
@@ -97,7 +96,7 @@ export default function Layout() {
           onToggle={(toggled) => setShowCodeSnippet(!toggled)}
         >
           <IconCode />
-          <ButtonText>Code</ButtonText>
+          <ToggleButton.ButtonText>Code</ToggleButton.ButtonText>
         </ToggleButton>
         <ImageUploaderButton
           ref={uploaderButtonRef}

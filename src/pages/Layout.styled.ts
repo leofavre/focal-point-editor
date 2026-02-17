@@ -35,7 +35,7 @@ export const LayoutGrid = styled.main`
     grid-row: 2 / 4;
     grid-column: 2 / -2;
     margin: auto auto 0 auto;
-    width: clamp(25rem, 100dvw, 30rem);
+    width: clamp(25rem, 100dvw, 50rem);
     z-index: 2;
   }
 

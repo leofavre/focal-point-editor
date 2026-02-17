@@ -1,7 +1,7 @@
-import type { MouseEvent } from "react";
+import type { ComponentPropsWithoutRef, MouseEvent } from "react";
 import { useCallback, useEffectEvent } from "react";
 import { parseBooleanAttr } from "../../helpers/parseBooleanAttr";
-import { Button, ButtonWrapper, Shadow } from "./ToggleButton.styled";
+import { Button, ButtonText, ButtonWrapper, Shadow } from "./ToggleButton.styled";
 import type { ToggleButtonProps } from "./types";
 
 export function ToggleButton({
@@ -53,3 +53,11 @@ export function ToggleButton({
     </ButtonWrapper>
   );
 }
+
+ToggleButton.ButtonText = ButtonText;
+
+export type ToggleButtonComponent = typeof ToggleButton & {
+  ButtonText: typeof ButtonText;
+};
+
+export type ToggleButtonButtonTextProps = ComponentPropsWithoutRef<typeof ButtonText>;

@@ -1,15 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Sono:wght,MONO@200..800,1&display=swap");
 
 :root {
+  --color-zero: white;
   --color-loud: #eb8552;
   --color-neutral: #827377;
+  --color-cool: #5a9fb8;
+  --color-neutral-tint-10: color-mix(in srgb, var(--color-neutral) 10%, var(--color-zero));
+  --color-neutral-tint-30: color-mix(in srgb, var(--color-neutral) 30%, var(--color-zero));
   --color-body: #2a2828;
   --color-glow: rgb(from var(--color-loud) r g b / 40%);
-  --color-background: color-mix(in srgb, var(--color-body) 4%, white);
-  --color-dialog-backdrop: rgb(from white r g b / 75%);
-  --color-neutral-tint-10: color-mix(in srgb, var(--color-neutral) 10%, white);
-  --color-neutral-tint-30: color-mix(in srgb, var(--color-neutral) 30%, white);
-  --color-zero: #fff;
+  --color-background: color-mix(in srgb, var(--color-body) 4%, var(--color-zero));
+  --color-dialog-backdrop: rgb(from var(--color-zero) r g b / 75%);
+
+  /* CodeSnippet syntax colors - fewer, more distinct colors */
+  --color-codesnippet-comment: var(--color-neutral);
+  --color-codesnippet-punctuation: color-mix(in srgb, var(--color-neutral) 60%, var(--color-zero));
+  --color-codesnippet-tag: var(--color-loud);
+  --color-codesnippet-string: var(--color-cool);
+  --color-codesnippet-keyword: color-mix(in srgb, var(--color-cool) 75%, var(--color-body));
 
   --base-line: calc(22 / 16 * 1rem);
   --base-line-025x: calc(var(--base-line) * 0.25);

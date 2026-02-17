@@ -10,6 +10,11 @@ export const ButtonWrapper = styled.span`
   --shadow-offset: calc(0.25rem * var(--scale));
   --transform-in: translate(0, 0);
   --transform-out: translate(var(--shadow-offset), var(--shadow-offset));
+
+  --button-color-solid: var(--color-neutral);
+  --button-color-background: var(--color-zero);
+  --button-color-hover: var(--color-neutral-tint-10);
+  --button-color-disabled: var(--color-neutral-tint-30);
   
   position: relative;
   display: block;
@@ -27,9 +32,9 @@ export const Button = styled.button`
   height: calc(2rem * var(--scale));
   padding: 0 calc(var(--base-line-025x) * var(--scale));
   box-sizing: border-box;
-  background-color: white;
-  border: calc(1px * var(--scale)) solid var(--color-neutral);
-  color: var(--color-neutral);
+  background-color: var(--button-color-background);
+  border: calc(1px * var(--scale)) solid var(--button-color-solid);
+  color: var(--button-color-solid);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   font: inherit;
@@ -45,7 +50,7 @@ export const Button = styled.button`
 
   @media (hover: hover) {
     &:hover:not(:disabled) {
-      background-color: var(--color-neutral-tint-10);
+      background-color: var(--button-color-hover);
     }
   
     &:active:not(:disabled) {
@@ -69,8 +74,8 @@ export const Button = styled.button`
 
   &:disabled {
     transition: none;
-    border-color: var(--color-neutral-tint-30);
-    color: var(--color-neutral-tint-30);
+    border-color: var(--button-color-disabled);
+    color: var(--button-color-disabled);
     cursor: default;
   }
 
@@ -106,11 +111,11 @@ export const Shadow = styled.span`
   position: absolute;
   inset: 0;
   transform: var(--transform-out);
-  background-color: var(--color-neutral);
+  background-color: var(--button-color-solid);
   z-index: 0;
 
   *:disabled + & {
-    background-color: var(--color-neutral-tint-30);
+    background-color: var(--button-color-disabled);
   }
 `;
 

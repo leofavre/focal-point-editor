@@ -10,10 +10,9 @@ export const Wrapper = styled.div`
 `;
 
 export const Code = styled(CodeBlock.Code)`
-  font-size: 1rem;
+  font-size: 1.5rem;
   margin: 0;
   box-sizing: border-box;
-  background-color: var(--color-body);
   overflow: auto;
   transition: opacity 0.15s ease;
   flex-grow: 1;
@@ -25,11 +24,12 @@ export const Line = styled.div`
 
 export const LineNumber = styled(CodeBlock.LineNumber)`
   display: table-cell;
+  font-size: 1.5rem;
   padding-right: 1rem;
   font-size: 0.875rem;
-  color: var(--color-neutral);
   text-align: right;
   user-select: none;
+  color: var(--color-codesnippet-punctuation);
 `;
 
 export const LineContent = styled(CodeBlock.LineContent)`

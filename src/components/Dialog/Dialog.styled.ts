@@ -76,13 +76,11 @@ export const DialogButton = styled.button`
   }
 `;
 
-/** Exposed as sub-component of Dialog */
 export const DialogContent = styled.div`
   grid-column: 1 / -1;
   grid-row: 2;
 `;
 
-/** Exposed as sub-component of Dialog */
 export const DialogHeader = styled.div`
   grid-column: 1;
   grid-row: 1;

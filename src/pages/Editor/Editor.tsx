@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { useEditorContext } from "../../AppContext";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
 import {
@@ -7,21 +6,14 @@ import {
 } from "../../components/CodeSnippet/helpers/getCodeSnippet";
 import { useCopyToClipboardWithTimeout } from "../../components/CodeSnippet/hooks/useCopyToClipboardWithTimeout";
 import { Dialog } from "../../components/Dialog/Dialog";
-import { DialogContent, DialogHeader } from "../../components/Dialog/Dialog.styled";
 import { FocalPointEditor } from "../../components/FocalPointEditor/FocalPointEditor";
 import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
-import { ButtonText } from "../../components/ToggleButton/ToggleButton.styled";
+import { IconCopy } from "../../icons/IconCopy";
 import type { CodeSnippetLanguage, ObjectPositionString } from "../../types";
 import { LayoutMessage } from "../Layout.styled";
 
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
-
-/** @todo Move to component file */
-const StyledDialogHeader = styled(DialogHeader)`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  `;
 
 type EditorCodeSnippetHeaderProps = {
   codeSnippetLanguage: CodeSnippetLanguage;
@@ -57,7 +49,7 @@ function EditorCodeSnippetHeader({
   });
 
   return (
-    <>
+    <div css={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
       <label>
         <input
           type="checkbox"
@@ -79,9 +71,10 @@ function EditorCodeSnippetHeader({
         Tailwind
       </label>
       <ToggleButton type="button" toggleable={false} toggled={copied} onClick={copy}>
-        <ButtonText>{copied ? "Copied!" : "Copy"}</ButtonText>
+        <IconCopy />
+        <ToggleButton.ButtonText>{copied ? "Copied!" : "Copy"}</ToggleButton.ButtonText>
       </ToggleButton>
-    </>
+    </div>
   );
 }
 
@@ -126,9 +119,9 @@ export function Editor() {
           transparent
           open={showCodeSnippet}
           onOpenChange={setShowCodeSnippet}
-          css={{ backgroundColor: "var(--color-body)" }}
+          css={{ backgroundColor: "var(--color-background)" }}
         >
-          <StyledDialogHeader>
+          <Dialog.Header>
             <EditorCodeSnippetHeader
               codeSnippetLanguage={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
               setCodeSnippetLanguage={setCodeSnippetLanguage}
@@ -137,14 +130,14 @@ export function Editor() {
               imageName={image.name}
               objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
             />
-          </StyledDialogHeader>
-          <DialogContent>
+          </Dialog.Header>
+          <Dialog.Content>
             <CodeSnippet
               src={image.name}
               objectPosition={currentObjectPosition ?? DEFAULT_OBJECT_POSITION}
               language={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
             />
-          </DialogContent>
+          </Dialog.Content>
         </Dialog>
       </>
     );

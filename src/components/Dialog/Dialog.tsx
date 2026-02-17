@@ -1,7 +1,8 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { mergeRefs } from "react-merge-refs";
 import { IconClose } from "../../icons/IconClose";
-import { DialogButton, DialogWrapper } from "./Dialog.styled";
+import { DialogButton, DialogContent, DialogHeader, DialogWrapper } from "./Dialog.styled";
 import type { DialogProps } from "./types";
 
 export function Dialog({
@@ -53,15 +54,22 @@ export function Dialog({
   }, []);
 
   return (
-    <DialogWrapper
-      ref={mergedRefs}
-      css={{ backgroundColor: transparent ? "transparent" : "white" }}
-      {...rest}
-    >
+    <DialogWrapper ref={mergedRefs} {...rest}>
+      {children}
       <DialogButton type="button" onClick={() => setIsOpen(false)}>
         <IconClose />
       </DialogButton>
-      {children}
     </DialogWrapper>
   );
 }
+
+Dialog.Content = DialogContent;
+Dialog.Header = DialogHeader;
+
+export type DialogComponent = typeof Dialog & {
+  Content: typeof DialogContent;
+  Header: typeof DialogHeader;
+};
+
+export type DialogContentProps = ComponentPropsWithoutRef<typeof DialogContent>;
+export type DialogHeaderProps = ComponentPropsWithoutRef<typeof DialogHeader>;
