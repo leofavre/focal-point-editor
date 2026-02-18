@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const Wrapper = styled.div`
+export const Cross = styled.div`
   --pointer-size: 4rem;
 
   position: absolute;
