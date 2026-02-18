@@ -7,6 +7,7 @@ export function FullScreenDropZone({
   onImagesUpload,
   onImageUploadError,
   onImagesUploadError,
+  ...rest
 }: FullScreenDropZoneProps) {
   const { getRootProps, getInputProps, isDragGlobal } = useImageDropzone({
     onImageUpload,
@@ -26,6 +27,7 @@ export function FullScreenDropZone({
       data-component="FullScreenDropZone"
       aria-hidden
       style={{ pointerEvents: "auto" }}
+      {...rest}
     >
       <input {...getInputProps()} aria-hidden />
     </Overlay>

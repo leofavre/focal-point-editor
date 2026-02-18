@@ -1,6 +1,17 @@
 import styled from "@emotion/styled";
 import { CodeBlock } from "react-code-block";
 
+export const Container = styled.div`
+  container-type: inline-size;
+  width: 100%;
+
+  @container (max-width: 525px) {
+    & > div {
+      padding-bottom: var(--base-line-15x);
+    }
+  }
+`;
+
 export const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -13,13 +24,16 @@ export const Wrapper = styled.div`
     bottom: var(--base-line);
     right: var(--base-line);
   }
+
+  > [data-component="CodeBlock"] {
+    padding-top: 0;
+  }
 `;
 
 export const Code = styled(CodeBlock.Code)`
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3dvw, 1.5rem);
   margin: 0;
   padding: var(--base-line);
-  padding-top: 0;
   box-sizing: border-box;
   overflow: auto;
   transition: opacity 0.15s ease;

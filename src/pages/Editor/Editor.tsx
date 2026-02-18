@@ -1,50 +1,13 @@
 import { useEditorContext } from "../../AppContext";
 import { CodeSnippet } from "../../components/CodeSnippet/CodeSnippet";
-import { getLanguageFromOptions } from "../../components/CodeSnippet/helpers/getCodeSnippet";
+import { CodeSnippetHeader } from "../../components/CodeSnippetHeader/CodeSnippetHeader";
 import { Dialog } from "../../components/Dialog/Dialog";
 import { FocalPointEditor } from "../../components/FocalPointEditor/FocalPointEditor";
 import type { ObjectPositionString } from "../../types";
 import { LayoutMessage } from "../Layout.styled";
-import { Actions } from "./Editor.styled";
-import type { EditorCodeSnippetHeaderProps } from "./types";
 
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
-
-function EditorCodeSnippetHeader({
-  codeSnippetLanguage,
-  setCodeSnippetLanguage,
-}: EditorCodeSnippetHeaderProps) {
-  const useReact = codeSnippetLanguage === "react" || codeSnippetLanguage === "react-tailwind";
-
-  const useTailwind =
-    codeSnippetLanguage === "tailwind" || codeSnippetLanguage === "react-tailwind";
-
-  return (
-    <Actions>
-      <label>
-        <input
-          type="checkbox"
-          checked={useReact}
-          onChange={(e) =>
-            setCodeSnippetLanguage(getLanguageFromOptions(e.target.checked, useTailwind))
-          }
-        />{" "}
-        React
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={useTailwind}
-          onChange={(e) =>
-            setCodeSnippetLanguage(getLanguageFromOptions(useReact, e.target.checked))
-          }
-        />{" "}
-        Tailwind
-      </label>
-    </Actions>
-  );
-}
 
 /**
  * Content for the image route (/:imageId). Renders the editing view or error messages
@@ -90,7 +53,7 @@ export function Editor() {
           css={{ backgroundColor: "var(--color-background)" }}
         >
           <Dialog.Header>
-            <EditorCodeSnippetHeader
+            <CodeSnippetHeader
               codeSnippetLanguage={codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE}
               setCodeSnippetLanguage={setCodeSnippetLanguage}
             />

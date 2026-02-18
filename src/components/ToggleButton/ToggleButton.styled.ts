@@ -21,7 +21,6 @@ export const ButtonWrapper = styled.span`
 `;
 
 export const Button = styled.button`
-
   container-type: inline-size;
   position: relative;
   display: flex;

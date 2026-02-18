@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { ComponentPropsWithoutRef, Ref } from "react";
 import type { Err } from "../../helpers/errorHandling";
 import type { ImageDraftStateAndFile, ImageDraftStateAndUrl } from "../../types";
 
@@ -29,4 +29,5 @@ export type ImageUploaderButtonProps = ImageUploaderProps & {
 export type FullScreenDropZoneProps = Pick<
   ImageUploaderProps,
   "onImageUpload" | "onImagesUpload" | "onImageUploadError" | "onImagesUploadError"
->;
+> &
+  ComponentPropsWithoutRef<"div">;
