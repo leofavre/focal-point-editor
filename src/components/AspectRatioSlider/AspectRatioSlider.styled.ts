@@ -1,11 +1,19 @@
 import styled from "@emotion/styled";
 
-export const Wrapper = styled.div`
+export const Container = styled.div`
   container-type: inline-size;
   container-name: aspect-ratio-slider;
+  width: 100%;
+`;
 
+export const Wrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
+  height: 6.5rem;
+
+  @container aspect-ratio-slider (width < 37.5rem) {
+    height: 4.5rem;
+  }
 
   [data-component="AspectRatioControl"] {
     position: relative;
