@@ -7,7 +7,7 @@ export const Container = styled.div`
 
   @container (max-width: 525px) {
     & > div {
-      padding-bottom: var(--base-line-15x);
+      padding-bottom: var(--base-line);
     }
   }
 `;
