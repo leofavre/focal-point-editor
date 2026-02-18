@@ -32,7 +32,7 @@ export function CodeSnippetHeader({
             setCodeSnippetLanguage(getLanguageFromOptions(useReact, e.target.checked))
           }
         />
-        Tailwind
+        Tailwind CSS
       </label>
     </Actions>
   );
