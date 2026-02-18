@@ -3,14 +3,13 @@ import styled from "@emotion/styled";
 export const DialogWrapper = styled.dialog`
   border: none;
   padding: 0;
-  margin: auto !important;
+  margin: auto;
   box-sizing: border-box;
   background: none;
   display: grid;
   grid-template-rows: min-content 1fr;
   grid-template-columns: 1fr min-content;
   gap: var(--base-line-05x);
-  // padding: var(--base-line-05x);
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
