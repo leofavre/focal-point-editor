@@ -47,7 +47,6 @@ export function Editor() {
           onImageError={handleImageError}
         />
         <Dialog
-          transparent
           open={showCodeSnippet}
           onOpenChange={setShowCodeSnippet}
           css={{ backgroundColor: "var(--color-background)" }}
