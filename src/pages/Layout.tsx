@@ -18,10 +18,10 @@ const noop = () => {};
  *
  * ### MELHORIZE™ UI.
  *
+ * - Fix first transition in buttons and aspect ratio after reload.
  * - Verify accessibility.
  * - Review aria labels.
  * - Think about animations and transitions.
- * - Improve Landing page.
  * - Improve Full Screen Drop Zone.
  * - Improve loading state.
  * - Improve toasters.
