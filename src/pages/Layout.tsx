@@ -19,7 +19,6 @@ const noop = () => {};
  * ### MELHORIZE™ UI.
  *
  * - Prevent first transition in buttons and aspect ratio after reload.
- * - Fix AspectRatioSlider on smaller screens when "original" is the first or last item (load super tall image to see the bug).
  * - Verify accessibility.
  * - Review aria labels.
  * - Think about animations and transitions.
