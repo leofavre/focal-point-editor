@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.9.0...focal-point-editor-v0.10.0) (2026-02-19)
+
+
+### Features
+
+* Style Code Snippet dialog and add coordinates to the focal point reference ([5b9cebe](https://github.com/leofavre/focal-point-editor/commit/5b9cebe553c2f16def664a6e7f5ce48a5e472078))
+
 ## [0.9.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.8.0...focal-point-editor-v0.9.0) (2026-02-13)
 
 

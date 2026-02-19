@@ -1,7 +1,7 @@
 {
   "name": "focal-point-editor",
   "type": "module",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Crop images in responsive layouts without losing what matters most",
   "author": "Leonardo Favre",
   "license": "MIT",
