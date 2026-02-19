@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { Dispatch, PropsWithChildren, RefObject, SetStateAction } from "react";
 import {
   createContext,
   useCallback,
@@ -20,6 +20,7 @@ import { usePageState } from "./pages/hooks/usePageState";
 import { usePersistedImages } from "./pages/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
 import type {
+  CodeSnippetLanguage,
   ImageDraftStateAndFile,
   ImageDraftStateAndUrl,
   ImageId,
@@ -34,7 +35,7 @@ import { hasUrl, isImageDraftStateAndUrl } from "./types";
 const DEFAULT_SHOW_FOCAL_POINT = false;
 const DEFAULT_SHOW_IMAGE_OVERFLOW = false;
 const DEFAULT_SHOW_CODE_SNIPPET = false;
-const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
+const DEFAULT_CODE_SNIPPET_LANGUAGE: CodeSnippetLanguage = "html";
 const DEFAULT_ASPECT_RATIO = 1;
 const INTERACTION_DEBOUNCE_MS = 500;
 const MINIMAL_LOADING_DURATION_MS = 250;
@@ -51,19 +52,17 @@ export type EditorContextValue = {
   images: ImageRecord[] | undefined;
   imageCount: number | undefined;
   aspectRatio: number | undefined;
-  setAspectRatio: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setAspectRatio: Dispatch<SetStateAction<number | undefined>>;
   showFocalPoint: boolean | undefined;
-  setShowFocalPoint: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setShowFocalPoint: Dispatch<SetStateAction<boolean | undefined>>;
   showImageOverflow: boolean | undefined;
-  setShowImageOverflow: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  showCodeSnippet: boolean | undefined;
-  setShowCodeSnippet: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  codeSnippetLanguage: "html" | "tailwind" | "react" | "react-tailwind" | undefined;
-  setCodeSnippetLanguage: React.Dispatch<
-    React.SetStateAction<"html" | "tailwind" | "react" | "react-tailwind" | undefined>
-  >;
+  setShowImageOverflow: Dispatch<SetStateAction<boolean | undefined>>;
+  showCodeSnippet: boolean;
+  setShowCodeSnippet: Dispatch<SetStateAction<boolean>>;
+  codeSnippetLanguage: CodeSnippetLanguage | undefined;
+  setCodeSnippetLanguage: Dispatch<SetStateAction<CodeSnippetLanguage | undefined>>;
   codeSnippetCopied: boolean;
-  setCodeSnippetCopied: React.Dispatch<React.SetStateAction<boolean>>;
+  setCodeSnippetCopied: Dispatch<SetStateAction<boolean>>;
   currentObjectPosition: ObjectPositionString | undefined;
   pageState: UIPageState;
   isLoading: boolean;
@@ -74,7 +73,7 @@ export type EditorContextValue = {
   ) => Promise<void>;
   handleImageError: () => void;
   handleObjectPositionChange: (objectPosition: ObjectPositionString) => void;
-  uploaderButtonRef: React.RefObject<HTMLButtonElement | null>;
+  uploaderButtonRef: RefObject<HTMLButtonElement | null>;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -131,16 +130,12 @@ export function AppContext({ children }: PropsWithChildren) {
     value: DEFAULT_SHOW_IMAGE_OVERFLOW,
   });
 
-  const [showCodeSnippet, setShowCodeSnippet] = usePersistedUIRecord({
-    id: "showCodeSnippet",
-    value: DEFAULT_SHOW_CODE_SNIPPET,
-  });
-
   const [codeSnippetLanguage, setCodeSnippetLanguage] = usePersistedUIRecord({
     id: "codeSnippetLanguage",
     value: DEFAULT_CODE_SNIPPET_LANGUAGE,
   });
 
+  const [showCodeSnippet, setShowCodeSnippet] = useState(DEFAULT_SHOW_CODE_SNIPPET);
   const [codeSnippetCopied, setCodeSnippetCopied] = useState(false);
   const [isProcessingImageUpload, setIsProcessingImageUpload] = useState(false);
   const [imageNotFoundConfirmed, setImageNotFoundConfirmed] = useState(false);
@@ -269,7 +264,7 @@ export function AppContext({ children }: PropsWithChildren) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setShowCodeSnippet, setShowFocalPoint, setShowImageOverflow]);
+  }, [setShowFocalPoint, setShowImageOverflow]);
 
   useDebouncedEffect(
     () => {

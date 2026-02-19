@@ -29,6 +29,7 @@ const noop = () => {};
  * ### Basic functionality
  *
  * - Handle errors with toaster.
+ * - Fix CI bug in which Auto-merge is triggered twice.
  *
  * ### Advanced functionality
  *
