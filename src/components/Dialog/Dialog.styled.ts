@@ -18,10 +18,6 @@ export const DialogWrapper = styled.dialog`
   overflow: hidden;
 
   opacity: 0;
-  transition:
-    opacity 132ms ease-in-out,
-    display 132ms ease-in-out allow-discrete,
-    overlay 132ms ease-in-out allow-discrete;
 
   &:not([open]) {
     display: none;
@@ -31,6 +27,10 @@ export const DialogWrapper = styled.dialog`
   &[open] {
     display: grid;
     opacity: 1;
+    transition:
+      opacity 132ms ease-in-out,
+      display 132ms ease-in-out allow-discrete,
+      overlay 132ms ease-in-out allow-discrete;
   }
 
   @starting-style {
@@ -41,10 +41,6 @@ export const DialogWrapper = styled.dialog`
 
   &::backdrop {
     background-color: rgba(0, 0, 0, 0);
-    transition:
-      background-color 132ms ease-in-out,
-      display 132ms ease-in-out allow-discrete,
-      overlay 132ms ease-in-out allow-discrete;
   }
 
   &:not([open])::backdrop {
@@ -53,6 +49,10 @@ export const DialogWrapper = styled.dialog`
 
   &[open]::backdrop {
     background-color: var(--color-dialog-backdrop);
+    transition:
+      background-color 132ms ease-in-out,
+      display 132ms ease-in-out allow-discrete,
+      overlay 132ms ease-in-out allow-discrete;
   }
 
   @starting-style {
