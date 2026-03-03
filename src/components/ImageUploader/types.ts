@@ -26,6 +26,7 @@ export type ImageUploaderButtonProps = ImageUploaderProps & {
   ref?: Ref<HTMLButtonElement>;
   size?: "small" | "medium" | "large";
   label: string;
+  grow?: boolean;
 };
 
 export type FullScreenDropZoneProps = Pick<

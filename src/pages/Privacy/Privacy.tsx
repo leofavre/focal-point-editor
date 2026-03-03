@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { ToggleButton } from "../../components/ToggleButton/ToggleButton";
+import { Button } from "../../components/Button/Button";
 import { DBConfig } from "../../services/databaseConfig";
 import { PrivacyMeta, PrivacyPage } from "./Privacy.styled";
 
@@ -132,17 +132,15 @@ export function Privacy() {
           IndexedDB database and session storage for local images and preferences. You can also
           clear site data from your browser settings at any time.
         </p>
-        <ToggleButton
+        <Button
           scale={2}
           type="button"
-          toggled={false}
-          toggleable={false}
           onClick={handleClearAllData}
           aria-label="Clear all data stored by this app in the browser"
           css={{ maxWidth: "35ch" }}
         >
-          <ToggleButton.ButtonText>Clear all data</ToggleButton.ButtonText>
-        </ToggleButton>
+          <Button.ButtonText>Clear all data</Button.ButtonText>
+        </Button>
       </section>
     </PrivacyPage>
   );

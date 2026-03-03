@@ -3,12 +3,12 @@ import toast from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { useEditorContext } from "../AppContext";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
+import { Button } from "../components/Button/Button";
 import { FullScreenDropZone } from "../components/ImageUploader/FullScreenDropZone";
 import type { UploadErrorCode } from "../components/ImageUploader/getUploadErrorMessage";
 import { getUploadErrorMessage } from "../components/ImageUploader/getUploadErrorMessage";
 import { ImageUploaderButton } from "../components/ImageUploader/ImageUploaderButton";
 import { SiteTitle } from "../components/SiteTitle/SiteTitle";
-import { ToggleButton } from "../components/ToggleButton/ToggleButton";
 import type { Err } from "../helpers/errorHandling";
 import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
@@ -28,9 +28,8 @@ import {
  *
  * ### MELHORIZE™ UI.
  *
- * - ToggleButton should be renamed to just Button + refactor props.
+ * - Button should be renamed to just Button + refactor props.
  * - Keyboard shortcuts page.
- * - Better Markdown-to-React converter.
  *
  * ### Advanced functionality
  *
@@ -94,50 +93,54 @@ export default function Layout() {
           <Outlet />
         </Suspense>
         <EditorControlsNav data-component="EditorControlsNav" aria-label="Editor controls">
-          <ToggleButton
+          <Button
             type="button"
             data-component="FocalPointButton"
             toggleable
             toggled={showFocalPoint ?? false}
             onToggle={(toggled) => setShowFocalPoint(!toggled)}
             disabled={isUIStateButtonDisabled}
+            grow
           >
             <IconReference />
-            <ToggleButton.ButtonText>Focal point</ToggleButton.ButtonText>
-          </ToggleButton>
-          <ToggleButton
+            <Button.ButtonText>Focal point</Button.ButtonText>
+          </Button>
+          <Button
             type="button"
             data-component="ImageOverflowButton"
             toggleable
             toggled={showImageOverflow ?? false}
             onToggle={(toggled) => setShowImageOverflow(!toggled)}
             disabled={isUIStateButtonDisabled}
+            grow
           >
             <IconMask />
-            <ToggleButton.ButtonText>Overflow</ToggleButton.ButtonText>
-          </ToggleButton>
+            <Button.ButtonText>Overflow</Button.ButtonText>
+          </Button>
           <AspectRatioSlider
             ref={aspectRatioSliderRef}
             aspectRatio={aspectRatio}
             defaultAspectRatio={image?.naturalAspectRatio}
             onAspectRatioChange={setAspectRatio}
           />
-          <ToggleButton
+          <Button
             type="button"
             data-component="CodeSnippetButton"
             toggleable
             toggled={showCodeSnippet ?? false}
             onToggle={(toggled) => setShowCodeSnippet(!toggled)}
             disabled={isUIStateButtonDisabled}
+            grow
           >
             <IconCode />
-            <ToggleButton.ButtonText>Code</ToggleButton.ButtonText>
-          </ToggleButton>
+            <Button.ButtonText>Code</Button.ButtonText>
+          </Button>
           <ImageUploaderButton
             ref={uploaderButtonRef}
             label="Image"
             onImageUpload={handleImageUpload}
             onImageUploadError={handleImageUploadError}
+            grow
           />
         </EditorControlsNav>
       </LayoutGrid>
