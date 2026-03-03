@@ -1,19 +1,10 @@
 import { IconCopy } from "../../../../icons/IconCopy";
-import { ToggleButton } from "../../../ToggleButton/ToggleButton";
-import { Button } from "./CopyButton.styled";
+import { Button } from "../../../Button/Button";
 import type { CopyButtonProps } from "./types";
 
 export const CopyButton = ({ ref, onCopy, ...rest }: CopyButtonProps) => (
-  <Button
-    ref={ref}
-    type="button"
-    toggleable={false}
-    toggled={false}
-    onClick={onCopy}
-    data-component="CopyButton"
-    {...rest}
-  >
+  <Button ref={ref} type="button" onClick={onCopy} data-component="CopyButton" {...rest}>
     <IconCopy />
-    <ToggleButton.ButtonText>Copy</ToggleButton.ButtonText>
+    <Button.ButtonText>Copy</Button.ButtonText>
   </Button>
 );

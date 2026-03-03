@@ -104,7 +104,7 @@ export type DragImageInEditorOptions = {
 
 /**
  * Drags the image inside the focal point editor to move the focal point (object-position).
- * Use after the editor is visible on /edit. Simulates pointer move → down → move → up.
+ * Use after the editor is visible on /image/edit. Simulates pointer move → down → move → up.
  */
 export async function dragImageInFocalPointEditor(
   page: Page,
@@ -172,7 +172,7 @@ export async function dragFocalPointInEditor(
 }
 
 /**
- * Seeds the editor: lands on /, uploads sample image, waits for /edit and editor visible.
+ * Seeds the editor: lands on /, uploads sample image, waits for /image/edit and editor visible.
  */
 export async function seedEditorWithImage(page: Page): Promise<void> {
   await page.goto("/");
@@ -183,7 +183,7 @@ export async function seedEditorWithImage(page: Page): Promise<void> {
     landing.getByRole("button", { name: "Choose image", exact: true }).click(),
   ]);
   await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-  await expect(page).toHaveURL(/\/edit$/);
+  await expect(page).toHaveURL(/\/image\/edit$/);
   await expectEditorWithControlsVisible(page);
 }
 

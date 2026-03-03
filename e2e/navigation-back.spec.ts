@@ -7,7 +7,7 @@ import {
 } from "./helpers";
 
 test.describe("Navigation and back button", () => {
-  test("with IndexedDB: upload redirects to /edit, back returns to / with Landing visible", async ({
+  test("with IndexedDB: upload redirects to /image/edit, back returns to / with Landing visible", async ({
     page,
   }) => {
     await page.goto("/");
@@ -20,7 +20,7 @@ test.describe("Navigation and back button", () => {
     ]);
     await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-    await expect(page).toHaveURL(/\/edit$/);
+    await expect(page).toHaveURL(/\/image\/edit$/);
     await expectEditorWithControlsVisible(page);
 
     await page.goBack();
@@ -30,7 +30,7 @@ test.describe("Navigation and back button", () => {
   });
 
   testWithFixtures(
-    "without IndexedDB: upload redirects to /edit, back returns to / with Landing visible",
+    "without IndexedDB: upload redirects to /image/edit, back returns to / with Landing visible",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("about:blank");
       await page.goto("/");
@@ -43,7 +43,7 @@ test.describe("Navigation and back button", () => {
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL(/\/edit$/);
+      await expect(page).toHaveURL(/\/image\/edit$/);
       await expectEditorWithControlsVisible(page);
 
       await page.goBack();

@@ -124,7 +124,7 @@ async function dropImageFileWithCodeSnippetOpen(page: import("@playwright/test")
 }
 
 test.describe("Drag-drop", () => {
-  test("with IndexedDB: drop file on app then image uploaded and redirect to /edit", async ({
+  test("with IndexedDB: drop file on app then image uploaded and redirect to /image/edit", async ({
     page,
   }) => {
     await page.goto("/");
@@ -132,19 +132,19 @@ test.describe("Drag-drop", () => {
 
     await dropImageFileOnPage(page);
 
-    await expect(page).toHaveURL(/\/edit$/);
+    await expect(page).toHaveURL(/\/image\/edit$/);
     await expectEditorWithControlsVisible(page);
   });
 
   testWithFixtures(
-    "without IndexedDB: drop file on app then image uploaded and redirect to /edit",
+    "without IndexedDB: drop file on app then image uploaded and redirect to /image/edit",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);
 
       await dropImageFileOnPage(page);
 
-      await expect(page).toHaveURL(/\/edit$/);
+      await expect(page).toHaveURL(/\/image\/edit$/);
       await expectEditorWithControlsVisible(page);
     },
   );
@@ -197,7 +197,7 @@ test.describe("Drag-drop", () => {
 
     await dropImageFileWithCodeSnippetOpen(page);
 
-    await expect(page).toHaveURL(/\/edit$/);
+    await expect(page).toHaveURL(/\/image\/edit$/);
     await expectEditorWithControlsVisible(page);
   });
 

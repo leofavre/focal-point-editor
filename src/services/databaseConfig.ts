@@ -1,21 +1,9 @@
-export const DBConfig = {
+import type { IndexedDBProps } from "react-indexed-db-hook";
+
+export const DBConfig: IndexedDBProps = {
   name: "FocalPointEditor",
   version: 1,
   objectStoresMeta: [
-    {
-      store: "ui",
-      storeConfig: {
-        keyPath: "id",
-        autoIncrement: true,
-      },
-      storeSchema: [
-        {
-          name: "value",
-          keypath: "value",
-          options: { unique: false },
-        },
-      ],
-    },
     {
       store: "images",
       storeConfig: {

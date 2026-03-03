@@ -1,5 +1,79 @@
+import toast from "react-hot-toast";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { copyToClipboard } from "./copyToClipboard";
+import { copyTextToClipboardWithToast, copyToClipboard } from "./copyToClipboard";
+
+vi.mock("react-hot-toast", () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+const normalizeWhitespaceInQuotesMock = vi.fn((t: string) => t);
+vi.mock("./normalizeWhitespaceInQuotes", () => ({
+  normalizeWhitespaceInQuotes: (t: string) => normalizeWhitespaceInQuotesMock(t),
+}));
+
+describe("copyTextToClipboardWithToast", () => {
+  const originalClipboard = navigator.clipboard;
+
+  beforeEach(() => {
+    normalizeWhitespaceInQuotesMock.mockImplementation((t) => t);
+  });
+
+  afterEach(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: originalClipboard,
+      writable: true,
+      configurable: true,
+    });
+    vi.mocked(toast.success).mockClear();
+    vi.mocked(toast.error).mockClear();
+  });
+
+  it("calls toast.success when copy succeeds", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      writable: true,
+      configurable: true,
+    });
+
+    await copyTextToClipboardWithToast("text");
+
+    expect(toast.success).toHaveBeenCalledWith("Code copied to clipboard");
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it("calls toast.error when copy fails", async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error("denied"));
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      writable: true,
+      configurable: true,
+    });
+    document.execCommand = vi.fn().mockReturnValue(false);
+
+    await copyTextToClipboardWithToast("text");
+
+    expect(toast.error).toHaveBeenCalledWith("Failed to copy to clipboard");
+    expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it("passes normalized text to copyToClipboard", async () => {
+    normalizeWhitespaceInQuotesMock.mockImplementation((t) => `normalized:${t}`);
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      writable: true,
+      configurable: true,
+    });
+
+    await copyTextToClipboardWithToast("  raw  text  ");
+
+    expect(writeText).toHaveBeenCalledWith("normalized:  raw  text  ");
+  });
+});
 
 describe("copyToClipboard", () => {
   const originalClipboard = navigator.clipboard;

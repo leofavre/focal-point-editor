@@ -1,4 +1,4 @@
-import type { SyntheticEvent } from "react";
+import type { RefObject, SyntheticEvent } from "react";
 import type { ObjectPositionString } from "../../types";
 
 /**
@@ -48,4 +48,7 @@ export type FocalPointEditorProps = {
   onObjectPositionChange: (objectPosition: ObjectPositionString) => void;
   onImageLoad?: (event: SyntheticEvent<HTMLImageElement>) => void;
   onImageError?: (event: SyntheticEvent<HTMLImageElement>) => void;
+  focalPointImageRef?: RefObject<HTMLDivElement | null>;
+  "aria-hidden"?: boolean;
+  inert?: boolean;
 };

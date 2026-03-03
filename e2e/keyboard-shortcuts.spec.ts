@@ -9,11 +9,13 @@ import {
  * E2E tests for editor keyboard shortcuts.
  * Plan: specs/keyboard-shortcuts.plan.md
  *
- * Shortcuts: u (upload), a/f (focal point), s/o (overflow), d/c (code snippet).
+ * Shortcuts: e (focus image), a (focal point), s (overflow), d (focus slider),
+ * f (open code), g/u/i (upload), c (copy code directly).
  * Control+key must not trigger; Shift+key must trigger.
  */
 test.describe("Keyboard shortcuts", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await page.goto("/");
     await expectLandingVisible(page);
     const landing = page.locator('[data-component="Landing"]');
@@ -22,7 +24,7 @@ test.describe("Keyboard shortcuts", () => {
       landing.getByRole("button", { name: "Choose image", exact: true }).click(),
     ]);
     await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-    await expect(page).toHaveURL(/\/edit$/);
+    await expect(page).toHaveURL(/\/image\/edit$/);
     await expectEditorWithControlsVisible(page);
   });
 
@@ -35,40 +37,89 @@ test.describe("Keyboard shortcuts", () => {
     await fileChooser.setFiles([]);
   });
 
-  test("a and f toggle focal point (aria-pressed changes)", async ({ page }) => {
+  test("g opens file chooser for upload", async ({ page }) => {
+    await page.click("body", { position: { x: 0, y: 0 } });
+    const [fileChooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page.keyboard.press("g"),
+    ]);
+    await fileChooser.setFiles([]);
+  });
+
+  test("i opens file chooser for upload", async ({ page }) => {
+    await page.click("body", { position: { x: 0, y: 0 } });
+    const [fileChooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page.keyboard.press("i"),
+    ]);
+    await fileChooser.setFiles([]);
+  });
+
+  test("e focuses the image", async ({ page }) => {
+    await page.click("body", { position: { x: 0, y: 0 } });
+    await page.keyboard.press("e");
+    const image = page.getByRole("img", { name: "Image uploaded by the user" });
+    await expect(image).toBeFocused();
+  });
+
+  test("a toggles focal point (aria-pressed changes)", async ({ page }) => {
     const focalPointButton = page.getByRole("button", { name: "Focal point" });
     const beforeA = await focalPointButton.getAttribute("aria-pressed");
     await page.keyboard.press("a");
     const afterA = await focalPointButton.getAttribute("aria-pressed");
     expect(afterA).not.toBe(beforeA);
 
-    await page.keyboard.press("f");
-    const afterF = await focalPointButton.getAttribute("aria-pressed");
-    expect(afterF).not.toBe(afterA);
+    await page.keyboard.press("a");
+    const afterA2 = await focalPointButton.getAttribute("aria-pressed");
+    expect(afterA2).not.toBe(afterA);
   });
 
-  test("s and o toggle image overflow (aria-pressed changes)", async ({ page }) => {
+  test("s toggles image overflow (aria-pressed changes)", async ({ page }) => {
     const overflowButton = page.getByRole("button", { name: "Overflow" });
     const beforeS = await overflowButton.getAttribute("aria-pressed");
     await page.keyboard.press("s");
     const afterS = await overflowButton.getAttribute("aria-pressed");
     expect(afterS).not.toBe(beforeS);
 
-    await page.keyboard.press("o");
-    const afterO = await overflowButton.getAttribute("aria-pressed");
-    expect(afterO).not.toBe(afterS);
+    await page.keyboard.press("s");
+    const afterS2 = await overflowButton.getAttribute("aria-pressed");
+    expect(afterS2).not.toBe(afterS);
   });
 
-  test("d and c toggle code snippet (aria-pressed changes)", async ({ page }) => {
-    const codeButton = page.getByRole("button", { name: "Code" });
-    const beforeD = await codeButton.getAttribute("aria-pressed");
+  test("d focuses the aspect ratio slider", async ({ page }) => {
+    await page.click("body", { position: { x: 0, y: 0 } });
     await page.keyboard.press("d");
-    const afterD = await codeButton.getAttribute("aria-pressed");
-    expect(afterD).not.toBe(beforeD);
+    const aspectRatioSlider = page.getByRole("slider");
+    await expect(aspectRatioSlider).toBeFocused();
+  });
 
+  test("f opens the code snippet (does not toggle)", async ({ page }) => {
+    const codeButton = page.getByRole("button", { name: "Code" });
+    await expect(codeButton).toHaveAttribute("aria-pressed", "false");
+
+    await page.keyboard.press("f");
+    await expect(codeButton).toHaveAttribute("aria-pressed", "true");
+    const codeSnippet = page.locator('[data-component="CodeSnippet"]');
+    await expect(codeSnippet).toBeVisible();
+
+    await page.keyboard.press("f");
+    await expect(codeButton).toHaveAttribute("aria-pressed", "true");
+    await expect(codeSnippet).toBeVisible();
+  });
+
+  test("c copies code snippet directly without opening dialog", async ({ page }) => {
+    await page.evaluate(() => navigator.clipboard.writeText(""));
+
+    await page.getByRole("img", { name: "Image uploaded by the user" }).click();
     await page.keyboard.press("c");
-    const afterC = await codeButton.getAttribute("aria-pressed");
-    expect(afterC).not.toBe(afterD);
+
+    await expect(page.getByText("Code copied to clipboard")).toBeVisible();
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    expect(clipboardText).toContain("object-fit");
+    expect(clipboardText).toContain("object-position");
+
+    const codeSnippet = page.locator('[data-component="CodeSnippet"]');
+    await expect(codeSnippet).not.toBeVisible();
   });
 
   test("Control+key does not trigger shortcut (e.g. Control+u no file chooser)", async ({
@@ -108,11 +159,11 @@ test.describe("Keyboard shortcuts", () => {
   }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await page.evaluate(() => navigator.clipboard.writeText(""));
-    const codeButton = page.getByRole("button", { name: "Code" });
-    await page.keyboard.press("c");
-    await expect(codeButton).toHaveAttribute("aria-pressed", "true");
+
+    await page.keyboard.press("f");
     const codeSnippet = page.locator('[data-component="CodeSnippet"]');
     await expect(codeSnippet).toBeVisible();
+
     await codeSnippet.evaluate((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
@@ -121,7 +172,7 @@ test.describe("Keyboard shortcuts", () => {
       sel?.addRange(range);
     });
     await page.keyboard.press("Control+c");
-    await expect(codeButton).toHaveAttribute("aria-pressed", "true");
+
     const clipboardText = await page.evaluate(async () => {
       const text = await navigator.clipboard.readText();
       if (text.length > 0) return text;

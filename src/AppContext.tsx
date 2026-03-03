@@ -11,13 +11,14 @@ import {
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useDebouncedEffect from "use-debounced-effect";
+import { copyTextToClipboardWithToast } from "./components/CodeSnippet/helpers/copyToClipboard";
+import { getCodeSnippet } from "./components/CodeSnippet/helpers/getCodeSnippet";
 import { logError } from "./helpers/errorHandling";
 import { getCreateImageStateErrorMessage } from "./helpers/getCreateImageStateErrorMessage";
 import { createImageStateFromDraftAndFile } from "./pages/helpers/createImageStateFromDraftAndFile";
 import { createImageStateFromRecord } from "./pages/helpers/createImageStateFromRecord";
 import { createImageStateFromUrl } from "./pages/helpers/createImageStateFromUrl";
 import { createKeyboardShortcutHandler } from "./pages/helpers/createKeyboardShortcutHandler";
-import { usePageState } from "./pages/hooks/usePageState";
 import { usePersistedImages } from "./pages/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
 import type {
@@ -28,7 +29,6 @@ import type {
   ImageRecord,
   ImageState,
   ObjectPositionString,
-  UIPageState,
   UIPersistenceMode,
 } from "./types";
 import { hasUrl, isImageDraftStateAndUrl } from "./types";
@@ -44,6 +44,7 @@ const SINGLE_IMAGE_MODE_ID = "edit" as ImageId;
 const PERSISTENCE_MODE: UIPersistenceMode = "singleImage";
 
 export type EditorContextValue = {
+  pathname: string;
   persistenceMode: UIPersistenceMode;
   imageId: ImageId | undefined;
   image: ImageState | null;
@@ -60,7 +61,7 @@ export type EditorContextValue = {
   codeSnippetLanguage: CodeSnippetLanguage | undefined;
   setCodeSnippetLanguage: Dispatch<SetStateAction<CodeSnippetLanguage | undefined>>;
   currentObjectPosition: ObjectPositionString | undefined;
-  pageState: UIPageState;
+  imageNotFoundConfirmed: boolean;
   isLoading: boolean;
   isEditingSingleImage: boolean;
   showBottomBar: boolean;
@@ -70,21 +71,30 @@ export type EditorContextValue = {
   handleImageError: () => void;
   handleObjectPositionChange: (objectPosition: ObjectPositionString) => void;
   uploaderButtonRef: RefObject<HTMLButtonElement | null>;
+  focalPointImageRef: RefObject<HTMLDivElement | null>;
+  aspectRatioSliderRef: RefObject<HTMLInputElement | null>;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
 
+const IMAGE_ROUTE_PREFIX = "/image/";
+
 /**
- * Derives imageId from the current pathname. "/" yields undefined, "/edit" yields "edit".
+ * Derives imageId from the current pathname. Only "/image/:imageId" yields an id; "/" or other paths yield undefined.
  */
 function getImageIdFromPathname(pathname: string): ImageId | undefined {
-  const segment = pathname.slice(1).trim();
+  if (!pathname.startsWith(IMAGE_ROUTE_PREFIX) || pathname.length <= IMAGE_ROUTE_PREFIX.length) {
+    return undefined;
+  }
+  const segment = pathname.slice(IMAGE_ROUTE_PREFIX.length).trim();
   return segment === "" ? undefined : (segment as ImageId);
 }
 
 export function AppContext({ children }: PropsWithChildren) {
   const persistenceMode = PERSISTENCE_MODE;
   const uploaderButtonRef = useRef<HTMLButtonElement>(null);
+  const focalPointImageRef = useRef<HTMLDivElement>(null);
+  const aspectRatioSliderRef = useRef<HTMLInputElement>(null);
   const { pathname } = useLocation();
   const imageId = getImageIdFromPathname(pathname);
   const navigate = useNavigate();
@@ -145,12 +155,8 @@ export function AppContext({ children }: PropsWithChildren) {
   const isEditingSingleImage =
     persistenceMode === "singleImage" && imageId === SINGLE_IMAGE_MODE_ID;
 
-  const pageState = usePageState({
-    persistenceMode,
-    imageId,
-    image,
-    isEditingSingleImage,
-  });
+  const isEditingRoute = /^\/image\/[^/]+$/.test(pathname);
+  const isOnImageRoute = pathname.startsWith(IMAGE_ROUTE_PREFIX);
 
   const handleImageUpload = useCallback(
     async (draftAndFileOrUrl: ImageDraftStateAndFile | ImageDraftStateAndUrl | undefined) => {
@@ -183,8 +189,13 @@ export function AppContext({ children }: PropsWithChildren) {
       const shouldNavigate = nextImageId != null && imageId !== nextImageId;
 
       if (shouldNavigate) {
-        await navigate(`/${nextImageId}`);
-        console.log("navigated from", `/${imageId ?? ""}`, "to", `/${nextImageId ?? ""}`);
+        await navigate(`/image/${nextImageId}`);
+        console.log(
+          "navigated from",
+          `/image/${imageId ?? ""}`,
+          "to",
+          `/image/${nextImageId ?? ""}`,
+        );
       }
 
       setIsProcessingImageUpload(false);
@@ -208,50 +219,69 @@ export function AppContext({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = pageState !== "landing" ? "hidden" : "auto";
+    const hideOverflow = pathname !== "/" && pathname !== "/privacy";
+    document.body.style.overflow = hideOverflow ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [pageState]);
+  }, [pathname]);
 
   /**
    * Handles all keyboard shortcuts:
-   * - 'u' opens the file input to upload a new image.
-   * - 'a' or 'f' toggles the focal point.
-   * - 's' or 'o' toggles the image overflow.
-   * - 'd' or 'c' toggles the code snippet.
+   * - 'e' focuses the image.
+   * - 'a' toggles the focal point.
+   * - 's' toggles the image overflow.
+   * - 'd' focuses the aspect ratio slider.
+   * - 'f' opens the code snippet (does not toggle).
+   * - 'g', 'u', 'i' open the file input to upload a new image.
+   * - 'c' copies the code snippet directly (without opening the dialog).
    *
    * The shortcuts are case insensitive and are not triggered
    * when modified with meta keys like Control or Command.
    */
   useEffect(() => {
+    const handleCopyCodeSnippet = () => {
+      const imageName = image?.name;
+      const objectPosition = currentObjectPosition ?? (image != null ? "50% 50%" : undefined);
+      const language = codeSnippetLanguage ?? DEFAULT_CODE_SNIPPET_LANGUAGE;
+
+      if (imageName == null || objectPosition == null) return;
+
+      const snippet = getCodeSnippet({ language, src: imageName, objectPosition });
+      copyTextToClipboardWithToast(snippet);
+    };
+
     const handleKeyDown = createKeyboardShortcutHandler({
-      u: () => {
-        uploaderButtonRef.current?.click();
+      e: () => {
+        focalPointImageRef.current?.focus();
       },
       a: () => {
-        setShowFocalPoint((prev) => !prev);
-      },
-      f: () => {
         setShowFocalPoint((prev) => !prev);
       },
       s: () => {
         setShowImageOverflow((prev) => !prev);
       },
-      o: () => {
-        setShowImageOverflow((prev) => !prev);
-      },
       d: () => {
-        setShowCodeSnippet((prev) => !prev);
+        aspectRatioSliderRef.current?.focus();
       },
-      c: () => {
-        setShowCodeSnippet((prev) => !prev);
+      f: () => {
+        setShowCodeSnippet(true);
       },
+      g: () => {
+        uploaderButtonRef.current?.click();
+      },
+      u: () => {
+        uploaderButtonRef.current?.click();
+      },
+      i: () => {
+        uploaderButtonRef.current?.click();
+      },
+      c: handleCopyCodeSnippet,
     });
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setShowFocalPoint, setShowImageOverflow]);
+    window.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [image, currentObjectPosition, codeSnippetLanguage, setShowFocalPoint, setShowImageOverflow]);
 
   useDebouncedEffect(
     () => {
@@ -282,6 +312,7 @@ export function AppContext({ children }: PropsWithChildren) {
           logError(result.rejected);
           return;
         }
+
         if (result.accepted != null) {
           console.log("updated image", imageId, "with lastKnownAspectRatio", aspectRatio);
         }
@@ -348,13 +379,16 @@ export function AppContext({ children }: PropsWithChildren) {
     asyncSetImageState();
   }, [imageId, imageCount, setAspectRatio]);
 
+  const isUnknownRoute = pathname !== "/" && pathname !== "/privacy" && !isEditingRoute;
+
   const isLoading =
-    isProcessingImageUpload || (pageState === "imageNotFound" && imageNotFoundConfirmed === false);
+    isProcessingImageUpload || (isOnImageRoute && image == null && !imageNotFoundConfirmed);
 
   const showBottomBar =
-    showFocalPoint != null && showImageOverflow != null && pageState !== "landing";
+    (isEditingRoute && showFocalPoint != null && showImageOverflow != null) || isUnknownRoute;
 
   const value: EditorContextValue = {
+    pathname,
     persistenceMode,
     imageId,
     image,
@@ -371,7 +405,7 @@ export function AppContext({ children }: PropsWithChildren) {
     codeSnippetLanguage,
     setCodeSnippetLanguage,
     currentObjectPosition,
-    pageState,
+    imageNotFoundConfirmed,
     isLoading,
     isEditingSingleImage,
     showBottomBar,
@@ -379,6 +413,8 @@ export function AppContext({ children }: PropsWithChildren) {
     handleImageError,
     handleObjectPositionChange,
     uploaderButtonRef,
+    focalPointImageRef,
+    aspectRatioSliderRef,
   };
 
   return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;

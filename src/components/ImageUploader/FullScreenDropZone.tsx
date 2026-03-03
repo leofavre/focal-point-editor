@@ -61,7 +61,7 @@ export function FullScreenDropZone({
       data-closing={parseBooleanAttr(isClosing)}
       {...rootProps}
       data-component="FullScreenDropZone"
-      aria-hidden
+      aria-hidden={!isDragGlobal}
       {...rest}
     >
       <input {...getInputProps()} aria-hidden />

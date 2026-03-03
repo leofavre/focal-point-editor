@@ -17,3 +17,15 @@ export const Wrapper = styled.div`
     user-select: none;
   }
 `;
+
+export const FocusableImage = styled.div`
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: auto;
+
+  &:focus-visible {
+    outline: 0.25rem solid var(--color-glow);
+    outline-offset: 0;
+  }
+`;

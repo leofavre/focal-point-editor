@@ -1,5 +1,6 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
 
 const spin = keyframes`
   to {
@@ -25,7 +26,35 @@ export const LayoutMessage = styled.h3`
   margin: auto;
 `;
 
+/** Header row; display: contents so title and privacy link are laid out on the main grid. */
+export const LayoutHeader = styled.header`
+  display: contents;
+`;
+
+/** Link to privacy notice; positioned on the main grid, same column as title, aligned top/end. */
+export const PrivacyLink = styled(Link)`
+  grid-row: 1;
+  grid-column: 2 / -2;
+  align-self: start;
+  justify-self: end;
+  margin-top: var(--base-line-05x);
+  z-index: 10;
+  font-size: calc(14 / 16 * 1rem);
+  color: var(--color-neutral);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-loud);
+  }
+`;
+
+/** Wrapper for bottom bar controls; display: contents preserves parent grid layout. */
+export const EditorControlsNav = styled.nav`
+  display: contents;
+`;
+
 export const LayoutGrid = styled.main`
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 12ch) minmax(0, 12ch) minmax(8rem, 50rem) minmax(0, 12ch) minmax(0, 12ch) minmax(0, 1fr);
   grid-template-rows: 7rem 1fr auto;
@@ -41,7 +70,7 @@ export const LayoutGrid = styled.main`
     margin: auto;
 
     width: 100%;
-    max-width: 70rem;
+    max-width: 80rem;
   }
 
   [data-component="FocalPointEditor"] {
@@ -57,6 +86,7 @@ export const LayoutGrid = styled.main`
     width: clamp(25rem, 100dvw, 40rem);
   }
 
+  [data-component="EditorControlsNav"] [data-component="AspectRatioSlider"],
   > [data-component="AspectRatioSlider"] {
     position: relative;
     top: 8rem;
@@ -69,6 +99,7 @@ export const LayoutGrid = styled.main`
     transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
+  [data-component="EditorControlsNav"] [data-component="FocalPointButton"],
   > [data-component="FocalPointButton"] {
     position: relative;
     top: 8rem;
@@ -79,6 +110,7 @@ export const LayoutGrid = styled.main`
     transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
+  [data-component="EditorControlsNav"] [data-component="ImageOverflowButton"],
   > [data-component="ImageOverflowButton"] {
     position: relative;
     top: 8rem;
@@ -89,6 +121,7 @@ export const LayoutGrid = styled.main`
     transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
+  [data-component="EditorControlsNav"] [data-component="CodeSnippetButton"],
   > [data-component="CodeSnippetButton"] {
     position: relative;
     top: 8rem;
@@ -99,6 +132,7 @@ export const LayoutGrid = styled.main`
     transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
+  [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"],
   > [data-component="ImageUploaderButton"] {
     position: relative;
     top: 8rem;
@@ -122,11 +156,11 @@ export const LayoutGrid = styled.main`
   }
 
   &[data-has-bottom-bar] {
-    > [data-component="AspectRatioSlider"],
-    > [data-component="FocalPointButton"],
-    > [data-component="ImageOverflowButton"],
-    > [data-component="CodeSnippetButton"],
-    > [data-component="ImageUploaderButton"] {
+    [data-component="EditorControlsNav"] [data-component="AspectRatioSlider"],
+    [data-component="EditorControlsNav"] [data-component="FocalPointButton"],
+    [data-component="EditorControlsNav"] [data-component="ImageOverflowButton"],
+    [data-component="EditorControlsNav"] [data-component="CodeSnippetButton"],
+    [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"] {
       top: 0;
       visibility: visible;
       transition: top 132ms ease-in-out 0s, visibility 132ms linear 0s;

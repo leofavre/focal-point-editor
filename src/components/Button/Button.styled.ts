@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const ButtonWrapper = styled.span`
+export const Wrapper = styled.button`
   --scale: 1;
 
   &[data-scale="2"] {
@@ -18,10 +18,32 @@ export const ButtonWrapper = styled.span`
   
   position: relative;
   display: block;
+  box-sizing: border-box;
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &[data-grow] {
+    width: 100%;
+  }
 `;
 
-export const Button = styled.button`
-  container-type: inline-size;
+export const Container = styled.span`
+  display: contents;
+
+  ${Wrapper}[data-grow] & {
+    display: block;
+    container-type: inline-size;
+  }
+`;
+
+export const Control = styled.span`
   position: relative;
   display: flex;
   align-items: center;
@@ -29,7 +51,7 @@ export const Button = styled.button`
   gap: calc(var(--base-line-025x) * var(--scale));
   min-width: calc((var(--base-line) + var(--base-line-05x)) * var(--scale));
   height: calc(2rem * var(--scale));
-  padding: 0 calc(var(--base-line-025x) * var(--scale));
+  padding: 0 calc(var(--base-line-05x) * var(--scale)) 0 calc(var(--base-line-025x) * var(--scale));
   box-sizing: border-box;
   background-color: var(--button-color-background);
   border: calc(1px * var(--scale)) solid var(--button-color-solid);
@@ -46,37 +68,37 @@ export const Button = styled.button`
   transform: var(--transform-in);
 
   @media (hover: hover) {
-    &:hover:not(:disabled) {
+    ${Wrapper}:hover:not(:disabled) & {
       background-color: var(--button-color-hover);
     }
   
-    &:active:not(:disabled) {
+    ${Wrapper}:active:not(:disabled) & {
       transform: var(--transform-out);
     }
   }
 
-  &:not([data-toggleable]):active {
+  ${Wrapper}:not([data-toggleable]):active & {
     transform: var(--transform-out);
   }
 
-  &[data-toggleable][aria-pressed="true"] {
+  ${Wrapper}[data-toggleable][aria-pressed="true"] & {
     transform: var(--transform-out);
 
     @media (hover: hover) {
-      &:active:not(:disabled) {
+      ${Wrapper}:active:not(:disabled) & {
         transform: var(--transform-in);
       }
     }
   }
 
-  &:disabled {
+  ${Wrapper}:disabled & {
     transition: none;
     border-color: var(--button-color-disabled);
     color: var(--button-color-disabled);
     cursor: default;
   }
 
-  &:focus-visible {
+  ${Wrapper}:focus-visible & {
     outline: calc(0.25rem * var(--scale)) solid var(--color-glow);
     border-radius: 0rem;
     outline-offset: 0;
@@ -95,7 +117,7 @@ export const Button = styled.button`
   }
 
   /* calc won't work in the container query */
-  &[data-scale=2] {
+  ${Wrapper}[data-scale=2] & {
     @container (max-width: 12rem) {
       & > svg { margin: auto; }
       & > span { display: none; }
@@ -110,7 +132,7 @@ export const Shadow = styled.span`
   transform: var(--transform-out);
   background-color: var(--button-color-solid);
 
-  &[data-disabled] {
+  ${Wrapper}:disabled & {
     background-color: var(--button-color-disabled);
   }
 `;

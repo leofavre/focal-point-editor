@@ -5,6 +5,7 @@ import { useAspectRatioList } from "./hooks/useAspectRatioList";
 import type { AspectRatioSliderProps } from "./types";
 
 export function AspectRatioSlider({
+  ref,
   aspectRatio,
   defaultAspectRatio,
   onAspectRatioChange,
@@ -16,6 +17,7 @@ export function AspectRatioSlider({
     <Container data-component="AspectRatioSlider" {...rest}>
       <Wrapper>
         <AspectRatioControl
+          ref={ref}
           aspectRatio={aspectRatio}
           aspectRatioList={aspectRatioList}
           onAspectRatioChange={onAspectRatioChange}

@@ -64,7 +64,7 @@ export function Dialog({ ref, open, defaultOpen, onOpenChange, children, ...rest
   return (
     <DialogWrapper ref={mergedRefs} data-closing={isClosing || undefined} {...rest}>
       {children}
-      <DialogButton type="button" onClick={() => requestClose()}>
+      <DialogButton type="button" onClick={requestClose} aria-label="Close">
         <IconClose />
       </DialogButton>
     </DialogWrapper>

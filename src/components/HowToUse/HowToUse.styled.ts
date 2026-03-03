@@ -32,13 +32,21 @@ export const Content = styled.div`
   }
 
   h2 {
-    display: none;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
 
   ol {
     container-type: inline-size;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(25ch, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(30ch, 1fr));
     row-gap: var(--base-line-05x);
     column-gap: var(--base-line-2x);
     box-sizing: border-box;

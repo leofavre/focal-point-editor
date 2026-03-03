@@ -11,4 +11,5 @@ export type AspectRatioSliderProps = {
   aspectRatio?: number;
   defaultAspectRatio?: number;
   onAspectRatioChange?: (aspectRatio: number) => void;
+  disabled?: boolean;
 };

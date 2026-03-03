@@ -15,7 +15,7 @@ async function goToEditorWithImage(page: Page) {
     landing.getByRole("button", { name: "Choose image", exact: true }).click(),
   ]);
   await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-  await expect(page).toHaveURL(/\/edit$/);
+  await expect(page).toHaveURL(/\/image\/edit$/);
   await expectEditorWithControlsVisible(page);
 }
 

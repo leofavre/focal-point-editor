@@ -37,6 +37,16 @@ export function AspectRatioControl({
     return toLogPosition(aspectRatio, minValue, maxValue);
   }, [aspectRatio, minValue, maxValue, initialPosition]);
 
+  const ariaValuetext = useMemo(() => {
+    if (aspectRatio == null) return undefined;
+
+    const closest = aspectRatioList.reduce((prev, curr) =>
+      Math.abs(curr.value - aspectRatio) < Math.abs(prev.value - aspectRatio) ? curr : prev,
+    );
+
+    return closest.name;
+  }, [aspectRatio, aspectRatioList]);
+
   const stableOnAspectRatioChange = useEffectEvent((aspectRatio: number) => {
     onAspectRatioChange?.(aspectRatio);
   });
@@ -109,6 +119,8 @@ export function AspectRatioControl({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         list="aspect-ratio"
+        aria-label="Aspect ratio"
+        aria-valuetext={ariaValuetext}
       />
       <datalist id="aspect-ratio">
         {aspectRatioList.map(({ position }) => (

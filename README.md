@@ -11,7 +11,7 @@ Crop images in responsive layouts without losing what matters most.
    - Drag slider to test how the image adapts to different aspect ratios. Set a focal point to keep important areas visible as the container changes.
 
 3. **Grab the code**
-   - When you’re done, copy the HTML and CSS code to use the image in full-width banners and responsive layouts.
+   - The tool calculates the CSS object&#8209;position for your image. Copy the code to use it in full&#8209;width banners, hero sections and responsive layouts.
 
 ## Prerequisites
 

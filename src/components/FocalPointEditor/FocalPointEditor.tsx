@@ -1,4 +1,4 @@
-import type { PointerEvent, SyntheticEvent } from "react";
+import type { KeyboardEvent, PointerEvent, SyntheticEvent } from "react";
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { ClippedImage } from "./ClippedImage/ClippedImage";
 import { FocalPoint } from "./FocalPoint/FocalPoint";
@@ -27,6 +27,7 @@ export function FocalPointEditor({
   onObjectPositionChange,
   onImageLoad,
   onImageError,
+  focalPointImageRef,
   ...rest
 }: FocalPointEditorProps) {
   const imageRef = useRef<HTMLImageElement>(null);
@@ -156,6 +157,38 @@ export function FocalPointEditor({
     event.currentTarget.releasePointerCapture(event.pointerId);
   }, []);
 
+  const STEP = 1;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      const step = event.shiftKey ? STEP * 5 : STEP;
+      const { x, y } = cssObjectPositionStringToObject(objectPosition);
+
+      let nextX = x;
+      let nextY = y;
+
+      switch (event.key) {
+        case "ArrowLeft":
+          nextX = clamp(x + step, 0, 100);
+          break;
+        case "ArrowRight":
+          nextX = clamp(x - step, 0, 100);
+          break;
+        case "ArrowUp":
+          nextY = clamp(y + step, 0, 100);
+          break;
+        case "ArrowDown":
+          nextY = clamp(y - step, 0, 100);
+          break;
+        default:
+          return;
+      }
+
+      event.preventDefault();
+      stableOnObjectPositionChange(cssObjectPositionObjectToString({ x: nextX, y: nextY }));
+    },
+    [objectPosition],
+  );
+
   const cursor =
     imageDimensionDelta?.changedDimension == null
       ? "crosshair"
@@ -195,10 +228,12 @@ export function FocalPointEditor({
       />
       <ClippedImage
         ref={imageRef}
+        focusableImageRef={focalPointImageRef}
         imageUrl={imageUrl}
         objectPosition={objectPosition}
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
+        onKeyDown={handleKeyDown}
       />
       <FocalPoint
         css={{

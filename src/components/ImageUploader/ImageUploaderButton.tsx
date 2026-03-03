@@ -3,10 +3,10 @@ import { useEffectEvent, useRef, useState } from "react";
 import { mergeRefs, useMergeRefs } from "react-merge-refs";
 import { parseBooleanAttr } from "../../helpers/parseBooleanAttr";
 import { useClosingTransition, useDelayedClose } from "../../hooks/useClosingTransition";
-import { IconUpload } from "../../icons/IconUpload";
+import { IconAdd } from "../../icons/IconAdd";
 import type { ImageDraftStateAndFile, ImageDraftStateAndUrl } from "../../types";
 import { BackdropOverlay } from "../BackdropOverlay/BackdropOverlay.styled";
-import { ToggleButton } from "../ToggleButton/ToggleButton";
+import { Button } from "../Button/Button";
 import { useImageDropzone } from "./hooks/useImageDropzone";
 import { InvisibleControl, InvisibleForm, InvisibleLabel } from "./ImageUploader.styled";
 import type { ImageUploaderButtonProps } from "./types";
@@ -19,6 +19,7 @@ export function ImageUploaderButton({
   onImagesUpload,
   onImageUploadError,
   onImagesUploadError,
+  grow,
   ...rest
 }: ImageUploaderButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -105,7 +106,7 @@ export function ImageUploaderButton({
       </BackdropOverlay>
       <InvisibleForm data-component="ImageUploaderButton" {...rest}>
         <InvisibleLabel>
-          <ToggleButton
+          <Button
             ref={mergedRefs}
             type="button"
             aria-label={label}
@@ -113,10 +114,11 @@ export function ImageUploaderButton({
             toggled={isOpened}
             onClick={handleButtonClick}
             scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
+            grow={grow}
           >
-            <IconUpload />
-            <ToggleButton.ButtonText>{label}</ToggleButton.ButtonText>
-          </ToggleButton>
+            <IconAdd />
+            <Button.ButtonText>{label}</Button.ButtonText>
+          </Button>
         </InvisibleLabel>
       </InvisibleForm>
     </>

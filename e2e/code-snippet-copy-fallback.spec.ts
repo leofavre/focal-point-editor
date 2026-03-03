@@ -27,7 +27,7 @@ testWithFixtures.describe("Code snippet copy – Clipboard API unavailable", () 
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL(/\/edit$/);
+      await expect(page).toHaveURL(/\/image\/edit$/);
       await expectEditorWithControlsVisible(page);
 
       const aspectRatioSlider = page.locator(

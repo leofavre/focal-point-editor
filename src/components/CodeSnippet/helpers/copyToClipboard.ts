@@ -1,3 +1,24 @@
+import toast from "react-hot-toast";
+import { normalizeWhitespaceInQuotes } from "./normalizeWhitespaceInQuotes";
+
+/**
+ * Copies text to the clipboard with toast feedback. Normalizes whitespace in quotes
+ * before copying. Shows success or error toast.
+ *
+ * @param text - Plain text to copy.
+ * @returns Promise that resolves when done.
+ */
+export async function copyTextToClipboardWithToast(text: string): Promise<void> {
+  const textToCopy = normalizeWhitespaceInQuotes(text);
+  const success = await copyToClipboard(textToCopy);
+
+  if (success) {
+    toast.success("Code copied to clipboard");
+  } else {
+    toast.error("Failed to copy to clipboard");
+  }
+}
+
 /**
  * Copies text to the clipboard. Tries the Clipboard API first (required for iOS Safari
  * to run in the same user gesture as the click). Falls back to execCommand when the

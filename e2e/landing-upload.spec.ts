@@ -7,7 +7,9 @@ import {
 } from "./helpers";
 
 test.describe("Landing upload", () => {
-  test("with IndexedDB: image upload redirects to /edit and shows editor", async ({ page }) => {
+  test("with IndexedDB: image upload redirects to /image/edit and shows editor", async ({
+    page,
+  }) => {
     await page.goto("/");
     await expectLandingVisible(page);
 
@@ -18,12 +20,12 @@ test.describe("Landing upload", () => {
     ]);
     await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-    await expect(page).toHaveURL(/\/edit$/);
+    await expect(page).toHaveURL(/\/image\/edit$/);
     await expectEditorWithControlsVisible(page);
   });
 
   testWithFixtures(
-    "without IndexedDB: image upload redirects to /edit and shows editor",
+    "without IndexedDB: image upload redirects to /image/edit and shows editor",
     async ({ pageWithoutIndexedDB: page }) => {
       await page.goto("/");
       await expectLandingVisible(page);
@@ -35,7 +37,7 @@ test.describe("Landing upload", () => {
       ]);
       await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
 
-      await expect(page).toHaveURL(/\/edit$/);
+      await expect(page).toHaveURL(/\/image\/edit$/);
       await expectEditorWithControlsVisible(page);
     },
   );
