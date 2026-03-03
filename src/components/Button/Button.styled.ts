@@ -67,37 +67,37 @@ export const Control = styled.span`
   transform: var(--transform-in);
 
   @media (hover: hover) {
-    ${Wrapper}:hover:not(:disabled) > & {
+    ${Wrapper}:hover:not(:disabled) & {
       background-color: var(--button-color-hover);
     }
   
-    ${Wrapper}:active:not(:disabled) > & {
+    ${Wrapper}:active:not(:disabled) & {
       transform: var(--transform-out);
     }
   }
 
-  ${Wrapper}:not([data-toggleable]):active > & {
+  ${Wrapper}:not([data-toggleable]):active & {
     transform: var(--transform-out);
   }
 
-  ${Wrapper}[data-toggleable][aria-pressed="true"] > & {
+  ${Wrapper}[data-toggleable][aria-pressed="true"] & {
     transform: var(--transform-out);
 
     @media (hover: hover) {
-      ${Wrapper}:active:not(:disabled) > & {
+      ${Wrapper}:active:not(:disabled) & {
         transform: var(--transform-in);
       }
     }
   }
 
-  ${Wrapper}:disabled > & {
+  ${Wrapper}:disabled & {
     transition: none;
     border-color: var(--button-color-disabled);
     color: var(--button-color-disabled);
     cursor: default;
   }
 
-  ${Wrapper}:focus-visible > & {
+  ${Wrapper}:focus-visible & {
     outline: calc(0.25rem * var(--scale)) solid var(--color-glow);
     border-radius: 0rem;
     outline-offset: 0;
@@ -116,7 +116,7 @@ export const Control = styled.span`
   }
 
   /* calc won't work in the container query */
-  ${Wrapper}[data-scale=2] > & {
+  ${Wrapper}[data-scale=2] & {
     @container (max-width: 12rem) {
       & > svg { margin: auto; }
       & > span { display: none; }
@@ -131,7 +131,7 @@ export const Shadow = styled.span`
   transform: var(--transform-out);
   background-color: var(--button-color-solid);
 
-  ${Wrapper}:disabled > & {
+  ${Wrapper}:disabled & {
     background-color: var(--button-color-disabled);
   }
 `;

@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { Button } from "../../components/Button/Button";
+import { IconClear } from "../../icons/IconClear";
 import { DBConfig } from "../../services/databaseConfig";
 import { PrivacyMeta, PrivacyPage } from "./Privacy.styled";
 
@@ -138,6 +139,7 @@ export function Privacy() {
           aria-label="Clear all data stored by this app in the browser"
           css={{ maxWidth: "35ch" }}
         >
+          <IconClear />
           <Button.ButtonText>Clear all data</Button.ButtonText>
         </Button>
       </section>

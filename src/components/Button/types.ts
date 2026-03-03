@@ -4,13 +4,13 @@ type ButtonToggleableProps = {
   toggleable: true;
   toggled: boolean;
   onToggle?: (toggled: boolean) => void;
-}
+};
 
 type ButtonNonToggleableProps = {
   toggleable?: false;
   toggled?: never;
   onToggle?: never;
-}
+};
 
 export type ButtonProps = (ButtonToggleableProps | ButtonNonToggleableProps) & {
   ref?: Ref<HTMLButtonElement>;
@@ -20,4 +20,4 @@ export type ButtonProps = (ButtonToggleableProps | ButtonNonToggleableProps) & {
   children?: ReactNode;
   colorScheme?: "foreground" | "background";
   grow?: boolean;
-} & Pick<HTMLProps<HTMLButtonElement>, "aria-label" | "onClick" | "onFocus" | "onBlur">
+} & Pick<HTMLProps<HTMLButtonElement>, "aria-label" | "onClick" | "onFocus" | "onBlur">;

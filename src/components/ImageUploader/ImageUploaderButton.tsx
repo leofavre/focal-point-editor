@@ -3,7 +3,7 @@ import { useEffectEvent, useRef, useState } from "react";
 import { mergeRefs, useMergeRefs } from "react-merge-refs";
 import { parseBooleanAttr } from "../../helpers/parseBooleanAttr";
 import { useClosingTransition, useDelayedClose } from "../../hooks/useClosingTransition";
-import { IconUpload } from "../../icons/IconUpload";
+import { IconAdd } from "../../icons/IconAdd";
 import type { ImageDraftStateAndFile, ImageDraftStateAndUrl } from "../../types";
 import { BackdropOverlay } from "../BackdropOverlay/BackdropOverlay.styled";
 import { Button } from "../Button/Button";
@@ -116,7 +116,7 @@ export function ImageUploaderButton({
             scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
             grow={grow}
           >
-            <IconUpload />
+            <IconAdd />
             <Button.ButtonText>{label}</Button.ButtonText>
           </Button>
         </InvisibleLabel>
