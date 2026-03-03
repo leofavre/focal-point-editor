@@ -1,6 +1,6 @@
 import { Suspense, useCallback } from "react";
 import toast from "react-hot-toast";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useEditorContext } from "../AppContext";
 import { AspectRatioSlider } from "../components/AspectRatioSlider/AspectRatioSlider";
 import { Button } from "../components/Button/Button";
@@ -29,11 +29,11 @@ import {
  * ### MELHORIZE™ UI.
  *
  * - Keyboard shortcuts page.
+ * - Back button in text-only pages.
  * - Better styling for text-only pages.
  *
  * ### Advanced functionality
  *
- * - Refactor app with route-specific components instead of a single PageContent component.
  * - Use the native API for page transitions.
  * - Support external image sources.
  * - Multiple images with "file system".
@@ -57,9 +57,12 @@ export default function Layout() {
     handleImageUpload,
     uploaderButtonRef,
     aspectRatioSliderRef,
-    pageState,
     isLoading,
   } = useEditorContext();
+
+  const { pathname } = useLocation();
+  const isEditingOrLanding = pathname === "/" || /^\/image\/[^/]+$/.test(pathname);
+  const isEditingRoute = /^\/image\/[^/]+$/.test(pathname);
 
   const handleImageUploadError = useCallback((error: Err<UploadErrorCode>) => {
     toast.error(getUploadErrorMessage(error));
@@ -69,7 +72,8 @@ export default function Layout() {
     setShowCodeSnippet(false);
   }, [setShowCodeSnippet]);
 
-  const isUIStateButtonDisabled = pageState !== "landing" && pageState !== "editing" && !isLoading;
+  const isUIStateButtonDisabled =
+    (!isEditingOrLanding && !isLoading) || (isEditingRoute && image == null);
 
   return (
     <>
@@ -85,7 +89,7 @@ export default function Layout() {
         </LayoutHeader>
         <Suspense
           fallback={
-            <LayoutMessage key="loading" role="status" aria-label="Loading">
+            <LayoutMessage role="status" aria-label="Loading">
               <LoadingSpinner aria-hidden />
             </LayoutMessage>
           }

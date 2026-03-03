@@ -1,6 +1,6 @@
 export const DBConfig = {
   name: "FocalPointEditor",
-  version: 3,
+  version: 1,
   objectStoresMeta: [
     {
       store: "images",

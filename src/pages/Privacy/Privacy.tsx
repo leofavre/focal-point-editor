@@ -2,11 +2,11 @@ import toast from "react-hot-toast";
 import { Button } from "../../components/Button/Button";
 import { IconClear } from "../../icons/IconClear";
 import { DBConfig } from "../../services/databaseConfig";
-import { PrivacyMeta, PrivacyPage } from "./Privacy.styled";
+import { PrivacyLayout, PrivacyMeta } from "./Privacy.styled";
 
 const PRIVACY_LAST_UPDATED = "2025-03-02" as const;
 
-export function Privacy() {
+export function PrivacyPage() {
   const title = "Privacy Notice";
 
   const handleClearAllData = () => {
@@ -16,41 +16,49 @@ export function Privacy() {
       return;
     }
 
-    // Clear sessionStorage when available. If it is unavailable, this is not treated as an error.
-    try {
-      if (typeof window !== "undefined" && typeof window.sessionStorage !== "undefined") {
-        window.sessionStorage.clear();
-      }
-    } catch {
-      toast.error("Could not clear stored data. Please try again.");
-      return;
-    }
-
-    // If IndexedDB is unavailable, there is no database to clear and we can consider this done.
     if (typeof indexedDB === "undefined") {
       toast.success("Stored data cleared.");
       return;
     }
 
-    const request = indexedDB.deleteDatabase(DBConfig.name);
+    const request = indexedDB.open(DBConfig.name, DBConfig.version);
 
     request.onsuccess = () => {
-      toast.success("Stored data cleared.");
+      const db = request.result;
+
+      if (!db.objectStoreNames.contains("images")) {
+        db.close();
+        toast.success("Stored data cleared.");
+        return;
+      }
+
+      const transaction = db.transaction("images", "readwrite");
+      const store = transaction.objectStore("images");
+      store.clear();
+
+      transaction.oncomplete = () => {
+        db.close();
+        toast.success("Stored data cleared.");
+      };
+
+      transaction.onerror = () => {
+        db.close();
+        toast.error("Could not clear stored data. Please try again.");
+      };
     };
 
     request.onerror = () => {
       toast.error("Could not clear stored data. Please try again.");
     };
 
-    request.onblocked = () => {
-      toast.error(
-        "Could not clear stored data because another tab is open. Close other tabs using this app and try again.",
-      );
+    request.onupgradeneeded = () => {
+      request.transaction?.abort();
+      toast.error("Could not clear stored data. Please try again.");
     };
   };
 
   return (
-    <PrivacyPage data-component="PrivacyPage">
+    <PrivacyLayout data-component="PrivacyPage">
       <h1>{title}</h1>
       <PrivacyMeta>Last updated: {PRIVACY_LAST_UPDATED}</PrivacyMeta>
       <section>
@@ -143,6 +151,6 @@ export function Privacy() {
           <Button.ButtonText>Clear all data</Button.ButtonText>
         </Button>
       </section>
-    </PrivacyPage>
+    </PrivacyLayout>
   );
 }

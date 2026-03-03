@@ -19,7 +19,6 @@ import { createImageStateFromDraftAndFile } from "./pages/helpers/createImageSta
 import { createImageStateFromRecord } from "./pages/helpers/createImageStateFromRecord";
 import { createImageStateFromUrl } from "./pages/helpers/createImageStateFromUrl";
 import { createKeyboardShortcutHandler } from "./pages/helpers/createKeyboardShortcutHandler";
-import { usePageState } from "./pages/hooks/usePageState";
 import { usePersistedImages } from "./pages/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
 import type {
@@ -30,7 +29,6 @@ import type {
   ImageRecord,
   ImageState,
   ObjectPositionString,
-  UIPageState,
   UIPersistenceMode,
 } from "./types";
 import { hasUrl, isImageDraftStateAndUrl } from "./types";
@@ -63,7 +61,7 @@ export type EditorContextValue = {
   codeSnippetLanguage: CodeSnippetLanguage | undefined;
   setCodeSnippetLanguage: Dispatch<SetStateAction<CodeSnippetLanguage | undefined>>;
   currentObjectPosition: ObjectPositionString | undefined;
-  pageState: UIPageState;
+  imageNotFoundConfirmed: boolean;
   isLoading: boolean;
   isEditingSingleImage: boolean;
   showBottomBar: boolean;
@@ -157,13 +155,8 @@ export function AppContext({ children }: PropsWithChildren) {
   const isEditingSingleImage =
     persistenceMode === "singleImage" && imageId === SINGLE_IMAGE_MODE_ID;
 
-  const pageState = usePageState({
-    pathname,
-    persistenceMode,
-    imageId,
-    image,
-    isEditingSingleImage,
-  });
+  const isEditingRoute = /^\/image\/[^/]+$/.test(pathname);
+  const isOnImageRoute = pathname.startsWith(IMAGE_ROUTE_PREFIX);
 
   const handleImageUpload = useCallback(
     async (draftAndFileOrUrl: ImageDraftStateAndFile | ImageDraftStateAndUrl | undefined) => {
@@ -226,12 +219,12 @@ export function AppContext({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    const hideOverflow = pageState !== "landing" && pageState !== "privacy";
+    const hideOverflow = pathname !== "/" && pathname !== "/privacy";
     document.body.style.overflow = hideOverflow ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [pageState]);
+  }, [pathname]);
 
   /**
    * Handles all keyboard shortcuts:
@@ -385,15 +378,13 @@ export function AppContext({ children }: PropsWithChildren) {
     asyncSetImageState();
   }, [imageId, imageCount, setAspectRatio]);
 
+  const isUnknownRoute = pathname !== "/" && pathname !== "/privacy" && !isEditingRoute;
+
   const isLoading =
-    isProcessingImageUpload || (pageState === "imageNotFound" && imageNotFoundConfirmed === false);
+    isProcessingImageUpload || (isOnImageRoute && image == null && !imageNotFoundConfirmed);
 
   const showBottomBar =
-    (showFocalPoint != null &&
-      showImageOverflow != null &&
-      pageState !== "landing" &&
-      pageState !== "privacy") ||
-    pageState === "pageNotFound";
+    (isEditingRoute && showFocalPoint != null && showImageOverflow != null) || isUnknownRoute;
 
   const value: EditorContextValue = {
     pathname,
@@ -413,7 +404,7 @@ export function AppContext({ children }: PropsWithChildren) {
     codeSnippetLanguage,
     setCodeSnippetLanguage,
     currentObjectPosition,
-    pageState,
+    imageNotFoundConfirmed,
     isLoading,
     isEditingSingleImage,
     showBottomBar,

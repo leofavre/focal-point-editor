@@ -160,12 +160,7 @@ export const LayoutGrid = styled.main`
     [data-component="EditorControlsNav"] [data-component="FocalPointButton"],
     [data-component="EditorControlsNav"] [data-component="ImageOverflowButton"],
     [data-component="EditorControlsNav"] [data-component="CodeSnippetButton"],
-    [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"],
-    > [data-component="AspectRatioSlider"],
-    > [data-component="FocalPointButton"],
-    > [data-component="ImageOverflowButton"],
-    > [data-component="CodeSnippetButton"],
-    > [data-component="ImageUploaderButton"] {
+    [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"] {
       top: 0;
       visibility: visible;
       transition: top 132ms ease-in-out 0s, visibility 132ms linear 0s;

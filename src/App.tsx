@@ -4,8 +4,20 @@ import { AppContext } from "./AppContext";
 import { ToasterInPopover } from "./components/ToasterInPopover/ToasterInPopover";
 import Layout from "./pages/Layout";
 
-const PageContent = lazy(() =>
-  import("./pages/PageContent/PageContent").then((m) => ({ default: m.PageContent })),
+const LandingPage = lazy(() =>
+  import("./pages/LandingPage/LandingPage").then((m) => ({ default: m.LandingPage })),
+);
+
+const EditPage = lazy(() =>
+  import("./pages/EditPage/EditPage").then((m) => ({ default: m.EditPage })),
+);
+
+const PrivacyPage = lazy(() =>
+  import("./pages/Privacy/Privacy").then((m) => ({ default: m.PrivacyPage })),
+);
+
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage/NotFoundPage").then((m) => ({ default: m.NotFoundPage })),
 );
 
 export default function App() {
@@ -15,10 +27,10 @@ export default function App() {
       <AppContext>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<PageContent />} />
-            <Route path="privacy" element={<PageContent />} />
-            <Route path="image/:imageId" element={<PageContent />} />
-            <Route path="*" element={<PageContent />} />
+            <Route index element={<LandingPage />} />
+            <Route path="privacy" element={<PrivacyPage />} />
+            <Route path="image/:imageId" element={<EditPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </AppContext>

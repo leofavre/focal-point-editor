@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const PrivacyPage = styled.article`
+export const PrivacyLayout = styled.article`
   grid-column: 1 / -1;
   grid-row: 1 / -2;
   margin: auto;
