@@ -19,4 +19,4 @@ export const DBConfig: IndexedDBProps = {
       ],
     },
   ],
-} as const
+};
