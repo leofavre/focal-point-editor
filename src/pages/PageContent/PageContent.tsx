@@ -119,10 +119,6 @@ export function PageContent() {
 
   if (isLoading) return null;
 
-  if (pageState === "pageNotFound") {
-    return <LayoutMessage>Page not found</LayoutMessage>;
-  }
-
   if (pageState === "imageNotFound") {
     return (
       <LayoutMessage>
@@ -131,6 +127,10 @@ export function PageContent() {
           : "Image not found"}
       </LayoutMessage>
     );
+  }
+
+  if (pageState === "pageNotFound") {
+    return <LayoutMessage>Page not found</LayoutMessage>;
   }
 
   return <LayoutMessage>Critical error</LayoutMessage>;
