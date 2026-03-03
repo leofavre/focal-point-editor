@@ -36,8 +36,6 @@ export function Button({
     [toggled, toggleable],
   );
 
-  console.log({ disabled, toggled });
-
   return (
     <Wrapper
       ref={ref}
