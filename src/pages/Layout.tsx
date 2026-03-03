@@ -21,11 +21,11 @@ import { EditorControlsNav, LayoutGrid, LayoutMessage, LoadingSpinner } from "./
  *
  * ### MELHORIZE™ UI.
  *
- * - LGPD compliance?
+ * - Keyboard shortcuts page.
+ * - LGPD page + compliance.
  *
  * ### Advanced functionality
  *
- * - Add link describing shortcuts.
  * - Support external image sources.
  * - Multiple images with "file system".
  * - Maybe make a browser extension?
