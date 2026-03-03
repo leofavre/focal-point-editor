@@ -33,15 +33,16 @@ export function PrivacyPage() {
 
     request.onsuccess = () => {
       const db = request.result;
+      const storeName = DBConfig.objectStoresMeta[0].store;
 
-      if (!db.objectStoreNames.contains("images")) {
+      if (!db.objectStoreNames.contains(storeName)) {
         db.close();
         toast.success("Stored data cleared.");
         return;
       }
 
-      const transaction = db.transaction("images", "readwrite");
-      const store = transaction.objectStore("images");
+      const transaction = db.transaction(storeName, "readwrite");
+      const store = transaction.objectStore(storeName);
       store.clear();
 
       transaction.oncomplete = () => {
