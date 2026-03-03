@@ -21,7 +21,6 @@ import { EditorControlsNav, LayoutGrid, LayoutMessage, LoadingSpinner } from "./
  *
  * ### MELHORIZE™ UI.
  *
- * - Improve site description.
  * - LGPD compliance?
  *
  * ### Advanced functionality
