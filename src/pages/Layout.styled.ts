@@ -1,5 +1,6 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
 
 const spin = keyframes`
   to {
@@ -23,6 +24,28 @@ export const LayoutMessage = styled.h3`
   grid-column: 1 / -1;
   grid-row: 1 / -2;
   margin: auto;
+`;
+
+/** Header row; display: contents so title and privacy link are laid out on the main grid. */
+export const LayoutHeader = styled.header`
+  display: contents;
+`;
+
+/** Link to privacy notice; positioned on the main grid, same column as title, aligned top/end. */
+export const PrivacyLink = styled(Link)`
+  grid-row: 1;
+  grid-column: 2 / -2;
+  align-self: start;
+  justify-self: end;
+  margin-top: var(--base-line-05x);
+  z-index: 10;
+  font-size: calc(14 / 16 * 1rem);
+  color: var(--color-neutral);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-loud);
+  }
 `;
 
 /** Wrapper for bottom bar controls; display: contents preserves parent grid layout. */

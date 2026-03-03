@@ -226,7 +226,8 @@ export function AppContext({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = pageState !== "landing" ? "hidden" : "auto";
+    const hideOverflow = pageState !== "landing" && pageState !== "privacy";
+    document.body.style.overflow = hideOverflow ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -388,7 +389,10 @@ export function AppContext({ children }: PropsWithChildren) {
     isProcessingImageUpload || (pageState === "imageNotFound" && imageNotFoundConfirmed === false);
 
   const showBottomBar =
-    (showFocalPoint != null && showImageOverflow != null && pageState !== "landing") ||
+    (showFocalPoint != null &&
+      showImageOverflow != null &&
+      pageState !== "landing" &&
+      pageState !== "privacy") ||
     pageState === "pageNotFound";
 
   const value: EditorContextValue = {

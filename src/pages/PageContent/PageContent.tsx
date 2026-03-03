@@ -13,6 +13,7 @@ import type { Err } from "../../helpers/errorHandling";
 import type { ObjectPositionString } from "../../types";
 import { LandingWrapper } from "../Landing/Landing.styled";
 import { LayoutMessage } from "../Layout.styled";
+import { Privacy } from "../Privacy/Privacy";
 
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
 const DEFAULT_CODE_SNIPPET_LANGUAGE = "html" as const;
@@ -60,6 +61,10 @@ export function PageContent() {
       },
     } as const;
   }, []);
+
+  if (pageState === "privacy") {
+    return <Privacy />;
+  }
 
   if (pageState === "landing" || pageState === "editing") {
     return (

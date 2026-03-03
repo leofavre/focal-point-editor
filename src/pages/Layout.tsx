@@ -14,7 +14,14 @@ import { parseBooleanAttr } from "../helpers/parseBooleanAttr";
 import { IconCode } from "../icons/IconCode";
 import { IconMask } from "../icons/IconMask";
 import { IconReference } from "../icons/IconReference";
-import { EditorControlsNav, LayoutGrid, LayoutMessage, LoadingSpinner } from "./Layout.styled";
+import {
+  EditorControlsNav,
+  LayoutGrid,
+  LayoutHeader,
+  LayoutMessage,
+  LoadingSpinner,
+  PrivacyLink,
+} from "./Layout.styled";
 
 /**
  * @todo
@@ -22,7 +29,6 @@ import { EditorControlsNav, LayoutGrid, LayoutMessage, LoadingSpinner } from "./
  * ### MELHORIZE™ UI.
  *
  * - Keyboard shortcuts page.
- * - LGPD page + compliance.
  *
  * ### Advanced functionality
  *
@@ -70,7 +76,10 @@ export default function Layout() {
         onDragStart={handleDragStart}
       />
       <LayoutGrid id="main" data-has-bottom-bar={parseBooleanAttr(showBottomBar)}>
-        <SiteTitle />
+        <LayoutHeader>
+          <SiteTitle />
+          <PrivacyLink to="/privacy">Privacy</PrivacyLink>
+        </LayoutHeader>
         <Suspense
           fallback={
             <LayoutMessage key="loading" role="status" aria-label="Loading">

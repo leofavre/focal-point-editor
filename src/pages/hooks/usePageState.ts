@@ -3,6 +3,7 @@ import type { ImageId, ImageState, UIPageState, UIPersistenceMode } from "../../
 /**
  * | pathname (route)    | persistence | imageId (from url) | image | State                                 |
  * |:--------------------|:------------|:-------------------|:------|:--------------------------------------|
+ * | /privacy            | -           | -                  | -     | Privacy                               |
  * | unmatched (*)       | -           | -                  | -     | Page not found                        |
  * | /                   | persistent  | no                 | no    | Landing                               |
  * | /image/:id          | persistent  | yes                | no    | Image not found (can also be loading) |
@@ -22,8 +23,9 @@ export function usePageState({
   image: ImageState | null;
   isEditingSingleImage: boolean;
 }): UIPageState {
-  const isPageNotFoundRoute = pathname !== "/" && !/^\/image\/[^/]+$/.test(pathname);
+  if (pathname === "/privacy") return "privacy";
 
+  const isPageNotFoundRoute = pathname !== "/" && !/^\/image\/[^/]+$/.test(pathname);
   if (isPageNotFoundRoute) return "pageNotFound";
 
   if (imageId == null) return "landing";

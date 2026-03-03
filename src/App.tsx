@@ -16,6 +16,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<PageContent />} />
+            <Route path="privacy" element={<PageContent />} />
             <Route path="image/:imageId" element={<PageContent />} />
             <Route path="*" element={<PageContent />} />
           </Route>
