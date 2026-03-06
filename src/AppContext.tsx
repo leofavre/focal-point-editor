@@ -21,6 +21,7 @@ import { usePersistedImages } from "./editor/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./editor/hooks/usePersistedUIRecord";
 import { logError } from "./helpers/errorHandling";
 import { getCreateImageStateErrorMessage } from "./helpers/getCreateImageStateErrorMessage";
+import { shouldHideBodyOverflow } from "./helpers/shouldHideBodyOverflow";
 import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
 import type {
   CodeSnippetLanguage,
@@ -223,11 +224,9 @@ export function AppContext({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    const hideOverflow = pathname !== "/" && pathname !== "/privacy";
-    document.body.style.overflow = hideOverflow ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    const hideOverflow = shouldHideBodyOverflow(pathname);
+    document.body.classList.toggle("no-overflow", hideOverflow);
+    return () => document.body.classList.remove("no-overflow");
   }, [pathname]);
 
   /**
