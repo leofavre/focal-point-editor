@@ -32,10 +32,10 @@ export function getUploadErrorMessage(error: { reason: UploadErrorCode }): strin
 
   switch (reason) {
     case NO_FILES_PROVIDED:
-      return "Please select at least one image to upload.";
+      return "Please select at least one image.";
 
     case NO_FILE_PROVIDED:
-      return "Please select an image to upload.";
+      return "Please select an image.";
 
     case ErrorCode.FileInvalidType:
     case NOT_IMAGE:
@@ -51,13 +51,13 @@ export function getUploadErrorMessage(error: { reason: UploadErrorCode }): strin
       return "Too many files selected.";
 
     case SINGLE_IMAGE_REQUIRED:
-      return "Please upload only one image.";
+      return "Please select only one image.";
 
     case IMAGE_FORMAT_NOT_SUPPORTED:
       return "This image can't be displayed. It may be corrupted or in an unsupported format.";
 
     default:
       void (reason satisfies never);
-      return "The image couldn't be uploaded. Please try again.";
+      return "The image couldn't be processed. Please try again.";
   }
 }
