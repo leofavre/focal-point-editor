@@ -1,4 +1,4 @@
-import { EditPage } from "../../../src/pages/EditPage/EditPage";
+import { EditPage } from "./EditPage";
 
 export default function Page() {
   return <EditPage />;

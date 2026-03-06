@@ -1,4 +1,4 @@
-import { NotFoundPage } from "../../src/pages/NotFoundPage/NotFoundPage";
+import { NotFoundPage } from "./NotFoundPage";
 
 export default function Page() {
   return <NotFoundPage />;

@@ -12,16 +12,16 @@ import toast from "react-hot-toast";
 import useDebouncedEffect from "use-debounced-effect";
 import { navigate as vikeNavigate } from "vike/client/router";
 import { usePageContext } from "vike-react/usePageContext";
-import { copyTextToClipboardWithToast } from "./components/CodeSnippet/helpers/copyToClipboard";
-import { getCodeSnippet } from "./components/CodeSnippet/helpers/getCodeSnippet";
+import { copyTextToClipboardWithToast } from "@/components/CodeSnippet/helpers/copyToClipboard";
+import { getCodeSnippet } from "@/components/CodeSnippet/helpers/getCodeSnippet";
+import { createImageStateFromDraftAndFile } from "./editor/helpers/createImageStateFromDraftAndFile";
+import { createImageStateFromRecord } from "./editor/helpers/createImageStateFromRecord";
+import { createImageStateFromUrl } from "./editor/helpers/createImageStateFromUrl";
+import { createKeyboardShortcutHandler } from "./editor/helpers/createKeyboardShortcutHandler";
+import { usePersistedImages } from "./editor/hooks/usePersistedImages";
+import { usePersistedUIRecord } from "./editor/hooks/usePersistedUIRecord";
 import { logError } from "./helpers/errorHandling";
 import { getCreateImageStateErrorMessage } from "./helpers/getCreateImageStateErrorMessage";
-import { createImageStateFromDraftAndFile } from "./pages/helpers/createImageStateFromDraftAndFile";
-import { createImageStateFromRecord } from "./pages/helpers/createImageStateFromRecord";
-import { createImageStateFromUrl } from "./pages/helpers/createImageStateFromUrl";
-import { createKeyboardShortcutHandler } from "./pages/helpers/createKeyboardShortcutHandler";
-import { usePersistedImages } from "./pages/hooks/usePersistedImages";
-import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
 import type {
   CodeSnippetLanguage,
   ImageDraftStateAndFile,

@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
-import { AppContext } from "../src/AppContext";
-import { ToasterInPopover } from "../src/components/ToasterInPopover/ToasterInPopover";
-import SharedLayout from "../src/pages/Layout";
+import { ToasterInPopover } from "@/components/ToasterInPopover/ToasterInPopover";
+import { AppContext } from "@/src/AppContext";
+import SharedLayout from "./(layout)/Layout";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
