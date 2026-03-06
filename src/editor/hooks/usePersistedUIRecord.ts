@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useEffectEvent, useState } from "react";
-import useDebouncedEffect from "use-debounced-effect";
 import type { Err } from "../../helpers/errorHandling";
 import { isSessionStorageAvailable } from "../../helpers/sessionStorageAvailability";
+import { useDebouncedEffect } from "../../hooks/useDebouncedEffect";
 import { getInMemoryStorageService } from "../../services/inMemoryStorageService";
 import { getSessionStorageService } from "../../services/sessionStorageService";
 import type { UIRecord, UIState } from "../../types";

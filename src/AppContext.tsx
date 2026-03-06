@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import useDebouncedEffect from "use-debounced-effect";
 import { navigate as vikeNavigate } from "vike/client/router";
 import { usePageContext } from "vike-react/usePageContext";
 import { copyTextToClipboardWithToast } from "@/components/CodeSnippet/helpers/copyToClipboard";
@@ -22,6 +21,7 @@ import { usePersistedImages } from "./editor/hooks/usePersistedImages";
 import { usePersistedUIRecord } from "./editor/hooks/usePersistedUIRecord";
 import { logError } from "./helpers/errorHandling";
 import { getCreateImageStateErrorMessage } from "./helpers/getCreateImageStateErrorMessage";
+import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
 import type {
   CodeSnippetLanguage,
   ImageDraftStateAndFile,

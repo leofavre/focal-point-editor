@@ -3470,7 +3470,6 @@ __metadata:
     react-router-dom: "npm:^7.13.0"
     type-fest: "npm:^5.4.3"
     typescript: "npm:^5.9.3"
-    use-debounced-effect: "npm:^2.0.1"
     vike: "npm:^0.4.255"
     vike-react: "npm:^0.6.21"
     vite: "npm:^7.3.1"
@@ -5958,13 +5957,6 @@ __metadata:
   bin:
     update-browserslist-db: cli.js
   checksum: 10c0/13a00355ea822388f68af57410ce3255941d5fb9b7c49342c4709a07c9f230bbef7f7499ae0ca7e0de532e79a82cc0c4edbd125f1a323a1845bf914efddf8bec
-  languageName: node
-  linkType: hard
-
-"use-debounced-effect@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "use-debounced-effect@npm:2.0.1"
-  checksum: 10c0/a60834661658e98eb6cdad7e3ff51b747d661a05fb8d6f8fad769100ab43c8f7999bc6aaa7c0d722d95fe938494f01c4cba4c187e7c4529be97b1880c03e5c26
   languageName: node
   linkType: hard
 
