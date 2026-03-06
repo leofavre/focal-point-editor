@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import isEqual from "lodash/isEqual";
 import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import type { Err, Result } from "../../helpers/errorHandling";
 import { accept, processResults, reject } from "../../helpers/errorHandling";
