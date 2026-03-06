@@ -5,8 +5,10 @@
  */
 
 import { act, renderHook, waitFor } from "@testing-library/react";
+import React, { type ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { DBConfig } from "../../services/databaseConfig";
+import { IndexedDBServiceProvider } from "../../services/IndexedDBServiceProvider";
 import { getIndexedDBService } from "../../services/indexedDBService";
 import { __clearTableForTesting } from "../../services/inMemoryStorageService";
 import { clearIndexedDBStores } from "../../test-utils/clearIndexedDBStores";
@@ -14,6 +16,10 @@ import { expectAccepted } from "../../test-utils/expectAccepted";
 import { createMockImageDraftState, createMockImageRecordWithFile } from "../../test-utils/mocks";
 import type { ImageId, ImageRecord } from "../../types";
 import { usePersistedImages } from "./usePersistedImages";
+
+function wrapperWithIndexedDBProvider({ children }: { children: ReactNode }) {
+  return React.createElement(IndexedDBServiceProvider, null, children);
+}
 
 const testFile = new Blob(["test"], { type: "image/png" });
 
@@ -37,7 +43,9 @@ describe("usePersistedImages", () => {
   });
 
   it("returns images undefined initially, then loaded list after getAll resolves", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     expect(result.current.images).toBeUndefined();
 
@@ -47,7 +55,9 @@ describe("usePersistedImages", () => {
   });
 
   it("initial load effect does not cause an infinite loop (load completes with empty list)", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -62,7 +72,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([record]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -74,7 +86,9 @@ describe("usePersistedImages", () => {
   });
 
   it("addImage generates friendly id from filename, adds record, refreshes, and returns id", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -102,7 +116,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existingRecord]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -127,7 +143,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existingRecord]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -156,7 +174,9 @@ describe("usePersistedImages", () => {
   });
 
   it("addImage with overwrite: true when no existing record creates record", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -184,7 +204,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existingRecord]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -210,7 +232,9 @@ describe("usePersistedImages", () => {
   });
 
   it("addImage with ImageDraftStateAndUrl adds url-based record and refreshes", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -236,7 +260,9 @@ describe("usePersistedImages", () => {
   });
 
   it("addImage with options.id uses explicit id", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -262,7 +288,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existingRecord]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -288,7 +316,9 @@ describe("usePersistedImages", () => {
   });
 
   it("addImages generates ids for all items and adds records", async () => {
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toEqual([]);
@@ -318,7 +348,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([record]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toBeDefined();
@@ -334,7 +366,9 @@ describe("usePersistedImages", () => {
 
   it("getImage returns undefined when record is missing", async () => {
     const id = "missing-id" as ImageId;
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toBeDefined();
@@ -357,7 +391,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existing]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toBeDefined();
@@ -380,7 +416,9 @@ describe("usePersistedImages", () => {
 
   it("updateImage does nothing when record is not found", async () => {
     const id = "missing-id" as ImageId;
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toBeDefined();
@@ -402,7 +440,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([existing]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toBeDefined();
@@ -423,7 +463,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([record]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -444,7 +486,9 @@ describe("usePersistedImages", () => {
     });
     await seedImagesStore([record1]);
 
-    const { result } = renderHook(() => usePersistedImages());
+    const { result } = renderHook(() => usePersistedImages(), {
+      wrapper: wrapperWithIndexedDBProvider,
+    });
 
     await waitFor(() => {
       expect(result.current.images).toHaveLength(1);
@@ -510,7 +554,9 @@ describe("usePersistedImages", () => {
       unmount();
 
       __clearTableForTesting("images");
-      const { result: resultIndexedDB } = renderHook(() => usePersistedImages());
+      const { result: resultIndexedDB } = renderHook(() => usePersistedImages(), {
+        wrapper: wrapperWithIndexedDBProvider,
+      });
 
       await waitFor(() => {
         expect(resultIndexedDB.current.images).toBeDefined();

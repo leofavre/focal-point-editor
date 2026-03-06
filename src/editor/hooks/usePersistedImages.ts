@@ -3,8 +3,7 @@ import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import type { Err, Result } from "../../helpers/errorHandling";
 import { accept, processResults, reject } from "../../helpers/errorHandling";
 import { isIndexedDBAvailable } from "../../helpers/indexedDBAvailability";
-import { DBConfig } from "../../services/databaseConfig";
-import { getIndexedDBService } from "../../services/indexedDBService";
+import { useIndexedDBService } from "../../services/indexedDBServiceContext";
 import { getInMemoryStorageService } from "../../services/inMemoryStorageService";
 import type {
   ImageDraftStateAndFile,
@@ -86,10 +85,14 @@ export type UsePersistedImagesReturn = {
 export function usePersistedImages(options?: UsePersistedImagesOptions): UsePersistedImagesReturn {
   const { forceInMemoryStorage = false, onRefreshImagesError } = options ?? {};
 
-  const indexedDBService = getIndexedDBService<ImageRecord>(DBConfig, "images");
+  const indexedDBServiceFromContext = useIndexedDBService();
   const inMemoryService = getInMemoryStorageService<ImageRecord>("images");
   const useIndexedDB = !forceInMemoryStorage && isIndexedDBAvailable();
-  const service = useIndexedDB ? indexedDBService : inMemoryService;
+
+  const service =
+    useIndexedDB && indexedDBServiceFromContext != null
+      ? indexedDBServiceFromContext
+      : inMemoryService;
 
   const [images, setImages] = useState<ImageRecord[] | undefined>(undefined);
 
