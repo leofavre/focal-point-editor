@@ -8,6 +8,12 @@
 
 import { renderPage } from "vike/server";
 
+/** Run on any path; preferStatic lets Netlify serve static files first. */
+export const config = {
+  path: "/*",
+  preferStatic: true,
+};
+
 /**
  * Netlify Functions 2.0 handler: receives Request and Context, returns Response.
  * @param {Request} request
@@ -15,17 +21,25 @@ import { renderPage } from "vike/server";
  * @returns {Promise<Response>}
  */
 export default async function handler(request, _context) {
-  const pageContextInit = { urlOriginal: request.url };
-  const pageContext = await renderPage(pageContextInit);
-  const { statusCode, headers: headersList, body } = pageContext.httpResponse;
+  try {
+    const pageContextInit = { urlOriginal: request.url };
+    const pageContext = await renderPage(pageContextInit);
+    const { statusCode, headers: headersList, body } = pageContext.httpResponse;
 
-  const headers = new Headers();
-  for (const [name, value] of headersList) {
-    headers.set(name, value);
+    const headers = new Headers();
+    for (const [name, value] of headersList) {
+      headers.set(name, value);
+    }
+
+    return new Response(body, {
+      status: statusCode,
+      headers,
+    });
+  } catch (err) {
+    console.error("[Vike SSR]", err);
+    return new Response(`SSR error: ${err?.message ?? String(err)}`, {
+      status: 500,
+      headers: { "Content-Type": "text/plain" },
+    });
   }
-
-  return new Response(body, {
-    status: statusCode,
-    headers,
-  });
 }
