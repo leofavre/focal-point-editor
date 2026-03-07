@@ -1,13 +1,16 @@
-# Vike builds static assets to dist/client/. See https://vike.dev/netlify
+# Vike SSR on Netlify: client assets in dist/client, server runs as a Netlify Function.
+# See https://vike.dev/netlify-functions
 [build]
   command = "yarn build"
   publish = "dist/client"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "24"
 
-# SPA fallback: client-side routing (Vike client router) needs index.html for all routes
+# SSR: requests that don't match a static file go to the server function.
+# Static files (JS, CSS, images) are served from dist/client first.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/server"
   status = 200

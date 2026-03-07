@@ -53,7 +53,7 @@ jobs:
         uses: nwtgck/actions-netlify@v3.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish-dir: './dist/client'
+          publish-dir: './dist'
           production-branch: main
           production-deploy: true
           deploy-message: "${{ format('Release: #{0} — {1}', github.event.pull_request.id, github.event.pull_request.merge_commit_sha) }}"

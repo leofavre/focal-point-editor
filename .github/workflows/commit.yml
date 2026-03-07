@@ -105,7 +105,7 @@ jobs:
         uses: nwtgck/actions-netlify@v3.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish-dir: './dist/client'
+          publish-dir: './dist'
           production-branch: main
           production-deploy: false
           deploy-message: "${{ format('Commit: {0}', github.sha) }}"

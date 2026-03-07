@@ -28,6 +28,7 @@ import {
  *
  * ### MELHORIZE™ UI.
  *
+ * - BUG: make SSR work in Netlify.
  * - Keyboard shortcuts page.
  * - Back button in text-only pages.
  * - Better styling for text-only pages.
