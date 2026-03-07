@@ -1,19 +1,13 @@
-# Vike SSR on Netlify: client assets in dist/client, server runs as a Netlify Function.
-# See https://vike.dev/netlify-functions
+# Vike builds static assets to dist/client/. See https://vike.dev/netlify
 [build]
   command = "yarn build"
   publish = "dist/client"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "24"
 
-# Include the Vike server build so the function can load it at runtime (not imported statically).
-[functions]
-  included_files = ["dist/server/**"]
-
-# Rewrite non-static requests to the function; pass path as query so the function gets the original URL.
+# SPA fallback: client-side routing (Vike client router) needs index.html for all routes
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/server?path=:splat"
+  to = "/index.html"
   status = 200
