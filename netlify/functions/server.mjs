@@ -16,13 +16,20 @@ export const config = {
 
 /**
  * Netlify Functions 2.0 handler: receives Request and Context, returns Response.
+ * When invoked via redirect, path is in ?path=:splat; we reconstruct the original URL.
  * @param {Request} request
  * @param {import("@netlify/functions").Context} _context
  * @returns {Promise<Response>}
  */
 export default async function handler(request, _context) {
   try {
-    const pageContextInit = { urlOriginal: request.url };
+    const url = new URL(request.url);
+    const pathFromQuery = url.searchParams.get("path");
+    const urlOriginal =
+      pathFromQuery !== null && pathFromQuery !== ""
+        ? `${url.origin}/${pathFromQuery}`
+        : request.url;
+    const pageContextInit = { urlOriginal };
     const pageContext = await renderPage(pageContextInit);
     const { statusCode, headers: headersList, body } = pageContext.httpResponse;
 

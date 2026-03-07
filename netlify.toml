@@ -8,5 +8,12 @@
 [build.environment]
   NODE_VERSION = "24"
 
-# SSR is handled by netlify/functions/server.mjs via config.path = "/*" and preferStatic.
-# No redirect needed; the function runs for non-static paths and receives the original URL.
+# Include the Vike server build so the function can load it at runtime (not imported statically).
+[functions]
+  included_files = ["dist/server/**"]
+
+# Rewrite non-static requests to the function; pass path as query so the function gets the original URL.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server?path=:splat"
+  status = 200
