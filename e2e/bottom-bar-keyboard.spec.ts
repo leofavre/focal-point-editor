@@ -1,23 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
-import {
-  expectEditorWithControlsVisible,
-  expectLandingVisible,
-  SAMPLE_IMAGE_PATH,
-} from "./helpers";
-
-async function goToEditorWithImage(page: Page) {
-  await page.goto("/");
-  await expectLandingVisible(page);
-  const landing = page.locator('[data-component="Landing"]');
-  const [fileChooser] = await Promise.all([
-    page.waitForEvent("filechooser"),
-    landing.getByRole("button", { name: "Choose image", exact: true }).click(),
-  ]);
-  await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-  await expect(page).toHaveURL(/\/image\/edit$/);
-  await expectEditorWithControlsVisible(page);
-}
+import { seedEditorWithImage } from "./helpers";
 
 async function runTabOrderSteps(page: Page) {
   const focalPoint = page.getByRole("button", { name: "Focal point" });
@@ -121,7 +104,7 @@ async function runArrowRightThenLeftSteps(page: Page, rtl: boolean) {
  */
 test.describe("Bottom bar keyboard navigation", () => {
   test.beforeEach(async ({ page }) => {
-    await goToEditorWithImage(page);
+    await seedEditorWithImage(page);
   });
 
   test("bottom bar is visible when editor is shown", async ({ page }) => {
@@ -137,7 +120,7 @@ test.describe("Bottom bar keyboard navigation", () => {
   });
 
   test("Tab moves focus through bottom bar controls in visual order (RTL)", async ({ pageRTL }) => {
-    await goToEditorWithImage(pageRTL);
+    await seedEditorWithImage(pageRTL);
     await runTabOrderSteps(pageRTL);
   });
 
@@ -146,7 +129,7 @@ test.describe("Bottom bar keyboard navigation", () => {
   });
 
   test("Shift+Tab moves focus backward through bottom bar controls (RTL)", async ({ pageRTL }) => {
-    await goToEditorWithImage(pageRTL);
+    await seedEditorWithImage(pageRTL);
     await runShiftTabOrderSteps(pageRTL);
   });
 
@@ -159,7 +142,7 @@ test.describe("Bottom bar keyboard navigation", () => {
   test("when slider is focused, Arrow Left/Right navigate between aspect ratios (RTL)", async ({
     pageRTL,
   }) => {
-    await goToEditorWithImage(pageRTL);
+    await seedEditorWithImage(pageRTL);
     await runArrowLeftRightSteps(pageRTL, true);
   });
 
@@ -172,7 +155,7 @@ test.describe("Bottom bar keyboard navigation", () => {
   test("when slider is focused, Arrow Right to right end then Arrow Left navigates back (RTL)", async ({
     pageRTL,
   }) => {
-    await goToEditorWithImage(pageRTL);
+    await seedEditorWithImage(pageRTL);
     await runArrowRightThenLeftSteps(pageRTL, true);
   });
 });

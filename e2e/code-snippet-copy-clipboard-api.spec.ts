@@ -1,10 +1,5 @@
 import { expect, test } from "@playwright/test";
-import {
-  dragImageInFocalPointEditor,
-  expectEditorWithControlsVisible,
-  expectLandingVisible,
-  SAMPLE_IMAGE_PATH,
-} from "./helpers";
+import { dragImageInFocalPointEditor, seedEditorWithImage } from "./helpers";
 
 /**
  * Code snippet copy with Clipboard API available.
@@ -16,18 +11,7 @@ test.describe("Code snippet copy – Clipboard API available", () => {
   test("copies code snippet with correct object-position when Clipboard API is available", async ({
     page,
   }) => {
-    await page.goto("/");
-    await expectLandingVisible(page);
-
-    const landing = page.locator('[data-component="Landing"]');
-    const [fileChooser] = await Promise.all([
-      page.waitForEvent("filechooser"),
-      landing.getByRole("button", { name: "Choose image", exact: true }).click(),
-    ]);
-    await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-
-    await expect(page).toHaveURL(/\/image\/edit$/);
-    await expectEditorWithControlsVisible(page);
+    await seedEditorWithImage(page);
 
     const aspectRatioSlider = page.locator(
       '[data-component="AspectRatioControl"] input[type="range"]',

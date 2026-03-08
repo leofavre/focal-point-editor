@@ -1,6 +1,7 @@
 import type { Ref } from "react";
 import { useEffectEvent, useRef, useState } from "react";
 import { mergeRefs, useMergeRefs } from "react-merge-refs";
+import { useHydrated } from "vike-react/useHydrated";
 import { parseBooleanAttr } from "@/src/helpers/parseBooleanAttr";
 import { useClosingTransition, useDelayedClose } from "@/src/hooks/useClosingTransition";
 import { IconAdd } from "@/src/icons/IconAdd";
@@ -22,6 +23,7 @@ export function ImageUploaderButton({
   grow,
   ...rest
 }: ImageUploaderButtonProps) {
+  const isHydrated = useHydrated();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const mergedRefs = useMergeRefs([ref, buttonRef]);
@@ -115,6 +117,7 @@ export function ImageUploaderButton({
             onClick={handleButtonClick}
             scale={size === "medium" ? 2 : size === "large" ? 4 : 1}
             grow={grow}
+            disabled={!isHydrated}
           >
             <IconAdd />
             <Button.ButtonText>{label}</Button.ButtonText>

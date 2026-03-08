@@ -1,6 +1,7 @@
 import type { Ref } from "react";
 import { useEffect, useEffectEvent, useRef } from "react";
 import { mergeRefs } from "react-merge-refs";
+import { useHydrated } from "vike-react/useHydrated";
 import { parseBooleanAttr } from "@/src/helpers/parseBooleanAttr";
 import { useClosingTransition, useDelayedClose } from "@/src/hooks/useClosingTransition";
 import { BackdropOverlay } from "../BackdropOverlay/BackdropOverlay.styled";
@@ -16,6 +17,7 @@ export function FullScreenDropZone({
   ...rest
 }: FullScreenDropZoneProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const isHydrated = useHydrated();
   const { getRootProps, getInputProps, isDragGlobal } = useImageDropzone({
     onImageUpload,
     onImagesUpload,
@@ -64,7 +66,7 @@ export function FullScreenDropZone({
       aria-hidden={!isDragGlobal}
       {...rest}
     >
-      <input {...getInputProps()} aria-hidden />
+      <input {...getInputProps()} aria-hidden disabled={!isHydrated} />
       <p>Drop an image here</p>
     </BackdropOverlay>
   );

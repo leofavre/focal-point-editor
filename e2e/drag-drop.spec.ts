@@ -71,7 +71,7 @@ async function dragImageThenDropOutside(page: import("@playwright/test").Page) {
     document.dispatchEvent(new DragEvent("dragover", opts));
   }, evalOpts);
 
-  await page.getByText("Drop an image here").waitFor({ state: "visible" });
+  await page.locator('[data-component="FullScreenDropZone"]').waitFor({ state: "visible" });
 
   await page.evaluate(async (payload: { b64: string; name: string; type: string }) => {
     const res = await fetch(`data:${payload.type};base64,${payload.b64}`);

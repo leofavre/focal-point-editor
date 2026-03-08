@@ -1,5 +1,6 @@
 import type { ChangeEvent, KeyboardEvent } from "react";
 import { useCallback, useEffectEvent, useMemo } from "react";
+import { useHydrated } from "vike-react/useHydrated";
 import { toAspectRatio } from "../helpers/toAspectRatio";
 import { toLogPosition } from "../helpers/toLogPosition";
 import { Slider } from "./AspectRatioControl.styled";
@@ -27,7 +28,7 @@ export function AspectRatioControl({
   const maxValue = maxItem?.value ?? 1;
   const minPosition = minItem?.position ?? 0;
   const maxPosition = maxItem?.position ?? 1;
-
+  const isHydrated = useHydrated();
   const initialPosition = useMemo(() => {
     return aspectRatioList.find((item) => item.name === "original")?.position;
   }, [aspectRatioList]);
@@ -121,6 +122,7 @@ export function AspectRatioControl({
         list="aspect-ratio"
         aria-label="Aspect ratio"
         aria-valuetext={ariaValuetext}
+        disabled={!isHydrated}
       />
       <datalist id="aspect-ratio">
         {aspectRatioList.map(({ position }) => (

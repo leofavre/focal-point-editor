@@ -65,13 +65,15 @@ export function disableClipboardWriteOnContext(context: BrowserContext): Promise
  * Asserts that the editor view and all controls are visible (FocalPointEditor,
  * AspectRatioSlider, Focal point / Overflow / Code toggles, Image button).
  */
-export function expectEditorWithControlsVisible(page: Page) {
+export async function expectEditorWithControlsVisible(page: Page) {
   const focalPointEditor = page.locator('[data-component="FocalPointEditor"]');
   const aspectRatioSlider = page.locator('[data-component="AspectRatioSlider"]');
   const focalPointButton = page.locator('[data-component="FocalPointButton"]');
   const imageOverflowButton = page.locator('[data-component="ImageOverflowButton"]');
   const codeSnippetButton = page.locator('[data-component="CodeSnippetButton"]');
   const uploadButton = page.getByRole("button", { name: "Image", exact: true });
+
+  await expect(aspectRatioSlider).toBeEnabled();
 
   return Promise.all([
     expect(focalPointEditor).toBeVisible(),
@@ -178,11 +180,14 @@ export async function seedEditorWithImage(page: Page): Promise<void> {
   await page.goto("/");
   await expectLandingVisible(page);
   const landing = page.locator('[data-component="Landing"]');
+
   const [fileChooser] = await Promise.all([
     page.waitForEvent("filechooser"),
     landing.getByRole("button", { name: "Choose image", exact: true }).click(),
   ]);
+
   await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
+  await page.waitForTimeout(300);
   await expect(page).toHaveURL(/\/image\/edit$/);
   await expectEditorWithControlsVisible(page);
 }
@@ -203,7 +208,6 @@ export async function waitForEditorReady(page: Page): Promise<void> {
         el.addEventListener("load", () => resolve(), { once: true });
       });
   });
-  await page.waitForTimeout(300);
 }
 
 /**
@@ -220,5 +224,4 @@ export async function changeAspectRatioSliderSteps(page: Page, steps: number): P
   for (let i = 0; i < count; i++) {
     await page.keyboard.press(key, { delay: 10 });
   }
-  await page.waitForTimeout(200);
 }
