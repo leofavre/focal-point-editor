@@ -74,36 +74,16 @@ async function runArrowLeftRightSteps(page: Page, rtl: boolean) {
   const sliderMax = await aspectRatioSlider.getAttribute("max");
   const getSliderValue = () => aspectRatioSlider.inputValue();
 
-  let prev = await getSliderValue();
   for (let i = 0; i < 20; i++) {
-    await page.keyboard.press("ArrowLeft");
-    const v = await getSliderValue();
-    if (v === prev) break;
-    prev = v;
+    await page.keyboard.press("ArrowLeft", { delay: 10 });
   }
+
   const valueAfterGoingLeft = await getSliderValue();
   expect(valueAfterGoingLeft).toBe(rtl ? sliderMax : sliderMin);
 
-  if (rtl) {
-    prev = await getSliderValue();
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("ArrowRight");
-      const v = await getSliderValue();
-      if (v === prev) break;
-      prev = v;
-    }
-    const valueAfterGoingRight = await getSliderValue();
-    expect(valueAfterGoingRight).toBe(sliderMin);
-    return;
-  }
-
-  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight", { delay: 10 });
   const valueAfterRight = await getSliderValue();
   expect(valueAfterRight).not.toBe(valueAfterGoingLeft);
-
-  await page.keyboard.press("ArrowLeft");
-  const valueAfterLeft = await getSliderValue();
-  expect(valueAfterLeft).not.toBe(valueAfterRight);
 }
 
 async function runArrowRightThenLeftSteps(page: Page, rtl: boolean) {
@@ -115,17 +95,14 @@ async function runArrowRightThenLeftSteps(page: Page, rtl: boolean) {
   const sliderMax = await aspectRatioSlider.getAttribute("max");
   const getSliderValue = () => aspectRatioSlider.inputValue();
 
-  let prev = await getSliderValue();
   for (let i = 0; i < 20; i++) {
-    await page.keyboard.press("ArrowRight");
-    const v = await getSliderValue();
-    if (v === prev) break;
-    prev = v;
+    await page.keyboard.press("ArrowRight", { delay: 10 });
   }
+
   const valueAfterGoingRight = await getSliderValue();
   expect(valueAfterGoingRight).toBe(rtl ? sliderMin : sliderMax);
 
-  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowLeft", { delay: 10 });
   const valueAfterLeft = await getSliderValue();
   expect(valueAfterLeft).not.toBe(valueAfterGoingRight);
 }

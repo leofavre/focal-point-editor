@@ -200,8 +200,8 @@ export async function waitForEditorReady(page: Page): Promise<void> {
     return el.complete && el.naturalWidth > 0
       ? Promise.resolve()
       : new Promise<void>((resolve) => {
-          el.addEventListener("load", () => resolve(), { once: true });
-        });
+        el.addEventListener("load", () => resolve(), { once: true });
+      });
   });
   await page.waitForTimeout(300);
 }
@@ -218,7 +218,7 @@ export async function changeAspectRatioSliderSteps(page: Page, steps: number): P
   const key = steps >= 0 ? "ArrowRight" : "ArrowLeft";
   const count = Math.abs(steps);
   for (let i = 0; i < count; i++) {
-    await page.keyboard.press(key);
+    await page.keyboard.press(key, { delay: 10 });
   }
   await page.waitForTimeout(200);
 }
