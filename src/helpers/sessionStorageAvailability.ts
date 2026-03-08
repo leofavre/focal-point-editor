@@ -4,5 +4,5 @@
  * or throw in some private browsing modes (e.g. Safari).
  */
 export function isSessionStorageAvailable(): boolean {
-  return typeof window !== "undefined" && !!window.sessionStorage;
+  return typeof window !== "undefined" && window.sessionStorage != null;
 }

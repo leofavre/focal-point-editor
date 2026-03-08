@@ -9,18 +9,20 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
-import useDebouncedEffect from "use-debounced-effect";
-import { copyTextToClipboardWithToast } from "./components/CodeSnippet/helpers/copyToClipboard";
-import { getCodeSnippet } from "./components/CodeSnippet/helpers/getCodeSnippet";
+import { navigate as vikeNavigate } from "vike/client/router";
+import { usePageContext } from "vike-react/usePageContext";
+import { copyTextToClipboardWithToast } from "@/components/CodeSnippet/helpers/copyToClipboard";
+import { getCodeSnippet } from "@/components/CodeSnippet/helpers/getCodeSnippet";
+import { createImageStateFromDraftAndFile } from "./editor/helpers/createImageStateFromDraftAndFile";
+import { createImageStateFromRecord } from "./editor/helpers/createImageStateFromRecord";
+import { createImageStateFromUrl } from "./editor/helpers/createImageStateFromUrl";
+import { createKeyboardShortcutHandler } from "./editor/helpers/createKeyboardShortcutHandler";
+import { usePersistedImages } from "./editor/hooks/usePersistedImages";
+import { usePersistedUIRecord } from "./editor/hooks/usePersistedUIRecord";
 import { logError } from "./helpers/errorHandling";
 import { getCreateImageStateErrorMessage } from "./helpers/getCreateImageStateErrorMessage";
-import { createImageStateFromDraftAndFile } from "./pages/helpers/createImageStateFromDraftAndFile";
-import { createImageStateFromRecord } from "./pages/helpers/createImageStateFromRecord";
-import { createImageStateFromUrl } from "./pages/helpers/createImageStateFromUrl";
-import { createKeyboardShortcutHandler } from "./pages/helpers/createKeyboardShortcutHandler";
-import { usePersistedImages } from "./pages/hooks/usePersistedImages";
-import { usePersistedUIRecord } from "./pages/hooks/usePersistedUIRecord";
+import { shouldHideBodyOverflow } from "./helpers/shouldHideBodyOverflow";
+import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
 import type {
   CodeSnippetLanguage,
   ImageDraftStateAndFile,
@@ -95,9 +97,12 @@ export function AppContext({ children }: PropsWithChildren) {
   const uploaderButtonRef = useRef<HTMLButtonElement>(null);
   const focalPointImageRef = useRef<HTMLDivElement>(null);
   const aspectRatioSliderRef = useRef<HTMLInputElement>(null);
-  const { pathname } = useLocation();
+  const pageContext = usePageContext();
+  const pathname = pageContext?.urlPathname ?? "";
   const imageId = getImageIdFromPathname(pathname);
-  const navigate = useNavigate();
+  const navigate = useCallback((url: string) => {
+    vikeNavigate(url);
+  }, []);
 
   const { images, addImage, updateImage } = usePersistedImages({
     onRefreshImagesError: logError,
@@ -219,11 +224,9 @@ export function AppContext({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    const hideOverflow = pathname !== "/" && pathname !== "/privacy";
-    document.body.style.overflow = hideOverflow ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    const hideOverflow = shouldHideBodyOverflow(pathname);
+    document.body.classList.toggle("no-overflow", hideOverflow);
+    return () => document.body.classList.remove("no-overflow");
   }, [pathname]);
 
   /**
@@ -322,62 +325,66 @@ export function AppContext({ children }: PropsWithChildren) {
     [imageId, aspectRatio, persistenceMode, updateImage],
   );
 
-  useEffect(() => {
-    async function asyncSetImageState() {
-      if (imageId == null) return;
+  useDebouncedEffect(
+    () => {
+      async function asyncSetImageState() {
+        if (imageId == null) return;
 
-      if (imageCount == null) {
-        console.log("persistence layer is loading");
-        safeSetImage(null);
-        return;
+        if (imageCount == null) {
+          console.log("persistence layer is loading");
+          safeSetImage(null);
+          return;
+        }
+
+        if (imageCount === 0) {
+          console.log("persistence layer is empty");
+          safeSetImage(null);
+          setImageNotFoundConfirmed(true);
+          return;
+        }
+
+        const imageRecord = stableImageRecordGetter(imageId);
+
+        if (imageRecord == null) {
+          console.log("image not found in the persistence layer");
+          safeSetImage(null);
+          setImageNotFoundConfirmed(true);
+          return;
+        }
+
+        const result = hasUrl(imageRecord)
+          ? await createImageStateFromUrl({
+              imageDraft: {
+                name: imageRecord.name,
+                type: imageRecord.type,
+                createdAt: imageRecord.createdAt,
+                breakpoints: imageRecord.breakpoints,
+              },
+              url: imageRecord.url,
+            })
+          : await createImageStateFromRecord(imageRecord);
+
+        if (result.rejected != null) {
+          safeSetImage(null);
+          toast.error(getCreateImageStateErrorMessage(result.rejected.reason));
+          return;
+        }
+
+        const nextImageState = result.accepted;
+        safeSetImage(nextImageState);
+        setAspectRatio(
+          imageRecord.lastKnownAspectRatio ??
+            nextImageState.naturalAspectRatio ??
+            DEFAULT_ASPECT_RATIO,
+        );
+        console.log("loaded image from record", imageRecord);
       }
 
-      if (imageCount === 0) {
-        console.log("persistence layer is empty");
-        safeSetImage(null);
-        setImageNotFoundConfirmed(true);
-        return;
-      }
-
-      const imageRecord = stableImageRecordGetter(imageId);
-
-      if (imageRecord == null) {
-        console.log("image not found in the persistence layer");
-        safeSetImage(null);
-        setImageNotFoundConfirmed(true);
-        return;
-      }
-
-      const result = hasUrl(imageRecord)
-        ? await createImageStateFromUrl({
-            imageDraft: {
-              name: imageRecord.name,
-              type: imageRecord.type,
-              createdAt: imageRecord.createdAt,
-              breakpoints: imageRecord.breakpoints,
-            },
-            url: imageRecord.url,
-          })
-        : await createImageStateFromRecord(imageRecord);
-
-      if (result.rejected != null) {
-        safeSetImage(null);
-        toast.error(getCreateImageStateErrorMessage(result.rejected.reason));
-        return;
-      }
-
-      const nextImageState = result.accepted;
-      safeSetImage(nextImageState);
-      setAspectRatio(
-        imageRecord.lastKnownAspectRatio ??
-          nextImageState.naturalAspectRatio ??
-          DEFAULT_ASPECT_RATIO,
-      );
-      console.log("loaded image from record", imageRecord);
-    }
-
-    asyncSetImageState();
-  }, [imageId, imageCount, setAspectRatio]);
+      asyncSetImageState();
+    },
+    { timeout: 50 },
+    [imageId, imageCount, setAspectRatio],
+  );
 
   const isUnknownRoute = pathname !== "/" && pathname !== "/privacy" && !isEditingRoute;
 

@@ -1,11 +1,21 @@
+import path from "node:path";
 import react from "@vitejs/plugin-react";
+import vike from "vike/plugin";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
 /** @see https://vite.dev/config/ */
 export default defineConfig(({ mode }) => ({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "."),
+    },
+  },
   esbuild: {
     pure: mode === "production" ? ["console.log"] : [],
+  },
+  server: {
+    port: 5173,
   },
   plugins: [
     react({
@@ -18,6 +28,7 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       manifest: false,
     }),
+    vike(),
   ],
   test: {
     environment: "jsdom",

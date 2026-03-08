@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Debug action trigger
+        run: echo "Triggered by ${{ github.event_name }}"
       - name: Auto-merge release PR
         run: gh pr merge --auto --squash "${{ github.event.pull_request.number }}"
         env:

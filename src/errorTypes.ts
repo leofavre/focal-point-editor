@@ -7,11 +7,13 @@
 export type NoFilesProvidedReason = "NoFilesProvidedError";
 export type NoFileProvidedReason = "NoFileProvidedError";
 export type NotImageReason = "NotImageError";
+export type ImageFormatNotSupportedReason = "ImageFormatNotSupportedError";
 
 export type ImageUploadValidationReason =
   | NoFilesProvidedReason
   | NoFileProvidedReason
-  | NotImageReason;
+  | NotImageReason
+  | ImageFormatNotSupportedReason;
 
 /** Image load / create-image-state flows. */
 export type ImageLoadFailedReason = "ImageLoadFailed";

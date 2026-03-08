@@ -4,5 +4,5 @@
  * (e.g. Firefox private browsing).
  */
 export function isIndexedDBAvailable(): boolean {
-  return typeof window !== "undefined" && !!window.indexedDB;
+  return typeof window !== "undefined" && window.indexedDB != null;
 }

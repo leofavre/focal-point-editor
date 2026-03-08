@@ -201,7 +201,7 @@ test.describe("Drag-drop", () => {
     await expectEditorWithControlsVisible(page);
   });
 
-  test("drop multiple images in single-image mode shows 'Upload a single image' toast and no redirect", async ({
+  test("drop multiple images in single-image mode shows 'Please select only one image.' toast and no redirect", async ({
     page,
   }) => {
     await page.goto("/");
@@ -240,7 +240,7 @@ test.describe("Drag-drop", () => {
       overlay.dispatchEvent(new DragEvent("drop", opts));
     }, evalOpts);
 
-    await expect(page.getByText("Only a single image is allowed")).toBeVisible();
+    await expect(page.getByText("Please select only one image.")).toBeVisible();
     await expect(page).toHaveURL("/");
   });
 });
