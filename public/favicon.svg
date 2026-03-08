@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none">
+  <path d="M11 2V5" stroke="#eb8552" stroke-width="2" />
+  <path d="M2 11H5" stroke="#eb8552" stroke-width="2" />
+  <path d="M11 20V17" stroke="#eb8552" stroke-width="2" />
+  <path d="M20 11H17" stroke="#eb8552" stroke-width="2" />
+  <path d="M11 12V10" stroke="#eb8552" stroke-width="2" />
+  <path
+    d="M16.7488 10.9893L11 5.2405L5.25122 10.9893L11 16.7381L13.8744 13.8637L16.7488 10.9893Z"
+    stroke="#eb8552"
+    stroke-width="2"
+  />
+</svg>
