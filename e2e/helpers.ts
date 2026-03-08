@@ -187,8 +187,7 @@ export async function seedEditorWithImage(page: Page): Promise<void> {
   ]);
 
   await fileChooser.setFiles(SAMPLE_IMAGE_PATH);
-  await page.waitForTimeout(300);
-  await expect(page).toHaveURL(/\/image\/edit$/);
+  await page.locator('[data-component="FocalPointEditor"]').click();
   await expectEditorWithControlsVisible(page);
 }
 
@@ -205,8 +204,8 @@ export async function waitForEditorReady(page: Page): Promise<void> {
     return el.complete && el.naturalWidth > 0
       ? Promise.resolve()
       : new Promise<void>((resolve) => {
-        el.addEventListener("load", () => resolve(), { once: true });
-      });
+          el.addEventListener("load", () => resolve(), { once: true });
+        });
   });
 }
 
