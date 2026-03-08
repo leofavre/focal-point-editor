@@ -53,9 +53,7 @@ jobs:
         run: yarn install --immutable
       - name: Build
         run: yarn build
-      - name: Install Vercel CLI
-        run: yarn install --global vercel
       - name: Pull Vercel environment
-        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+        run: npx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
       - name: Deploy to Vercel
-        run: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+        run: npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
