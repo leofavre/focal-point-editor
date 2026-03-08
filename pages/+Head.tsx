@@ -1,3 +1,9 @@
 export function Head() {
-  return <link rel="stylesheet" href="/main.css" />;
+  return (
+    <>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="stylesheet" href="/main.css" />
+    </>
+  );
 }
