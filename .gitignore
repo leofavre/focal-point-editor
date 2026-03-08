@@ -142,5 +142,6 @@ vite.config.ts.timestamp-*
 test-results/
 playwright-report/
 
-# Vike Photon
-.vercel/output/
+# Vercel
+.vercel
+.env*.local
