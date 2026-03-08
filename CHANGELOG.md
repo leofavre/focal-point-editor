@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.12.0...focal-point-editor-v0.13.0) (2026-03-08)
+
+
+### Features
+
+* Add privacy page and SSR ([5699f74](https://github.com/leofavre/focal-point-editor/commit/5699f74f7656c1d3c53a1bc467093cb57746236e))
+
+
+### Bug Fixes
+
+* fix E2E tests ([d734b34](https://github.com/leofavre/focal-point-editor/commit/d734b34680583eae2f6153a29c31068c7413d40b))
+
 ## [0.12.0](https://github.com/leofavre/focal-point-editor/compare/focal-point-editor-v0.11.0...focal-point-editor-v0.12.0) (2026-03-03)
 
 
