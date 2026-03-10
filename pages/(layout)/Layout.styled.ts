@@ -1,21 +1,4 @@
-import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
-
-const spin = keyframes`
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-/** CSS-only loading spinner. */
-export const LoadingSpinner = styled.span`
-  display: inline-block;
-  width: 1.5em;
-  height: 1.5em;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  animation: ${spin} 0.8s linear infinite;
-`;
 
 /** Shared full-width message (loading, errors) in the main content area. */
 export const LayoutMessage = styled.h3`

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Suspense, useCallback } from "react";
+import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { AspectRatioSlider } from "@/components/AspectRatioSlider/AspectRatioSlider";
 import { Button } from "@/components/Button/Button";
@@ -19,8 +19,6 @@ import {
   HeaderLinks,
   LayoutGrid,
   LayoutHeader,
-  LayoutMessage,
-  LoadingSpinner,
   PrivacyLink,
 } from "./Layout.styled";
 
@@ -31,6 +29,7 @@ import {
  *
  * - Review Privacy all pages.
  * - Better styling for text-only pages.
+ * - Make sure button is animated from disabled to enable every time, but specially during hydration.
  * - Remove animation of bottom bar and make it part of editing.
  * - Maybe refactor context so that some part is restricted to editing images and some part is shared in the whole app (like drag and drop)?
  *
@@ -100,15 +99,7 @@ export default function Layout({ children }: PropsWithChildren) {
             <PrivacyLink href="/privacy">Privacy</PrivacyLink>
           </HeaderLinks>
         </LayoutHeader>
-        <Suspense
-          fallback={
-            <LayoutMessage role="status" aria-label="Loading">
-              <LoadingSpinner aria-hidden />
-            </LayoutMessage>
-          }
-        >
-          {children}
-        </Suspense>
+        {children}
         <EditorControlsNav data-component="EditorControlsNav" aria-label="Editor controls">
           <Button
             type="button"
