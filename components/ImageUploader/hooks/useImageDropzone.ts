@@ -71,15 +71,19 @@ export function useImageDropzone({
   const stableOnImageUpload = useEffectEvent((draftAndFile: ImageDraftStateAndFile) =>
     onImageUpload?.(draftAndFile),
   );
+
   const stableOnImagesUpload = useEffectEvent((draftsAndFiles: ImageDraftStateAndFile[]) =>
     onImagesUpload?.(draftsAndFiles),
   );
+
   const stableOnImageUploadError = useEffectEvent((error: Err<UploadErrorCode>) =>
     onImageUploadError?.(error),
   );
+
   const stableOnImagesUploadError = useEffectEvent((errors: Err<UploadErrorCode>[]) =>
     onImagesUploadError?.(errors),
   );
+
   const stableOnDropAccepted = useEffectEvent(() => onDropAccepted?.());
 
   const onDrop = useCallback(
@@ -90,6 +94,7 @@ export function useImageDropzone({
         stableOnImageUploadError({
           reason: multiple ? NO_FILES_PROVIDED : NO_FILE_PROVIDED,
         });
+
         return;
       }
 
@@ -102,16 +107,19 @@ export function useImageDropzone({
 
       const imageFiles = acceptedFiles.filter((file) => file.type.startsWith("image/"));
       const nonImageFiles = acceptedFiles.filter((file) => !file.type.startsWith("image/"));
+
       const notImageErrors: Err<UploadErrorCode>[] = nonImageFiles.map(() => ({
         reason: NOT_IMAGE,
       }));
 
       if (imageFiles.length === 0) {
         const allErrors = [...rejected, ...notImageErrors];
+
         if (allErrors.length > 0) {
           stableOnImageUploadError(allErrors[0]);
           stableOnImagesUploadError(allErrors);
         }
+
         return;
       }
 
@@ -121,12 +129,15 @@ export function useImageDropzone({
           supported: await canBrowserDecodeImage(file),
         })),
       );
+
       const supportedFiles = decodeResults.filter((r) => r.supported).map((r) => r.file);
+
       const formatErrors: Err<UploadErrorCode>[] = decodeResults
         .filter((r) => !r.supported)
         .map(() => ({ reason: IMAGE_FORMAT_NOT_SUPPORTED }));
 
       const allErrors = [...rejected, ...notImageErrors, ...formatErrors];
+
       if (allErrors.length > 0) {
         stableOnImageUploadError(allErrors[0]);
         stableOnImagesUploadError(allErrors);

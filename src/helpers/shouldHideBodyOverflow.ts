@@ -4,5 +4,5 @@
  * client-side updates when SSR is disabled or after navigation.
  */
 export function shouldHideBodyOverflow(pathname: string): boolean {
-  return pathname !== "/" && pathname !== "/privacy";
+  return pathname !== "/" && pathname !== "/privacy" && pathname !== "/shortcuts";
 }

@@ -29,14 +29,20 @@ export const LayoutHeader = styled.header`
   display: contents;
 `;
 
-/** Link to privacy notice; positioned on the main grid, same column as title, aligned top/end. */
-export const PrivacyLink = styled.a`
+/** Wrapper for header links (shortcuts, privacy); positioned on the main grid, aligned top/end. */
+export const HeaderLinks = styled.span`
   grid-row: 1;
   grid-column: 2 / -2;
   align-self: start;
   justify-self: end;
   margin-top: var(--base-line-05x);
   z-index: 10;
+  display: flex;
+  gap: var(--base-line-1x);
+`;
+
+/** Link in the header (shortcuts, privacy). */
+export const PrivacyLink = styled.a`
   font-size: calc(14 / 16 * 1rem);
   color: var(--color-neutral);
   text-decoration: none;

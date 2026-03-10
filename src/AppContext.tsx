@@ -322,7 +322,7 @@ export function AppContext({ children }: PropsWithChildren) {
       });
     },
     { timeout: INTERACTION_DEBOUNCE_MS },
-    [imageId, aspectRatio, persistenceMode, updateImage],
+    [imageId, aspectRatio, updateImage],
   );
 
   useDebouncedEffect(
@@ -386,7 +386,8 @@ export function AppContext({ children }: PropsWithChildren) {
     [imageId, imageCount, setAspectRatio],
   );
 
-  const isUnknownRoute = pathname !== "/" && pathname !== "/privacy" && !isEditingRoute;
+  const isUnknownRoute =
+    pathname !== "/" && pathname !== "/privacy" && pathname !== "/shortcuts" && !isEditingRoute;
 
   const isLoading =
     isProcessingImageUpload || (isOnImageRoute && image == null && !imageNotFoundConfirmed);

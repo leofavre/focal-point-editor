@@ -16,6 +16,7 @@ import { IconMask } from "@/src/icons/IconMask";
 import { IconReference } from "@/src/icons/IconReference";
 import {
   EditorControlsNav,
+  HeaderLinks,
   LayoutGrid,
   LayoutHeader,
   LayoutMessage,
@@ -28,10 +29,9 @@ import {
  *
  * ### MELHORIZE™ UI.
  *
- * - Keyboard shortcuts page.
- * - Back button in text-only pages.
+ * - Review Privacy all pages.
  * - Better styling for text-only pages.
- * - Review Privacy page.
+ * - Add route to open image with code dialog open.
  *
  * ### Multi-site set-up.
  *
@@ -44,6 +44,7 @@ import {
  *
  * ### Advanced functionality
  *
+ * - Support videos.
  * - Use the native API for page transitions.
  * - Support external image sources.
  * - Multiple images with "file system".
@@ -93,7 +94,10 @@ export default function Layout({ children }: PropsWithChildren) {
       <LayoutGrid id="main" data-has-bottom-bar={parseBooleanAttr(showBottomBar)}>
         <LayoutHeader>
           <SiteTitle />
-          <PrivacyLink href="/privacy">Privacy</PrivacyLink>
+          <HeaderLinks>
+            <PrivacyLink href="/shortcuts">Shortcuts</PrivacyLink>
+            <PrivacyLink href="/privacy">Privacy</PrivacyLink>
+          </HeaderLinks>
         </LayoutHeader>
         <Suspense
           fallback={

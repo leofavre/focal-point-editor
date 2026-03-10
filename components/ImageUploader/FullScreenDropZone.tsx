@@ -18,6 +18,7 @@ export function FullScreenDropZone({
 }: FullScreenDropZoneProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const isHydrated = useHydrated();
+
   const { getRootProps, getInputProps, isDragGlobal } = useImageDropzone({
     onImageUpload,
     onImagesUpload,

@@ -1,8 +1,9 @@
 import toast from "react-hot-toast";
 import { Button } from "@/components/Button/Button";
+import { DocPageHeader } from "@/components/DocPageLayout/DocPageHeader";
+import { DocPageLayout, DocPageMeta } from "@/components/DocPageLayout/DocPageLayout.styled";
 import { IconClear } from "@/src/icons/IconClear";
 import { DBConfig } from "@/src/services/databaseConfig";
-import { PrivacyLayout, PrivacyMeta } from "./Privacy.styled";
 
 const PRIVACY_LAST_UPDATED = "2025-03-02" as const;
 
@@ -67,9 +68,9 @@ export function PrivacyPage() {
   };
 
   return (
-    <PrivacyLayout data-component="PrivacyPage">
-      <h1>{title}</h1>
-      <PrivacyMeta>Last updated: {PRIVACY_LAST_UPDATED}</PrivacyMeta>
+    <DocPageLayout data-component="PrivacyPage">
+      <DocPageHeader title={title} />
+      <DocPageMeta>Last updated: {PRIVACY_LAST_UPDATED}</DocPageMeta>
       <section>
         <h2>Controller</h2>
         <p>
@@ -160,6 +161,6 @@ export function PrivacyPage() {
           <Button.ButtonText>Clear all data</Button.ButtonText>
         </Button>
       </section>
-    </PrivacyLayout>
+    </DocPageLayout>
   );
 }
