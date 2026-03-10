@@ -29,11 +29,8 @@ import {
  *
  * ### MELHORIZE™ UI.
  *
- * - Keyboard shortcuts page.
- * - Back button in text-only pages.
+ * - Review Privacy all pages.
  * - Better styling for text-only pages.
- * - Review Privacy page.
- * - Review margins of landing page.
  * - Add route to open image with code dialog open.
  *
  * ### Multi-site set-up.

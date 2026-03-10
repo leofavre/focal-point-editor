@@ -1,3 +1,4 @@
+import { DocPageHeader } from "@/components/DocPageLayout/DocPageHeader";
 import { DocPageLayout, Kbd } from "@/components/DocPageLayout/DocPageLayout.styled";
 
 export function ShortcutsPage() {
@@ -5,7 +6,7 @@ export function ShortcutsPage() {
 
   return (
     <DocPageLayout data-component="ShortcutsPage">
-      <h1>{title}</h1>
+      <DocPageHeader title={title} />
       <p>
         Shortcuts are case insensitive and are not triggered when used with modifier keys (e.g.
         Control or Command).

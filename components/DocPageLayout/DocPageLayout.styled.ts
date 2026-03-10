@@ -2,9 +2,9 @@ import styled from "@emotion/styled";
 
 export const DocPageLayout = styled.article`
   grid-column: 1 / -1;
-  grid-row: 1 / -2;
+  grid-row: 2 / -2;
   margin: auto;
-  padding: var(--base-line-2x);
+  padding: 0 var(--base-line);
   max-width: 48rem;
   width: 100%;
   box-sizing: border-box;
@@ -14,7 +14,6 @@ export const DocPageLayout = styled.article`
     line-height: var(--base-line-2x);
     font-weight: 500;
     color: var(--color-loud);
-    margin: 0 0 var(--base-line-2x) 0;
   }
 
   h2 {
@@ -65,6 +64,42 @@ export const DocPageLayout = styled.article`
     line-height: var(--base-line-15x);
     color: var(--color-neutral);
     margin: 0 0 0 1.5em;
+  }
+`;
+
+/** Header row for doc pages: back button at inline-start, then title. */
+export const DocPageHeader = styled.header`
+  display: flex;
+  align-items: center;
+  gap: var(--base-line-1x);
+  margin-bottom: var(--base-line-2x);
+`;
+
+/** Back button with arrow icon; icon flips in RTL so arrow points toward "back". */
+export const DocPageBackButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--color-neutral);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-loud);
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  :dir(rtl) svg {
+    transform: scaleX(-1);
   }
 `;
 
