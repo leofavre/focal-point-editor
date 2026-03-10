@@ -5,7 +5,7 @@ import { FullScreenDropZone } from "@/components/ImageUploader/FullScreenDropZon
 import type { UploadErrorCode } from "@/components/ImageUploader/getUploadErrorMessage";
 import { getUploadErrorMessage } from "@/components/ImageUploader/getUploadErrorMessage";
 import { SiteTitle } from "@/components/SiteTitle/SiteTitle";
-import { useEditorContext } from "@/src/AppContext";
+import { useAppContext } from "@/src/AppContext";
 import type { Err } from "@/src/helpers/errorHandling";
 import { HeaderLinks, LayoutGrid, LayoutHeader, PrivacyLink } from "./Layout.styled";
 
@@ -17,7 +17,6 @@ import { HeaderLinks, LayoutGrid, LayoutHeader, PrivacyLink } from "./Layout.sty
  * - Review Privacy all pages.
  * - Better styling for text-only pages.
  * - Make sure button is animated from disabled to enable every time, but specially during hydration.
- * - Maybe refactor context so that some part is restricted to editing images and some part is shared in the whole app (like drag and drop)?
  * - Keep overlay for a few seconds when image is loaded using the big button on the Landing page.
  *
  * ### Multi-site set-up.
@@ -39,22 +38,18 @@ import { HeaderLinks, LayoutGrid, LayoutHeader, PrivacyLink } from "./Layout.sty
  * - Maybe make a native custom element?
  */
 export default function Layout({ children }: PropsWithChildren) {
-  const { handleImageUpload, setShowCodeSnippet } = useEditorContext();
+  const { handleImageUpload, onDragStart } = useAppContext();
 
   const handleImageUploadError = useCallback((error: Err<UploadErrorCode>) => {
     toast.error(getUploadErrorMessage(error));
   }, []);
-
-  const handleDragStart = useCallback(() => {
-    setShowCodeSnippet(false);
-  }, [setShowCodeSnippet]);
 
   return (
     <>
       <FullScreenDropZone
         onImageUpload={handleImageUpload}
         onImageUploadError={handleImageUploadError}
-        onDragStart={handleDragStart}
+        onDragStart={onDragStart}
       />
       <LayoutGrid id="main">
         <LayoutHeader>

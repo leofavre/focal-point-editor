@@ -7,7 +7,7 @@ import type { UploadErrorCode } from "@/components/ImageUploader/getUploadErrorM
 import { getUploadErrorMessage } from "@/components/ImageUploader/getUploadErrorMessage";
 import { ImageUploaderButton } from "@/components/ImageUploader/ImageUploaderButton";
 import { EditorControlsNav as EditorControlsNavStyled } from "@/pages/(layout)/Layout.styled";
-import { useEditorContext } from "@/src/AppContext";
+import { useEditorContext } from "@/src/EditorContext";
 import type { Err } from "@/src/helpers/errorHandling";
 import { IconCode } from "@/src/icons/IconCode";
 import { IconMask } from "@/src/icons/IconMask";

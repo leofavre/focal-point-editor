@@ -3,7 +3,7 @@ import { CodeSnippetHeader } from "@/components/CodeSnippetHeader/CodeSnippetHea
 import { Dialog } from "@/components/Dialog/Dialog";
 import { FocalPointEditor } from "@/components/FocalPointEditor/FocalPointEditor";
 import { LayoutMessage } from "@/pages/(layout)/Layout.styled";
-import { useEditorContext } from "@/src/AppContext";
+import { useEditorContext } from "@/src/EditorContext";
 import type { ObjectPositionString } from "@/src/types";
 
 const DEFAULT_OBJECT_POSITION: ObjectPositionString = "50% 50%";
