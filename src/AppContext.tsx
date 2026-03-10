@@ -66,7 +66,6 @@ export type EditorContextValue = {
   imageNotFoundConfirmed: boolean;
   isLoading: boolean;
   isEditingSingleImage: boolean;
-  showBottomBar: boolean;
   handleImageUpload: (
     draftAndFileOrUrl: ImageDraftStateAndFile | ImageDraftStateAndUrl | undefined,
   ) => Promise<void>;
@@ -207,7 +206,6 @@ export function AppContext({ children }: PropsWithChildren) {
   const isEditingSingleImage =
     persistenceMode === "singleImage" && imageId === SINGLE_IMAGE_MODE_ID;
 
-  const isEditingRoute = /^\/image\/[^/]+$/.test(pathname);
   const isOnImageRoute = pathname.startsWith(IMAGE_ROUTE_PREFIX);
 
   const handleImageUpload = useCallback(
@@ -440,14 +438,8 @@ export function AppContext({ children }: PropsWithChildren) {
     [imageId, imageCount, setAspectRatio],
   );
 
-  const isUnknownRoute =
-    pathname !== "/" && pathname !== "/privacy" && pathname !== "/shortcuts" && !isEditingRoute;
-
   const isLoading =
     isProcessingImageUpload || (isOnImageRoute && image == null && !imageNotFoundConfirmed);
-
-  const showBottomBar =
-    (isEditingRoute && showFocalPoint != null && showImageOverflow != null) || isUnknownRoute;
 
   const value: EditorContextValue = {
     pathname,
@@ -470,7 +462,6 @@ export function AppContext({ children }: PropsWithChildren) {
     imageNotFoundConfirmed,
     isLoading,
     isEditingSingleImage,
-    showBottomBar,
     handleImageUpload,
     handleImageError,
     handleObjectPositionChange,

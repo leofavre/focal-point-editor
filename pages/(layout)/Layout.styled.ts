@@ -76,58 +76,43 @@ export const LayoutGrid = styled.main`
   [data-component="EditorControlsNav"] [data-component="AspectRatioSlider"],
   > [data-component="AspectRatioSlider"] {
     position: relative;
-    top: 8rem;
     grid-row: 3;
     grid-column: 4;
     margin-left: auto;
     margin-right: auto;
     max-width: 1200px;
-    visibility: hidden;
-    transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
   [data-component="EditorControlsNav"] [data-component="FocalPointButton"],
   > [data-component="FocalPointButton"] {
     position: relative;
-    top: 8rem;
     grid-row: 3;
     grid-column: 2;
     margin-bottom: auto;
-    visibility: hidden;
-    transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
   [data-component="EditorControlsNav"] [data-component="ImageOverflowButton"],
   > [data-component="ImageOverflowButton"] {
     position: relative;
-    top: 8rem;
     grid-row: 3;
     grid-column: 3;
     margin-bottom: auto;
-    visibility: hidden;
-    transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
   [data-component="EditorControlsNav"] [data-component="CodeSnippetButton"],
   > [data-component="CodeSnippetButton"] {
     position: relative;
-    top: 8rem;
     grid-row: 3;
     grid-column: 5;
     margin-bottom: auto;
-    visibility: hidden;
-    transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
   [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"],
   > [data-component="ImageUploaderButton"] {
     position: relative;
-    top: 8rem;
     grid-row: 3;
     grid-column: 6;
     margin-bottom: auto;
-    visibility: hidden;
-    transition: top 132ms ease-in-out 0s, visibility 132ms linear 132ms;
   }
 
   [data-component="ImageUploaderButton"] {
@@ -140,17 +125,5 @@ export const LayoutGrid = styled.main`
 
   [data-component="HowToUse"] {
     z-index: 3;
-  }
-
-  &[data-has-bottom-bar] {
-    [data-component="EditorControlsNav"] [data-component="AspectRatioSlider"],
-    [data-component="EditorControlsNav"] [data-component="FocalPointButton"],
-    [data-component="EditorControlsNav"] [data-component="ImageOverflowButton"],
-    [data-component="EditorControlsNav"] [data-component="CodeSnippetButton"],
-    [data-component="EditorControlsNav"] [data-component="ImageUploaderButton"] {
-      top: 0;
-      visibility: visible;
-      transition: top 132ms ease-in-out 0s, visibility 132ms linear 0s;
-    }
   }
 `;
