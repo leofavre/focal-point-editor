@@ -13,6 +13,7 @@ import { navigate as vikeNavigate } from "vike/client/router";
 import { usePageContext } from "vike-react/usePageContext";
 import { copyTextToClipboardWithToast } from "@/components/CodeSnippet/helpers/copyToClipboard";
 import { getCodeSnippet } from "@/components/CodeSnippet/helpers/getCodeSnippet";
+import { useDialogUrlSync } from "@/components/Dialog/useDialogUrlSync";
 import { createImageStateFromDraftAndFile } from "./editor/helpers/createImageStateFromDraftAndFile";
 import { createImageStateFromRecord } from "./editor/helpers/createImageStateFromRecord";
 import { createImageStateFromUrl } from "./editor/helpers/createImageStateFromUrl";
@@ -37,7 +38,6 @@ import { hasUrl, isImageDraftStateAndUrl } from "./types";
 
 const DEFAULT_SHOW_FOCAL_POINT = false;
 const DEFAULT_SHOW_IMAGE_OVERFLOW = false;
-const DEFAULT_SHOW_CODE_SNIPPET = false;
 const DEFAULT_CODE_SNIPPET_LANGUAGE: CodeSnippetLanguage = "html";
 const DEFAULT_ASPECT_RATIO = 1;
 const INTERACTION_DEBOUNCE_MS = 500;
@@ -146,7 +146,54 @@ export function AppContext({ children }: PropsWithChildren) {
     { onError: logError },
   );
 
-  const [showCodeSnippet, setShowCodeSnippet] = useState(DEFAULT_SHOW_CODE_SNIPPET);
+  const isImageRoute = /^\/image\/[^/]+$/.test(pathname);
+  const [codeInUrl, setCodeInUrl] = useState(false);
+
+  useEffect(() => {
+    if (!isImageRoute) {
+      setCodeInUrl(false);
+      return;
+    }
+    const search = pageContext?.urlParsed?.search ?? {};
+    setCodeInUrl("code" in search);
+  }, [isImageRoute, pageContext?.urlParsed?.search]);
+
+  const getCodeParamInUrl = useCallback(() => {
+    return isImageRoute && codeInUrl;
+  }, [isImageRoute, codeInUrl]);
+
+  const setCodeParamInUrl = useCallback((present: boolean) => {
+    if (typeof window === "undefined") return;
+    const currentPathname = window.location.pathname;
+    if (!/^\/image\/[^/]+$/.test(currentPathname)) return;
+    const params = new URLSearchParams(window.location.search);
+    if (present) params.set("code", "");
+    else params.delete("code");
+
+    const searchStr = Array.from(params.entries())
+      .map(([k, v]) => (v === "" ? k : `${k}=${encodeURIComponent(v)}`))
+      .join("&");
+
+    const hash = window.location.hash;
+    const newUrl = currentPathname + (searchStr ? `?${searchStr}` : "") + hash;
+    window.history.replaceState(window.history.state, "", newUrl);
+    setCodeInUrl(present);
+  }, []);
+
+  const { open: showCodeSnippet, onOpenChange: setShowCodeSnippetFromHook } = useDialogUrlSync({
+    getParamInUrl: getCodeParamInUrl,
+    setParamInUrl: setCodeParamInUrl,
+  });
+
+  const setShowCodeSnippet = useCallback(
+    (valueOrUpdater: SetStateAction<boolean>) => {
+      const next =
+        typeof valueOrUpdater === "function" ? valueOrUpdater(showCodeSnippet) : valueOrUpdater;
+      setShowCodeSnippetFromHook(next);
+    },
+    [showCodeSnippet, setShowCodeSnippetFromHook],
+  );
+
   const [isProcessingImageUpload, setIsProcessingImageUpload] = useState(false);
   const [imageNotFoundConfirmed, setImageNotFoundConfirmed] = useState(false);
 
@@ -284,7 +331,14 @@ export function AppContext({ children }: PropsWithChildren) {
 
     window.addEventListener("keydown", handleKeyDown, { capture: true });
     return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
-  }, [image, currentObjectPosition, codeSnippetLanguage, setShowFocalPoint, setShowImageOverflow]);
+  }, [
+    image,
+    currentObjectPosition,
+    codeSnippetLanguage,
+    setShowFocalPoint,
+    setShowImageOverflow,
+    setShowCodeSnippet,
+  ]);
 
   useDebouncedEffect(
     () => {

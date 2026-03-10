@@ -31,7 +31,7 @@ import {
  *
  * - Review Privacy all pages.
  * - Better styling for text-only pages.
- * - Add route to open image with code dialog open.
+ * - Maybe improve context to allow some pages to be strictly static.
  *
  * ### Multi-site set-up.
  *
