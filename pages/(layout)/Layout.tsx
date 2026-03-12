@@ -31,6 +31,7 @@ import { HeaderLinks, LayoutGrid, LayoutHeader, PrivacyLink } from "./Layout.sty
  *
  * ### Advanced functionality
  *
+ * - Explanatory video.
  * - Dark mode.
  * - Support videos.
  * - Use the native API for page transitions.
