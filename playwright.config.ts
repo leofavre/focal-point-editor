@@ -8,8 +8,8 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 2,
-  workers: 5,
+  retries: 1,
+  workers: 3,
   reporter: "html",
   use: {
     baseURL: "http://localhost:5173",

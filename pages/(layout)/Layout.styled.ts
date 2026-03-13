@@ -12,6 +12,11 @@ export const LayoutCenter = styled.div`
   grid-column: 1 / -1;
   grid-row: 1 / -2;
   margin: auto;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-line-2x);
 `;
 
 /** Header row; display: contents so title and privacy link are laid out on the main grid. */

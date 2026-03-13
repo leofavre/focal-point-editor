@@ -31,6 +31,9 @@ export function EditPage() {
     handleObjectPositionChange,
     focalPointImageRef,
     isLoading,
+    imageNotFoundConfirmed,
+    isEditingSingleImage,
+    imageCount,
   } = useEditorContext();
 
   const handleImageUploadError = useCallback((error: Err<UploadErrorCode>) => {
@@ -78,6 +81,24 @@ export function EditPage() {
 
   if (isLoading) {
     return null;
+  }
+
+  if (imageNotFoundConfirmed) {
+    return (
+      <LayoutCenter>
+        <p>
+          {isEditingSingleImage && imageCount === 0
+            ? "Start by choosing an image"
+            : "Image not found"}
+        </p>
+        <ImageUploaderButton
+          size="large"
+          label="Choose image"
+          onImageUpload={handleImageUpload}
+          onImageUploadError={handleImageUploadError}
+        />
+      </LayoutCenter>
+    );
   }
 
   return (
